@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+    <Button
+        android:id="@+id/begin"
+        style="@style/ButtonStyle"
+        android:layout_width="200dp"
+        android:layout_height="@dimen/information_cell_height"
+        android:singleLine="true"
+        android:text="@string/begin_testing"
+        android:layout_centerInParent="true" />
+
+</RelativeLayout>

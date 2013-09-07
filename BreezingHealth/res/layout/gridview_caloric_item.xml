@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <Button
+        android:id="@+id/title"
+        style="@style/ButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/information_cell_height"
+        android:singleLine="true"
+        android:text="@string/energy_metabolism" />
+
+    <com.breezing.health.widget.HoloCircleSeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:max="100"
+        app:pointer_color="#0174DF"
+        app:pointer_halo_color="#88252525"
+        app:pointer_size="5"
+        app:text_color="#FF0000"
+        app:text_size="20"
+        app:wheel_size="3"
+        app:wheel_active_color="#00BFFF"
+        app:wheel_unactive_color="#FFCCCCCC"
+        android:layout_marginTop="@dimen/activity_vertical_small_margin"
+        android:layout_gravity="center_horizontal" />
+
+</LinearLayout>

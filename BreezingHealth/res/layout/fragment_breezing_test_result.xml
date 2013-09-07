@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+    android:layout_marginRight="@dimen/activity_horizontal_margin" >
+    
+     <TextView
+        android:id="@+id/result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
+        android:text="您x 年x 月x 日的能量代谢值是xx 千卡，低于平均水平。"
+        android:textColor="@color/black"
+        android:textSize="@dimen/normal_textsize"
+        android:layout_centerInParent="true" />
+     
+     <TextView
+        android:id="@+id/more"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
+        android:text="点击查看更多关于《运动和健康的饮食有助你提高您的代谢》"
+        android:textColor="@color/black"
+        android:textSize="@dimen/normal_textsize"
+        android:layout_below="@+id/result"
+        android:layout_marginTop="@dimen/activity_vertical_margin" />
+     
+     <Button
+            android:id="@+id/next"
+            style="@style/ButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/information_cell_height"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:singleLine="true"
+            android:text="@string/my_energy_balance_center"
+            android:layout_alignParentBottom="true" />
+
+</RelativeLayout>
