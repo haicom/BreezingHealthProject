@@ -11,6 +11,8 @@ import com.breezing.health.adapter.CaloricPagerAdapter;
 import com.breezing.health.ui.fragment.BaseDialogFragment;
 import com.breezing.health.ui.fragment.CalendarDialogFragment;
 import com.breezing.health.ui.fragment.DialogFragmentInterface;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnClosedListener;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnOpenedListener;
 
 public class MainActivity extends ActionBarActivity implements OnClickListener {
 
@@ -50,6 +52,24 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
     private void initListeners() {
         // TODO Auto-generated method stub
+        getSlidingMenu().setOnClosedListener(new OnClosedListener() {
+            
+            @Override
+            public void onClosed() {
+                // TODO Auto-generated method stub
+                
+            }
+        });
+        
+        getSlidingMenu().setOnOpenedListener(new OnOpenedListener() {
+            
+            @Override
+            public void onOpened() {
+                // TODO Auto-generated method stub
+                
+            }
+        });
+        
         mWeight.setOnClickListener(this);
         mCalendar.setOnClickListener(this);
     }

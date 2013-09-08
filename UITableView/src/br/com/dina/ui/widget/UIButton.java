@@ -25,7 +25,7 @@ public class UIButton extends LinearLayout {
 		this.setClickable(true);
 		mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mButtonContainer = (LinearLayout) mInflater.inflate(R.layout.list_item_single, null);
-		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT);
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 		
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.UIButton, 0, 0);
 		mTitle = a.getString(R.styleable.UIButton_title);

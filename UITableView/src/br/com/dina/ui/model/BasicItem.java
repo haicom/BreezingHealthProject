@@ -7,40 +7,47 @@ public class BasicItem implements IListItem {
 	private String mTitle;
 	private String mSubtitle;
 	private int mColor = -1;
+	private String action;
 	
 
-	public BasicItem(String _title) {
+	public BasicItem(String _title, String action) {
 		this.mTitle = _title;
+		this.action = action;
 	}
 	
-	public BasicItem(String _title, String _subtitle) {
+	public BasicItem(String _title, String _subtitle, String action) {
 		this.mTitle = _title;
 		this.mSubtitle = _subtitle;
+		this.action = action;
 	}
 	
-	public BasicItem(String _title, String _subtitle, int _color) {
+	public BasicItem(String _title, String _subtitle, int _color, String action) {
 		this.mTitle = _title;
 		this.mSubtitle = _subtitle;
 		this.mColor = _color;
+		this.action = action;
 	}
 	
-	public BasicItem(String _title, String _subtitle, boolean _clickable) {
+	public BasicItem(String _title, String _subtitle, boolean _clickable, String action) {
 		this.mTitle = _title;
 		this.mSubtitle = _subtitle;
 		this.mClickable = _clickable;
+		this.action = action;
 	}	
 	
-	public BasicItem(int _drawable, String _title, String _subtitle) {
+	public BasicItem(int _drawable, String _title, String _subtitle, String action) {
 		this.mDrawable = _drawable;
 		this.mTitle = _title;
 		this.mSubtitle = _subtitle;
+		this.action = action;
 	}
 	
-	public BasicItem(int _drawable, String _title, String _subtitle, int _color) {
+	public BasicItem(int _drawable, String _title, String _subtitle, int _color, String action) {
 		this.mDrawable = _drawable;
 		this.mTitle = _title;
 		this.mSubtitle = _subtitle;
 		this.mColor = _color;
+		this.action = action;
 	}
 
 	public int getDrawable() {
@@ -74,8 +81,16 @@ public class BasicItem implements IListItem {
 	public void setColor(int mColor) {
 		this.mColor = mColor;
 	}
+	
+	public String getAction() {
+        return action;
+    }
 
-	@Override
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    @Override
 	public boolean isClickable() {
 		return mClickable;
 	}

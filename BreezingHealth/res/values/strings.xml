@@ -46,5 +46,20 @@
     <string name="refresh">刷新</string>
     <string name="on_discovery_bluetooth">正在搜索蓝牙</string>
     <string name="on_opening_bluetooth">正在开启蓝牙</string>
+    
+    <string name="settings">设置</string>
+    <string name="share">分享</string>
+    <string name="history">历史</string>
+    <string name="more">更多</string>
+    
+    <string name="modify_password">修改密码</string>
+    <string name="modify_password_summary">修改您当前账户的密码，保护您的隐私</string>
+    <string name="account_management">账户管理</string>
+    <string name="account_management_summary">添加账户与修改账户信息</string>
+    <string name="unit_settings">单位设置</string>
+    <string name="unit_settings_summary">设置体重、身高等数值的显示单位</string>
+    <string name="bluetooth_device_settings">蓝牙设备设置</string>
+    <string name="bluetooth_device_settings_summary">设置Breezing、体重称、计步器等蓝牙设备</string>
+    <string name="account_detail">账户详情</string>
 
 </resources>

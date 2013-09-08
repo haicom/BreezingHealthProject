@@ -2,20 +2,20 @@ package com.breezing.health.entity;
 
 public class MenuItem {
 
-    private String action;
+    private int action;
     private int iconRes;
     private String name;
     
-    public MenuItem(String name, int iconRes, String action) {
+    public MenuItem(String name, int iconRes, int action) {
         this.name = name;
         this.iconRes = iconRes;
         this.action = action;
     }
     
-    public String getAction() {
+    public int getAction() {
         return action;
     }
-    public void setAction(String action) {
+    public void setAction(int action) {
         this.action = action;
     }
     public int getIconRes() {

@@ -1,7 +1,5 @@
 package com.breezing.health.adapter;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,55 +9,51 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.breezing.health.R;
-import com.breezing.health.entity.MenuItem;
+import com.breezing.health.entity.LeftMenuFunction;
 
 public class LeftMenuAdapter extends BaseAdapter {
     
-    private ArrayList<MenuItem> menuItems;
+    private LeftMenuFunction[] menuItems;
     private Context context;
     
-    public LeftMenuAdapter(Context context, ArrayList<MenuItem> menuItems) {
+    public LeftMenuAdapter(Context context) {
         this.context = context;
-        this.menuItems = menuItems;
+        this.menuItems = LeftMenuFunction.createLeftMenu();
     }
 
     @Override
     public int getCount() {
-        // TODO Auto-generated method stub
-        return menuItems.size();
+        return menuItems.length;
     }
 
     @Override
-    public Object getItem(int arg0) {
-        // TODO Auto-generated method stub
-        return menuItems.get(arg0);
+    public LeftMenuFunction getItem(int position) {
+        return menuItems[position];
     }
 
     @Override
-    public long getItemId(int arg0) {
-        // TODO Auto-generated method stub
-        return arg0;
+    public long getItemId(int id) {
+        return id;
     }
 
     @Override
-    public View getView(int arg0, View arg1, ViewGroup arg2) {
-        // TODO Auto-generated method stub
+    public View getView(int position, View contentView, ViewGroup arg2) {
         ViewHolder holder;
-        if (arg1 == null) {
-            arg1 = LayoutInflater.from(context).inflate(R.layout.left_menu_item, null);
+        if (contentView == null) {
+            contentView = LayoutInflater.from(context).inflate(R.layout.left_menu_item, null);
             holder = new ViewHolder();
-            holder.name = (TextView) arg1.findViewById(R.id.name);
-            holder.icon = (ImageView) arg1.findViewById(R.id.icon);
-            arg1.setTag(holder);
+            holder.name = (TextView) contentView.findViewById(R.id.name);
+            holder.icon = (ImageView) contentView.findViewById(R.id.icon);
+            contentView.setTag(holder);
         } else {
-            holder = (ViewHolder) arg1.getTag();
+            holder = (ViewHolder) contentView.getTag();
         }
         
-        MenuItem item = (MenuItem) getItem(arg0);
-        holder.name.setText(item.getName());
-        holder.icon.setImageResource(item.getIconRes());
+        LeftMenuFunction item = (LeftMenuFunction) getItem(position);
+        holder.name.setText(item.titleRes);
+        holder.icon.setImageResource(item.iconRes);
         
-        return arg1;
+        return contentView;
     }
     
     class ViewHolder {

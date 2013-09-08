@@ -1,5 +1,6 @@
 package com.breezing.health.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.breezing.health.R;
+import com.breezing.health.tools.IntentAction;
 
 public class BreezingTestSecondStepFragment extends BaseFragment implements OnClickListener {
     
@@ -41,7 +43,9 @@ public class BreezingTestSecondStepFragment extends BaseFragment implements OnCl
     public void onClick(View v) {
         // TODO Auto-generated method stub
         if (v == mBegin) {
-            showBluetoothSettingDialog();
+//            showBluetoothSettingDialog();
+            startActivity(new Intent(IntentAction.ACTIVITY_MAIN));
+            getActivity().finish();
             return ;
         }
     }
