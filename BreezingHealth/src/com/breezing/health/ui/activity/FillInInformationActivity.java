@@ -39,6 +39,7 @@ import com.breezing.health.ui.fragment.JobTypePickerDialogFragment;
 import com.breezing.health.ui.fragment.WeightPickerDialogFragment;
 import com.breezing.health.util.ChangeUnitUtil;
 import com.breezing.health.util.DateFormatUtil;
+import com.breezing.health.util.LocalSharedPrefsUtil;
 import com.breezing.health.providers.Breezing.WeightChange;
 
 
@@ -338,6 +339,7 @@ public class FillInInformationActivity extends ActionBarActivity implements OnCl
 
         try {
             getContentResolver().applyBatch(Breezing.AUTHORITY, mOps);
+            LocalSharedPrefsUtil.saveSharedPrefsAccount(this, accountId, DEFAULT_PASSWORD);
             result = true;
         } catch (Exception e) {
             result = false;
