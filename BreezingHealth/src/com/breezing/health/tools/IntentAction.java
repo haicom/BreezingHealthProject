@@ -11,5 +11,8 @@ public class IntentAction {
     public final static String ACTIVITY_ACCOUNT_MANAGEMENT = "action.intent.breezing.health.ACTIVITY_ACCOUNT_MANAGEMENT";
     public final static String ACTIVITY_MODIFY_PASSWORD = "action.intent.breezing.health.ACTIVITY_MODIFY_PASSWORD";
     public final static String ACTIVITY_ACCOUNT_DETAIL = "action.intent.breezing.health.ACTIVITY_ACCOUNT_DETAIL";
+    public final static String ACTIVITY_MORE = "action.intent.breezing.health.ACTIVITY_MORE";
+    public final static String ACTIVITY_HISTORY = "action.intent.breezing.health.ACTIVITY_HISTORY";
+    public final static String ACTIVITY_SHARE = "action.intent.breezing.health.ACTIVITY_SHARE";
     
 }
