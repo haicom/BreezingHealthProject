@@ -5,26 +5,32 @@
         <item>公斤</item>
         <item>磅</item>
     </string-array>
-    
+
     <string-array name="heightUnits">
         <item>厘米</item>
         <item>米</item>
         <item>英尺</item>
         <item>英寸</item>
     </string-array>
-    
+
+    <string-array name="distance_units">
+        <item>公里</item>
+        <item>里</item>
+        <item>英里</item>
+    </string-array>
+
     <string-array name="jobTypes">
         <item>久坐</item>
         <item>轻度运动</item>
         <item>活动</item>
         <item>常活动</item>
     </string-array>
-    
+
     <string-array name="lefMenuNames">
         <item>设置</item>
         <item>共享</item>
         <item>历史</item>
         <item>更多</item>
     </string-array>
-    
+
 </resources>

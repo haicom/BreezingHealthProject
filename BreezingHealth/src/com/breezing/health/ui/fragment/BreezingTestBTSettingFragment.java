@@ -40,15 +40,13 @@ public class BreezingTestBTSettingFragment extends BaseDialogFragment implements
     }
     
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
+    public void onCreate(Bundle savedInstanceState) {       
         super.onCreate(savedInstanceState);
     }
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
+            Bundle savedInstanceState) {       
         mFragmentView = inflater.inflate(R.layout.fragment_breezing_test_bt_setting, null);
         mListView = (ListView) mFragmentView.findViewById(R.id.list);
         mProgressBar = (ProgressBar) mFragmentView.findViewById(R.id.progressBar);
@@ -60,11 +58,9 @@ public class BreezingTestBTSettingFragment extends BaseDialogFragment implements
         mAdapter = new BluetoothDeviceAdapter(getActivity());
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(new OnItemClickListener() {
-
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-                    long arg3) {
-                // TODO Auto-generated method stub
+                    long arg3) {               
                 ((BreezingTestActivity)getActivity()).setBluetooth(mAdapter.getItem(arg2));
                 dismiss();
             }
@@ -79,8 +75,7 @@ public class BreezingTestBTSettingFragment extends BaseDialogFragment implements
         return mFragmentView;
     }
     
-    private void registerSearchReceiver() {
-        // TODO Auto-generated method stub
+    private void registerSearchReceiver() {        
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(BluetoothDevice.ACTION_FOUND);
         intentFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
@@ -89,9 +84,8 @@ public class BreezingTestBTSettingFragment extends BaseDialogFragment implements
     }
 
     @Override
-    public void onClick(View v) {
-        // TODO Auto-generated method stub
-        if (v == mRefresh) {
+    public void onClick(View v) {        
+        if (v == mRefresh) {            
             doDiscovery();
             return ;
         }
@@ -122,8 +116,7 @@ public class BreezingTestBTSettingFragment extends BaseDialogFragment implements
     }
     
     @Override
-    public void onDestroy() {
-        // TODO Auto-generated method stub
+    public void onDestroy() {       
         getActivity().unregisterReceiver(mSearchBroadcast);
         stopDiscovery();
         super.onDestroy();

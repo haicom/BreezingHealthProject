@@ -24,14 +24,12 @@ public class BluetoothDeviceAdapter extends BaseAdapter {
     }
 
     @Override
-    public int getCount() {
-        // TODO Auto-generated method stub
+    public int getCount() {        
         return bluetoothDevices.size();
     }
 
     @Override
-    public BluetoothDevice getItem(int position) {
-        // TODO Auto-generated method stub
+    public BluetoothDevice getItem(int position) {        
         return bluetoothDevices.get(position);
     }
     
@@ -40,14 +38,12 @@ public class BluetoothDeviceAdapter extends BaseAdapter {
     }
 
     @Override
-    public long getItemId(int position) {
-        // TODO Auto-generated method stub
+    public long getItemId(int position) {       
         return position;
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        // TODO Auto-generated method stub
+    public View getView(int position, View convertView, ViewGroup parent) {        
         ViewHolder holder;
         if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(context);

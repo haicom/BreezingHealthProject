@@ -346,8 +346,11 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + BreezingProvider.TABLE_UNIT_SETTINGS  + " ("
                 +  UnitSettings._ID + " INTEGER PRIMARY KEY , "
                 +  UnitSettings.UNIT_TYPE + " TEXT NOT NULL , "
-                +  UnitSettings.UNIT_NAME + " TEXT NOT NULL  " +             
+                +  UnitSettings.UNIT_NAME + " TEXT NOT NULL , " 
+                +  UnitSettings.UNIT_UNIFY_DATA + " FLOAT NOT NULL , " 
+                +  UnitSettings.UNIT_OBTAIN_DATA + " FLOAT NOT NULL  " +
                 ");");
+               
     }
     
     /***

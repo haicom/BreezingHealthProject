@@ -40,8 +40,6 @@ public class JobTypePickerDialogFragment extends BaseDialogFragment implements O
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-        
         mFragmentView = inflater.inflate(R.layout.fragment_dialog_job_type_picker, null);
         mType = (NumberPicker) mFragmentView.findViewById(R.id.type);
         mTitle = (TextView) mFragmentView.findViewById(R.id.title);
@@ -52,8 +50,8 @@ public class JobTypePickerDialogFragment extends BaseDialogFragment implements O
         mType.setDisplayedValues(types);
         mType.setMaxValue(types.length - 1);
         mType.setMinValue(0);
-        mType.setFocusable(true);
-        mType.setFocusableInTouchMode(true);
+        mType.setFocusable(false);
+        mType.setFocusableInTouchMode(false);
         
         if (mTitleString != null) {
             mTitle.setText(mTitleString);
@@ -81,11 +79,12 @@ public class JobTypePickerDialogFragment extends BaseDialogFragment implements O
     }
     
     @Override
-    public void onClick(View v) {
-        // TODO Auto-generated method stub
+    public void onClick(View v) {       
         if (v == mConfirm) {
             if (mPositiveClickListener != null) {
-                mPositiveClickListener.onClick(this);
+                String[] displayValues = mType.getDisplayedValues();
+                String displayValue = displayValues[mType.getValue()];
+                mPositiveClickListener.onClick(this, displayValue);
             }
             dismiss();
             return ;

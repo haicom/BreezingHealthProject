@@ -14,10 +14,10 @@ import com.breezing.health.entity.RecordFunctionEntity;
 import com.breezing.health.widget.HoloCircleSeekBar;
 
 public class AddCaloricRecordAdapter extends BaseAdapter {
-    
-    private Context context;
-    private ArrayList<RecordFunctionEntity> functions;
-    
+
+    private final Context context;
+    private final ArrayList<RecordFunctionEntity> functions;
+
     public AddCaloricRecordAdapter(Context context, ArrayList<RecordFunctionEntity> functions) {
         this.context = context;
         this.functions = functions;
@@ -25,47 +25,43 @@ public class AddCaloricRecordAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        // TODO Auto-generated method stub
         return functions.size();
     }
 
     @Override
-    public Object getItem(int arg0) {
-        // TODO Auto-generated method stub
-        return functions.get(arg0);
+    public Object getItem(int position) {
+        return functions.get(position);
     }
 
     @Override
-    public long getItemId(int arg0) {
-        // TODO Auto-generated method stub
-        return arg0;
+    public long getItemId(int position) {
+        return position;
     }
 
     @Override
-    public View getView(int arg0, View arg1, ViewGroup arg2) {
-        // TODO Auto-generated method stub
+    public View getView(int position, View  convertView, ViewGroup  parent) {
         ViewHolder viewHolder = null;
-        if (arg1 == null) {
-            arg1 = LayoutInflater.from(context).inflate(R.layout.gridview_caloric_item, null);
+        if (convertView == null) {
+            convertView = LayoutInflater.from(context).inflate(R.layout.gridview_caloric_item, null);
             viewHolder = new ViewHolder();
-            viewHolder.seekBar = (HoloCircleSeekBar) arg1.findViewById(R.id.seekBar);
-            viewHolder.title = (Button) arg1.findViewById(R.id.title);
-            arg1.setTag(viewHolder);
+            viewHolder.seekBar = (HoloCircleSeekBar) convertView.findViewById(R.id.seekBar);
+            viewHolder.title = (Button) convertView.findViewById(R.id.title);
+            convertView.setTag(viewHolder);
         } else {
-            viewHolder = (ViewHolder) arg1.getTag();
+            viewHolder = (ViewHolder) convertView.getTag();
         }
-        
-        final RecordFunctionEntity fun = (RecordFunctionEntity) getItem(arg0);
+
+        final RecordFunctionEntity fun = (RecordFunctionEntity) getItem(position);
         viewHolder.title.setText(fun.getTitleRes());
-        
-        return arg1;
+
+        return convertView;
     }
-    
+
     class ViewHolder {
         HoloCircleSeekBar seekBar;
         Button title;
     }
 
-    
-    
+
+
 }

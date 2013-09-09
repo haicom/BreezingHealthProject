@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.breezing.health.R;
+import com.breezing.health.util.DateFormatUtil;
 
 public class DatePickerDialogFragment extends BaseDialogFragment implements OnClickListener {
 
@@ -41,9 +42,7 @@ public class DatePickerDialogFragment extends BaseDialogFragment implements OnCl
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-        
+            Bundle savedInstanceState) {        
         mFragmentView = inflater.inflate(R.layout.fragment_dialog_date_picker, null);
         mYear = (NumberPicker) mFragmentView.findViewById(R.id.year);
         mMonth = (NumberPicker) mFragmentView.findViewById(R.id.month);
@@ -52,18 +51,18 @@ public class DatePickerDialogFragment extends BaseDialogFragment implements OnCl
         mCancel = (Button) mFragmentView.findViewById(R.id.cancel);
         mConfirm = (Button) mFragmentView.findViewById(R.id.confirm);
         
-        mYear.setMaxValue(2013);
-        mYear.setMinValue(1950);
-        mYear.setFocusable(true);
-        mYear.setFocusableInTouchMode(true);
+        mYear.setMaxValue(SHOW_YEAR_MAX);
+        mYear.setMinValue(SHOW_YEAR_MIN);
+        mYear.setFocusable(false);
+        mYear.setFocusableInTouchMode(false);
         
-        mMonth.setMaxValue(12);
-        mMonth.setMinValue(1);
-        mMonth.setFocusable(true);
-        mMonth.setFocusableInTouchMode(true);
+        mMonth.setMaxValue(SHOW_MONTH_MAX);
+        mMonth.setMinValue(SHOW_MONTH_MIN);
+        mMonth.setFocusable(false);
+        mMonth.setFocusableInTouchMode(false);
         
-        mDay.setMaxValue(31);
-        mDay.setMinValue(1);
+        mDay.setMaxValue(SHOW_DAY_MAX);
+        mDay.setMinValue(SHOW_DAT_MIN);
         mDay.setFocusable(true);
         mDay.setFocusableInTouchMode(true);
         
@@ -78,6 +77,19 @@ public class DatePickerDialogFragment extends BaseDialogFragment implements OnCl
                 ColorDrawable(Color.TRANSPARENT));
         
         return mFragmentView;
+    }
+    
+    
+    public int getYear() {
+        return  mYear.getValue();   
+    }
+    
+    public int getMonth() {
+        return mMonth.getValue();
+    }
+    
+    public int getDay() {
+        return mDay.getValue();
     }
     
     public void setTitle(String titleString) {
@@ -97,7 +109,7 @@ public class DatePickerDialogFragment extends BaseDialogFragment implements OnCl
         // TODO Auto-generated method stub
         if (v == mConfirm) {
             if (mPositiveClickListener != null) {
-                mPositiveClickListener.onClick(this);
+                mPositiveClickListener.onClick( this, mYear.getValue(), mMonth.getValue(), mDay.getValue() );
             }
             dismiss();
             return ;
@@ -109,5 +121,12 @@ public class DatePickerDialogFragment extends BaseDialogFragment implements OnCl
             return ;
         }
     }
+    
+    private static final int SHOW_YEAR_MAX = DateFormatUtil.simpleDateFormat("yyyy") -10;
+    private static final int SHOW_YEAR_MIN = SHOW_YEAR_MAX - 80;
+    private static final int SHOW_MONTH_MAX = 12;
+    private static final int SHOW_MONTH_MIN = 1;
+    private static final int SHOW_DAY_MAX = 31;
+    private static final int SHOW_DAT_MIN = 1;
     
 }

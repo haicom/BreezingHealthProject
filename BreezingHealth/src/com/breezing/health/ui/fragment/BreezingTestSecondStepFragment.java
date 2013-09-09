@@ -23,25 +23,21 @@ public class BreezingTestSecondStepFragment extends BaseFragment implements OnCl
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
     }
-    
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
         mFragmentView = inflater.inflate(R.layout.fragment_breezing_test_second_step, null);
         mBegin = (Button) mFragmentView.findViewById(R.id.begin);
-        
         mBegin.setOnClickListener(this);
-        
+
         return mFragmentView;
     }
 
     @Override
     public void onClick(View v) {
-        // TODO Auto-generated method stub
         if (v == mBegin) {
 //            showBluetoothSettingDialog();
             startActivity(new Intent(IntentAction.ACTIVITY_MAIN));

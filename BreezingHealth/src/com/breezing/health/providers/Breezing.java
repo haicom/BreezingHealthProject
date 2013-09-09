@@ -60,6 +60,7 @@ public class Breezing {
         public static final String GENDER   = "gender";
         public static final String HEIGHT   = "height";
         public static final String WEIGHT   = "weight";
+        public static final String HOPE_WEIGHT = "hope_weight";
         public static final String BIRTHDAY   = "birthday";
         public static final String CUSTOM   = "custom";
         public static final String EXPECTED_WEIGHT   = "expected_weight";
@@ -324,8 +325,10 @@ public class Breezing {
          */
         public static final Uri CONTENT_URI =
                 Uri.withAppendedPath(AUTHORITY_URI, "unit_settings");
-        public static final String UNIT_TYPE   = "food_type ";
-        public static final String UNIT_NAME   = "food_name";
+        public static final String UNIT_TYPE   = "unit_type ";
+        public static final String UNIT_NAME   = "unit_name";
+        public static final String UNIT_UNIFY_DATA = "unit_unify_data";
+        public static final String UNIT_OBTAIN_DATA = "unit_obtain_data";
         /**
          * The MIME type of {@link #CONTENT_URI} providing a directory of
          * people.

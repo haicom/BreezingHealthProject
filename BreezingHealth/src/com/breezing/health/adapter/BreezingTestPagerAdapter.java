@@ -12,22 +12,19 @@ public class BreezingTestPagerAdapter extends FragmentPagerAdapter {
 
     public BreezingTestPagerAdapter(FragmentManager fm) {
         super(fm);
-        // TODO Auto-generated constructor stub
     }
 
     @Override
-    public Fragment getItem(int arg0) {
-        // TODO Auto-generated method stub
-        switch (arg0) {
-        case 0:
+    public Fragment getItem(int position) {
+
+        switch (position) {
+        case BREEZING_TEST_FIRST_STEP:
             return BreezingTestFirstStepFragment.newInstance();
-            
-        case 1:
-            
+
+        case BREEZING_TEST_SECOND_STEP:
             return BreezingTestSecondStepFragment.newInstance();
-            
-        case 2:
-            
+
+        case BREEZING_TEST_RESULT:
             return BreezingTestResultFragment.newInstance();
 
         default:
@@ -37,8 +34,13 @@ public class BreezingTestPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        // TODO Auto-generated method stub
-        return 3;
+        return BREEZING_TEST_SETP_NUM;
     }
+
+    public  static final int BREEZING_TEST_FIRST_STEP = 0;
+    public  static final int BREEZING_TEST_SECOND_STEP = 1;
+    public  static final int BREEZING_TEST_RESULT = 2;
+
+    private static final int BREEZING_TEST_SETP_NUM = 3;
 
 }
