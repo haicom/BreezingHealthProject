@@ -4,8 +4,5 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
     
-    <br.com.dina.ui.widget.UITableView
-        android:id="@+id/tableView"
-        style="@style/UITableView" />
 
 </LinearLayout>

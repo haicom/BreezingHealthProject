@@ -5,12 +5,12 @@ import android.os.Bundle;
 import com.breezing.health.R;
 import com.breezing.health.entity.ActionItem;
 
-public class AccountManagementActivity extends ActionBarActivity {
-
+public class HistoryActivity extends ActionBarActivity {
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentFrame(R.layout.activity_account_management);
+        setContentFrame(R.layout.activity_history);
         initValues();
         initViews();
         valueToView();
@@ -22,7 +22,7 @@ public class AccountManagementActivity extends ActionBarActivity {
     }
 
     private void initViews() {
-        setActionBarTitle(R.string.account_management);
+        setActionBarTitle(R.string.history);
         addLeftActionItem(new ActionItem(ActionItem.ACTION_BACK));
     }
 
@@ -33,5 +33,4 @@ public class AccountManagementActivity extends ActionBarActivity {
     private void initListeners() {
         
     }
-    
 }
