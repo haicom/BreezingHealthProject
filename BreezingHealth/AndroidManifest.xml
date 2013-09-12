@@ -7,7 +7,7 @@
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="17" />
-    
+      
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -17,17 +17,17 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme.NoTitleBar" >
+   
         <activity
-            android:name="com.breezing.health.ui.activity.LauncherActivity"
+            android:name=".ui.activity.LauncherActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoTitleBar.Fullscreen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+        </activity> 
         
         <activity
             android:name=".ui.activity.FillInInformationActivity"
@@ -36,7 +36,7 @@
             <intent-filter>
                 <action android:name="action.intent.breezing.health.ACTIVITY_FILLIN_INFORMATION" />
                 <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
+            </intent-filter>        
         </activity>
         
         <activity

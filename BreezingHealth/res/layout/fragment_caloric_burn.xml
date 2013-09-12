@@ -4,16 +4,44 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <com.breezing.health.widget.PieChart
+   <!--  <com.breezing.health.widget.PieChart
         android:id="@+id/pieChart"
         android:layout_width="240dp"
         android:layout_height="240dp"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true" /> -->
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:id="@+id/pie_graph_layout">
+        <com.breezing.health.widget.PieGraph
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/pie_graph"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            style="@style/TitleTextViewStyle"
+            android:layout_weight="1"/>
+         <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/kilo_metabolism"
+            style="@style/TitleTextViewStyle"
+            android:layout_weight="1"
+            android:layout_gravity="center"/>
+        </LinearLayout>
+    </FrameLayout>
 
     <GridView android:id="@+id/gridView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/pieChart"
+        android:layout_below="@+id/pie_graph_layout"
         android:numColumns="3" />
 
 </RelativeLayout>

@@ -1,24 +1,39 @@
 package com.breezing.health.ui.fragment;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.breezing.health.R;
+import com.breezing.health.providers.Breezing.Account;
+import com.breezing.health.providers.Breezing.EnergyCost;
+import com.breezing.health.providers.Breezing.UnitSettings;
 import com.breezing.health.tools.IntentAction;
+import com.breezing.health.util.LocalSharedPrefsUtil;
 
 public class BreezingTestResultFragment extends BaseFragment implements OnClickListener {
-
+    private final static String TAG = "BreezingTestResultFragment";
     private View mFragmentView;
     private Button mNext;
+    private TextView   mTextView;
+    private int mTotalEnergy = 0;
+    private int mEnergyCostDate = 0;
+    private static BreezingTestResultFragment mFragment;
 
     public static BreezingTestResultFragment newInstance() {
-        BreezingTestResultFragment fragment = new BreezingTestResultFragment();
-        return fragment;
+        
+        if (mFragment == null) {
+            mFragment = new BreezingTestResultFragment();
+        }
+        
+        return mFragment;
     }
 
     @Override
@@ -28,20 +43,87 @@ public class BreezingTestResultFragment extends BaseFragment implements OnClickL
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+            Bundle savedInstanceState) {        
         mFragmentView = inflater.inflate(R.layout.fragment_breezing_test_result, null);
+        mTextView = (TextView) mFragmentView.findViewById(R.id.result);
         mNext = (Button) mFragmentView.findViewById(R.id.next);
         mNext.setOnClickListener(this);
         return mFragmentView;
     }
-
+    
+    @Override
+    public void onResume() {
+        Log.d(TAG, " onResume ");
+        super.onResume();
+    }
+    
     @Override
     public void onClick(View v) {
-        if (v == mNext) {
+        if ( v == mNext ) {
             Intent intent = new Intent(IntentAction.ACTIVITY_MAIN);
             startActivity(intent);
             getActivity().finish();
             return ;
         }
     }
+
+    public void showBreezingResult() {
+        queryEnergyCost();
+        Log.d(TAG, "showBreezingResult mTotalEnergy = " + mTotalEnergy + " mEnergyCostDate = " + mEnergyCostDate  );
+        if ( (mEnergyCostDate != 0) && (mTotalEnergy != 0) ) {
+            String year = String.valueOf(mEnergyCostDate).subSequence(0, ENERGY_COST_YEAR).toString();
+            String month =  String.valueOf(mEnergyCostDate).subSequence(ENERGY_COST_YEAR ,
+                    ENERGY_COST_YEAR + ENERGY_COST_MONTH ).toString();
+            String day = String.valueOf(mEnergyCostDate).subSequence( ENERGY_COST_YEAR + ENERGY_COST_MONTH  ,
+                    String.valueOf(mEnergyCostDate).length() ).toString();
+            Log.d(TAG, "onCreateView year = " + year + " month = " + month + " day =" +  day  );
+            mTextView.setText(getActivity().getString(R.string.breezing_result,
+                    year, month , day, mTotalEnergy) );
+        }
+    }
+
+    private final static int ENERGY_COST_TOTAL_ENERGY = 0;
+    private final static int ENERGY_COST_ENERGY_COST_DATE = 1;
+    /*** 
+     * 查询能量消耗值
+     */
+    private void queryEnergyCost() {
+
+        int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(getActivity(),
+                LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
+        String sortOrder = EnergyCost.ENERGY_COST_DATE + " DESC";
+
+        Log.d(TAG, " queryEnergyCost accountId = " + accountId);
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.setLength(0);
+        stringBuilder.append(EnergyCost.ACCOUNT_ID + " = ? ");
+        Cursor cursor = null;
+        try {
+            cursor = getActivity().getContentResolver().query(EnergyCost.CONTENT_URI,
+                    new String[] {EnergyCost.TOTAL_ENERGY, EnergyCost.ENERGY_COST_DATE},
+                    stringBuilder.toString(),
+                    new String[] { String.valueOf(accountId) },
+                    sortOrder);
+
+            if (cursor != null) {
+                if ( cursor.getCount() > 0 ) {
+                    cursor.moveToPosition(0);
+                    mTotalEnergy =  cursor.getInt(ENERGY_COST_TOTAL_ENERGY);
+                    mEnergyCostDate = cursor.getInt(ENERGY_COST_ENERGY_COST_DATE);
+                }
+
+
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        Log.d(TAG, " queryEnergyCost  mTotalEnergy = " + mTotalEnergy + " mEnergyCostDate = " + mEnergyCostDate);
+    }
+
+    private static final int ENERGY_COST_YEAR = 4;
+    private static final int ENERGY_COST_MONTH = 2;
+    private static final int ENERGY_COST_DAY = 2;
 }

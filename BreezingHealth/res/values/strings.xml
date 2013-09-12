@@ -12,7 +12,7 @@
     <string name="edittext_hint_old_password">旧密码</string>
     <string name="edittext_hint_new_password">新密码</string>
     <string name="edittext_hint_check_password">确认密码</string>
-    
+
     <string name="title_fillin_personal_information">填写个人资料</string>
     <string name="title_select_born_date">选择出生日期</string>
     <string name="title_select_weight">选择体重</string>
@@ -50,7 +50,7 @@
     <string name="refresh">刷新</string>
     <string name="on_discovery_bluetooth">正在搜索蓝牙</string>
     <string name="on_opening_bluetooth">正在开启蓝牙</string>
-        
+
     <string name ="height_type">身高</string>
     <string name ="weight_type">体重</string>
     <string name ="distance_type">跑步</string>
@@ -65,8 +65,15 @@
     <string name = "often_activity">常活动</string>
 
     <string name = "info_prompt">您好，请输入</string>
+
     <string name = "data_error">数据库保存发生错误！</string>
-    
+
+    <string name = "input_infomation" >输入信息是：能量代谢值为 %1$d 基本运动能值为 %2$d 消化能值为 %3$d</string>
+
+    <string name = "breezing_result">您%1$s年%2$s月%3$s日的能量代谢值是%4$d千卡，低于平均水平。</string>
+    <string name = "breezing_result_more">点击查看更多关于《运动和健康的饮食有助你提高您的代谢》</string>
+    <string name = "kilo_metabolism">千焦</string>
+
     <string name="settings">设置</string>
     <string name="share">分享</string>
     <string name="history">历史</string>
@@ -78,7 +85,7 @@
     <string name="height">身高</string>
     <string name="weight">体重</string>
     <string name="hope_weight">目标体重</string>
-    
+
     <string name="modify_password">修改密码</string>
     <string name="modify_password_summary">修改您当前账户的密码，保护您的隐私</string>
     <string name="account_management">账户管理</string>
@@ -100,13 +107,14 @@
     <string name="related_links">相关链接</string>
     <string name="related_links_summary">教你如何使用微风健康客户端</string>
     <string name="account_detail">账户详情</string>
-    
+
     <string name="height_unit">身高单位</string>
     <string name="weight_unit">体重单位</string>
     <string name="distance_unit">距离单位</string>
-    
+
     <string name="my_breezing">Breezing</string>
     <string name="my_pedometer">计步器</string>
     <string name="my_weighing_scale">体重秤</string>
+
 
 </resources>

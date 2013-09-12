@@ -1,18 +1,9 @@
 package com.breezing.health.ui.activity;
 
 import android.content.ContentProviderOperation;
-import android.content.ContentResolver;
-import android.content.ContentUris;
-import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.provider.ContactsContract.Data;
-import android.provider.ContactsContract.Groups;
-import android.provider.ContactsContract.CommonDataKinds.GroupMembership;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -90,7 +81,7 @@ public class FillInInformationActivity extends ActionBarActivity implements OnCl
         mHeightUnit.setText(heightUnits[0]);
         mWeightUnit.setText(weightUnits[0]);
         mHopeWeightUnit.setText(weightUnits[0]);
-        
+
         mOps = new ArrayList<ContentProviderOperation>();
     }
 
@@ -242,7 +233,7 @@ public class FillInInformationActivity extends ActionBarActivity implements OnCl
             @Override
             public void onClick(BaseDialogFragment dialog,
                     Object... params) {
-                mHopeWeight.setText(String.valueOf(params[0]));               
+                mHopeWeight.setText(String.valueOf(params[0]));
             }
 
         });
@@ -277,11 +268,11 @@ public class FillInInformationActivity extends ActionBarActivity implements OnCl
      */
     private boolean createAccountInfo() {
         boolean result = false;
-        
+
         if ( !checkFillInputInfo() ) {
             return false;
         }
-        
+
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.setLength(0);
         stringBuilder.append(mYear);
@@ -290,14 +281,14 @@ public class FillInInformationActivity extends ActionBarActivity implements OnCl
         } else {
             stringBuilder.append(mMonth);
         }
-        
+
         if ( Integer.parseInt(mDay) < 10 ) {
             stringBuilder.append("0").append(mDay);
         } else {
             stringBuilder.append(mDay);
-        }       
+        }
 
-    
+
 
         int date = DateFormatUtil.simpleDateFormat("yyyyMMdd", stringBuilder.toString());
         int accountId = createAccountId();
@@ -402,7 +393,7 @@ public class FillInInformationActivity extends ActionBarActivity implements OnCl
                     cursor.moveToPosition(0);
                     accountId = cursor.getInt(ACCOUNT_ID_INDEX);
                 }
-                
+
             }
         } finally {
             if (cursor != null) {
@@ -505,9 +496,9 @@ public class FillInInformationActivity extends ActionBarActivity implements OnCl
                 cursor.close();
             }
         }
-        
+
         Log.d(TAG, " queryUnitUnifyData  data = " + data + " unifyUnit = " + unifyUnit);
-        
+
         return data * unifyUnit;
     }
 
