@@ -647,6 +647,10 @@ public class CalendarView extends FrameLayout {
      */
     public void setDate(long date, boolean animate, boolean center) {
         mTempDate.setTimeInMillis(date);
+        Log.d(LOG_TAG , " mTempDate.get(Calendar.DAY_OF_YEAR) = " 
+            + mTempDate.get(Calendar.DATE) 
+            + " mAdapter.mSelectedDate.get(Calendar.DATE) = " 
+            + mAdapter.mSelectedDate.get(Calendar.DATE) );
         if (isSameDate(mTempDate, mAdapter.mSelectedDate)) {
             return;
         }
@@ -828,7 +832,7 @@ public class CalendarView extends FrameLayout {
             throw new IllegalArgumentException("Time not between " + mMinDate.getTime()
                     + " and " + mMaxDate.getTime());
         }
-        
+        Log.d(LOG_TAG, "goTo date.get(Calendar.DATE) =  " + date.get(Calendar.DATE));
         if (setSelected) {
             mAdapter.setSelectedDay(date);
         }

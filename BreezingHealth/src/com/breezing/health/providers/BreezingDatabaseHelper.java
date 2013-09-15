@@ -366,6 +366,9 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
                 + Information.INFO_HEIGHT + " , "
                 + Information.INFO_BIRTHDAY + " , "
                 + Information.INFO_CUSTOM + " , "
+                + Information.INFO_HEIGHT_UNIT + " , "
+                + Information.INFO_WEIGHT_UNIT + " , "
+                + Information.INFO_DISTANCE_UNIT + " , "                
                 + WeightChange.INFO_WEIGHT + " , "
                 + WeightChange.INFO_EXPECTED_WEIGHT + " , "
                 + WeightChange.INFO_DATE 

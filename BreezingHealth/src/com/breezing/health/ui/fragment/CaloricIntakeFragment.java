@@ -21,18 +21,25 @@ public class CaloricIntakeFragment extends BaseFragment {
     private PieChart mPieChart;
     private GridView mGridView;
     private AddCaloricRecordAdapter mAdapter;
+    private static CaloricIntakeFragment mCaloricIntakeFragment;
     
     public static CaloricIntakeFragment newInstance() {
         CaloricIntakeFragment fragment = new CaloricIntakeFragment();
         return fragment;
     }
     
+    public static CaloricIntakeFragment getInstance() {
+        if (mCaloricIntakeFragment == null) {
+            mCaloricIntakeFragment = new CaloricIntakeFragment();
+        }
+        return mCaloricIntakeFragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
     }
-    
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
@@ -40,29 +47,26 @@ public class CaloricIntakeFragment extends BaseFragment {
         mFragmentView = inflater.inflate(R.layout.fragment_caloric_intake, null);
         mPieChart = (PieChart) mFragmentView.findViewById(R.id.pieChart);
         mGridView = (GridView) mFragmentView.findViewById(R.id.gridView);
-        
+
         ArrayList<PiePartEntity> pieParts = new ArrayList<PiePartEntity>();
         pieParts.add(new PiePartEntity(10.0f, R.color.black));
         pieParts.add(new PiePartEntity(20.0f, R.color.orange));
         pieParts.add(new PiePartEntity(30.0f, R.color.red));
         pieParts.add(new PiePartEntity(40.0f, R.color.gray));
-        
+
         try {
             mPieChart.setAdapter(pieParts);
             mPieChart.setClickable(false);
             mPieChart.setOnSelectedListener(new OnSelectedLisenter() {
-                
                 @Override
-                public void onSelected(int iSelectedIndex) {
-                    // TODO Auto-generated method stub
-                    
+                public void onSelected(int iSelectedIndex) {                   
+
                 }
             });
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
+        } catch (Exception e) {           
             e.printStackTrace();
         }
-        
+
         ArrayList<RecordFunctionEntity> funs = new ArrayList<RecordFunctionEntity>();
         funs.add(new RecordFunctionEntity(R.string.breakfast, 30f, R.color.orange));
         funs.add(new RecordFunctionEntity(R.string.lunch, 55f, R.color.orange));
@@ -70,8 +74,8 @@ public class CaloricIntakeFragment extends BaseFragment {
         funs.add(new RecordFunctionEntity(R.string.other, 15f, R.color.orange));
         mAdapter = new AddCaloricRecordAdapter(getActivity(), funs);
         mGridView.setAdapter(mAdapter);
-        
+
         return mFragmentView;
     }
-    
+
 }

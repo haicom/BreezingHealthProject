@@ -8,6 +8,18 @@
     <color name="gray">#ff666666</color>
     <color name="transparent">#00000000</color>
     <color name="translucence">#88000000</color>
+    <!-- brun cloror -->
+    <color name ="brun_green">#4cae03</color>
+    <color name = "pale_green">#abda01</color>
+    <color name = "pale_yellow">#f9e109</color>
+    
+    <!-- take in cloror -->
+    <color name = "red_brown">#ed3d00</color>
+    <color name = "brown_yellow">#ffb300</color>
+    <color name = "orange_yellow">#ffd200</color>
+    <color name = "pink_yellow">#ffdfa9</color>
+    
+    <color name = "pale_gray">#b3b7bc</color>
     
     <string-array name="colors">        
         <item>#F2D06B</item>

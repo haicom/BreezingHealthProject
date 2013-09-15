@@ -70,9 +70,12 @@
 
     <string name = "input_infomation" >输入信息是：能量代谢值为 %1$d 基本运动能值为 %2$d 消化能值为 %3$d</string>
 
-    <string name = "breezing_result">您%1$s年%2$s月%3$s日的能量代谢值是%4$d千卡，低于平均水平。</string>
-    <string name = "breezing_result_more">点击查看更多关于《运动和健康的饮食有助你提高您的代谢》</string>
-    <string name = "kilo_metabolism">千焦</string>
+    <string name = "breezing_result" >您%1$s年%2$s月%3$s日的能量代谢值是%4$d千卡，低于平均水平。</string>
+    <string name = "breezing_result_more" >点击查看更多关于《运动和健康的饮食有助你提高您的代谢》</string>
+    <string name = "kilo_metabolism" >千焦</string>
+
+    <string name = "breezing_date" >%1$d年%2$d月%3$d日</string>
+    <string name = "breezing_weight" >体重:%1$s %2$s</string>
 
     <string name="settings">设置</string>
     <string name="share">分享</string>

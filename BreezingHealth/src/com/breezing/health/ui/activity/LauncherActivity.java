@@ -138,8 +138,7 @@ public class LauncherActivity extends BaseActivity {
         return count;
     }
 
-    private static final String[] PROJECTION_ENERGY_COST = new String[] {
-        EnergyCost.ACCOUNT_ID,          // 0
+    private static final String[] PROJECTION_ENERGY_COST = new String[] {       
         EnergyCost.METABOLISM,      // 1
         EnergyCost.SPORT,    // 2
         EnergyCost.TRAIN ,   //3
@@ -236,6 +235,8 @@ public class LauncherActivity extends BaseActivity {
      * 添加每个帐户每天能量消耗值数量
      */
     private String appendEnergyCostById(int accountId) {
+        Log.d(TAG, " appendEnergyCostById mMetabolism " + mMetabolism + " mSport = " + mSport + " mDigest = " + mDigest
+                + " mEnergyDate = " + mEnergyDate );
         String result = null;
 
         ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();

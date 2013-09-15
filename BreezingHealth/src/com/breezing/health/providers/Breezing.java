@@ -72,6 +72,10 @@ public class Breezing {
         public static final String INFO_HEIGHT = BreezingProvider.TABLE_INFORMATION + "." + HEIGHT;
         public static final String INFO_BIRTHDAY = BreezingProvider.TABLE_INFORMATION + "." + BIRTHDAY;
         public static final String INFO_CUSTOM = BreezingProvider.TABLE_INFORMATION + "." + CUSTOM;
+        public static final String INFO_HEIGHT_UNIT = BreezingProvider.TABLE_INFORMATION + "." + HEIGHT_UNIT;
+        public static final String INFO_WEIGHT_UNIT = BreezingProvider.TABLE_INFORMATION + "." + WEIGHT_UNIT;
+        public static final String INFO_DISTANCE_UNIT = BreezingProvider.TABLE_INFORMATION + "." + DISTANCE_UNIT;
+       
         /**
          * The MIME type of {@link #CONTENT_URI} providing a directory of
          * people.

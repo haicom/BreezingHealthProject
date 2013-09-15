@@ -17,9 +17,9 @@ public class CaloricPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch( position ) {
             case MAIN_INTERFACE_CALORIC_BURIN:
-                return CaloricBurnFragment.newInstance();
+                return CaloricBurnFragment.getInstance();
             case MAIN_INTERFACE_CALORIC_INTAKE:
-                return CaloricIntakeFragment.newInstance();
+                return CaloricIntakeFragment.getInstance();
         }
 
         return null;
@@ -30,8 +30,8 @@ public class CaloricPagerAdapter extends FragmentPagerAdapter {
         return MAIN_INTERFACE_CALORIC_NUM;
     }
 
-    private static final int MAIN_INTERFACE_CALORIC_BURIN = 0;
-    private static final int MAIN_INTERFACE_CALORIC_INTAKE = 1;
+    public static final int MAIN_INTERFACE_CALORIC_BURIN = 0;
+    public static final int MAIN_INTERFACE_CALORIC_INTAKE = 1;
 
     private static final int MAIN_INTERFACE_CALORIC_NUM = 2;
 
