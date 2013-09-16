@@ -7,7 +7,7 @@ public enum LeftMenuFunction {
 
     SETTINGS(R.string.settings, R.drawable.ic_launcher, IntentAction.ACTIVITY_SETTINGS)
     , SHARE(R.string.share, R.drawable.ic_launcher, IntentAction.ACTIVITY_SHARE)
-    , HISTORY(R.string.history, R.drawable.ic_launcher, IntentAction.ACTIVITY_HISTORY)
+    , HISTORY(R.string.history, R.drawable.ic_launcher, IntentAction.ACTIVITY_BALANCE_HISTORY)
     , MORE(R.string.more, R.drawable.ic_launcher, IntentAction.ACTIVITY_MORE);
     
     private LeftMenuFunction(int titleRes, int iconRes, String intent) {

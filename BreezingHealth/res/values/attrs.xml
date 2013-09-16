@@ -61,4 +61,24 @@
         <attr name="version" format="string" />
         <attr name="object" format="string" />
     </declare-styleable>
+    
+    <declare-styleable name="MultiDirectionSlidingDrawer">
+        <attr name="handle" format="reference" />
+        <attr name="content" format="reference" />
+        <attr name="direction" />
+        <attr name="bottomOffset" format="dimension"  />
+        <attr name="topOffset" format="dimension"  />
+        <attr name="allowSingleTap" format="boolean" />
+        <attr name="animateOnClick" format="boolean" />
+        <attr name="switchShow" format="dimension" />
+    </declare-styleable>
+    
+    <!-- MultiDirectionSlidingDrawer direction types -->
+    <attr name="direction">
+        <enum name="rightToLeft" value="0" />
+        <enum name="bottomToTop" value="1" />
+        <enum name="leftToRight" value="2" />
+        <enum name="topToBottom" value="3" />
+    </attr>
+    
 </resources>

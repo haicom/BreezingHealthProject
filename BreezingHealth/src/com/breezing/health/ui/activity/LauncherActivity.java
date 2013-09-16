@@ -96,7 +96,8 @@ public class LauncherActivity extends BaseActivity {
                     if ( countEnergyDay == 0 ) {
                         appendEnergyCostById(accountId);
                     }
-                    action = IntentAction.ACTIVITY_MAIN;
+//                    action = IntentAction.ACTIVITY_MAIN;
+                    action = IntentAction.ACTIVITY_CALORIC_HISTORY;
                 }
             }
         }

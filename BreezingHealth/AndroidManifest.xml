@@ -7,7 +7,7 @@
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="17" />
-      
+    
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -17,7 +17,6 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme.NoTitleBar" >
-   
         <activity
             android:name=".ui.activity.LauncherActivity"
             android:label="@string/app_name"
@@ -25,9 +24,10 @@
             android:theme="@style/AppTheme.NoTitleBar.Fullscreen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> 
+        </activity>
         
         <activity
             android:name=".ui.activity.FillInInformationActivity"
@@ -36,7 +36,7 @@
             <intent-filter>
                 <action android:name="action.intent.breezing.health.ACTIVITY_FILLIN_INFORMATION" />
                 <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>        
+            </intent-filter>
         </activity>
         
         <activity
@@ -121,10 +121,10 @@
         </activity>
         
         <activity
-            android:name=".ui.activity.HistoryActivity"
+            android:name=".ui.activity.BalanceHistoryActivity"
             android:screenOrientation="portrait" >
             <intent-filter>
-                <action android:name="action.intent.breezing.health.ACTIVITY_HISTORY" />
+                <action android:name="action.intent.breezing.health.ACTIVITY_BALANCE_HISTORY" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -134,6 +134,42 @@
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="action.intent.breezing.health.ACTIVITY_SHARE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        
+        <activity
+            android:name=".ui.activity.CaloricIntakeActivity"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="action.intent.breezing.health.ACTIVITY_CALORIC_INTAKE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        
+        <activity
+            android:name=".ui.activity.ExerciseRecordActivity"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="action.intent.breezing.health.ACTIVITY_EXERCISE_RECORD" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        
+        <activity
+            android:name=".ui.activity.AboutActivity"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="action.intent.breezing.health.ACTIVITY_ABOUT" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        
+        <activity
+            android:name=".ui.activity.CaloricHistoryActivity"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="action.intent.breezing.health.ACTIVITY_CALORIC_HISTORY" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

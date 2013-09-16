@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/translucence"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/fragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/picker_height"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:padding="@dimen/activity_horizontal_margin" >
+
+        <net.simonvt.numberpicker.NumberPicker
+            android:id="@+id/year"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1" />
+
+        <TextView
+            style="@style/TitleTextViewStyle"
+            android:layout_width="25dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:singleLine="true"
+            android:text="@string/year"
+            android:gravity="center" />
+
+        <net.simonvt.numberpicker.NumberPicker
+            android:id="@+id/month"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1" />
+
+        <TextView
+            style="@style/TitleTextViewStyle"
+            android:layout_width="25dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:singleLine="true"
+            android:text="@string/month"
+            android:gravity="center" />
+        
+    </LinearLayout>
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/fragmentContainer"
+        layout="@layout/fragment_dialog_picker_actionbar" />
+
+</RelativeLayout>

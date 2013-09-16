@@ -1,5 +1,6 @@
 package com.breezing.health.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import br.com.dina.ui.widget.UITableView.OnItemClickListener;
 
 import com.breezing.health.R;
 import com.breezing.health.entity.ActionItem;
+import com.breezing.health.tools.IntentAction;
 
 public class MoreActivity extends ActionBarActivity {
 
@@ -38,15 +40,7 @@ public class MoreActivity extends ActionBarActivity {
     }
 
     private void valueToView() {
-        mTableView.setOnItemClickListener(new OnItemClickListener() {
-            
-            @Override
-            public void onClick(View view, ViewGroup contentView, String action,
-                    GroupIndex index) {
-                // TODO Auto-generated method stub
-                
-            }
-        });
+        
     }
 
     private void initListeners() {
@@ -55,6 +49,12 @@ public class MoreActivity extends ActionBarActivity {
             @Override
             public void onClick(View view, ViewGroup contentView, String action, GroupIndex index) {
                 
+                if (action == null) {
+                    return ;
+                }
+                
+                Intent intent = new Intent(action);
+                startActivity(intent);
             }
         });
     }
@@ -65,7 +65,7 @@ public class MoreActivity extends ActionBarActivity {
     private void createList() {
         mTableView.addBasicItem(getString(R.string.user_instructions), getString(R.string.user_instructions_summary), null);
         mTableView.addBasicItem(getString(R.string.related_links), getString(R.string.related_links_summary), null);
-        mTableView.addBasicItem(getString(R.string.about_us), getString(R.string.about_us_summary), null);
+        mTableView.addBasicItem(getString(R.string.about_us), getString(R.string.about_us_summary), IntentAction.ACTIVITY_ABOUT);
     }
     
 }

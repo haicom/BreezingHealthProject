@@ -4,6 +4,8 @@ import java.security.MessageDigest;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 
+import com.breezing.health.R;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -188,6 +190,55 @@ public class Tools {
         intent.setAction(Intent.ACTION_DIAL);
         intent.setData(Uri.parse("tel:" + mobile));
         context.startActivity(intent);
+    }
+    
+    /**
+     * send sms
+     * @param context
+     * @param message  message content
+     */
+    public static void sendSMS(Context context, String message) {
+        if (message == null) {
+            message = "";
+        }
+        
+        Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:"));
+        intent.putExtra("sms_body", message);
+        context.startActivity(intent);
+    }
+    
+    /**
+     * send email
+     * @param context
+     * @param subject
+     * @param text
+     */
+    public static void sendEMAIL(Context context, String subject, String text) {
+        if (subject == null) {
+            subject = "";
+        }
+        
+        if (text == null) {
+            text = "";
+        }
+        
+        Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:"));
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        intent.putExtra(Intent.EXTRA_TEXT, text);
+        context.startActivity(intent);
+    }
+    
+    public static void sendMessage(Context context, String subject, String message) {
+        if (message == null) {
+            message = "";
+        }
+        
+        Intent intent = new Intent(android.content.Intent.ACTION_SEND);  
+        intent.setType("plain/text");
+        intent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
+        intent.putExtra(android.content.Intent.EXTRA_TEXT, message);
+        context.startActivity(Intent.createChooser(intent, context.getString(R.string.please_choose_share_method)));
+
     }
     
 }

@@ -8,6 +8,7 @@ public class ActionItem {
     public final static int ACTION_DONE = 0x102;
     public final static int ACTION_REFRESH = 0x103;
     public final static int ACTION_TITLE = 0x104;
+    public final static int ACTION_MORE = 0X105;
 
     private String actionName;
     private int actionId;
@@ -38,6 +39,13 @@ public class ActionItem {
             this.actionId = ACTION_TITLE;
             this.actionIconRes = 0;
             break;
+            
+        case ACTION_MORE:
+            this.actionName = "more";
+            this.actionId = ACTION_MORE;
+            this.actionIconRes = R.drawable.btn_more_selector;
+            break;
+            
         }
     }
     

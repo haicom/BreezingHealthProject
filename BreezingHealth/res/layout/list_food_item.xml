@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/activity_horizontal_margin" >
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="@dimen/food_image_side_lengh"
+        android:layout_height="@dimen/food_image_side_lengh"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/content_description"
+        android:scaleType="centerCrop" />
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/searchbar_vertical_small_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/searchbar_vertical_small_margin"
+        android:layout_toRightOf="@+id/image"
+        android:textColor="@color/black"
+        android:textSize="@dimen/normal_textsize"
+        android:layout_toLeftOf="@+id/selectLayout" />
+
+    <TextView
+        android:id="@+id/unit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/searchbar_vertical_small_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/searchbar_vertical_small_margin"
+        android:layout_toRightOf="@+id/image"
+        android:textColor="@color/gray"
+        android:textSize="@dimen/middle_textsize"
+        android:layout_toLeftOf="@+id/selectLayout" />
+
+    <LinearLayout
+        android:id="@+id/selectLayout"
+        android:layout_width="@dimen/select_food_number_layout_width"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true" >
+        
+        <Button
+            android:id="@+id/increase"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:text="@string/tag_increase"
+            android:textSize="@dimen/normal_textsize" />
+        
+        <EditText
+            android:id="@+id/number"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:textColor="@color/red"
+            android:hint="@string/number_zero"
+            android:textColorHint="@color/gray"
+            android:gravity="center"
+            android:textSize="@dimen/normal_textsize"
+            android:inputType="number"
+            android:textStyle="bold" />
+        
+        <Button
+            android:id="@+id/decrease"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:text="@string/tag_decrease"
+            android:textSize="@dimen/normal_textsize" />
+        
+    </LinearLayout>
+
+</RelativeLayout>
