@@ -57,6 +57,7 @@ public class WeightPickerDialogFragment extends BaseDialogFragment implements On
 
         mInteger.setMaxValue(SHOW_INTEGER_JIN_MAX);
         mInteger.setMinValue(SHOW_INTEGER_JIN_MIN);
+        mInteger.setValue(SHOW_INTEGER_CURRENT_JIN);
         mInteger.setFocusable(false);
         mInteger.setFocusableInTouchMode(false);
 
@@ -78,18 +79,21 @@ public class WeightPickerDialogFragment extends BaseDialogFragment implements On
                 case WEIGHT_JIN:
                     mInteger.setMaxValue(SHOW_INTEGER_JIN_MAX);
                     mInteger.setMinValue(SHOW_INTEGER_JIN_MIN);
+                    mInteger.setValue(SHOW_INTEGER_CURRENT_JIN);
                     mDecimals.setMaxValue(SHOW_DECIMALS_MAX);
                     mDecimals.setMinValue(SHOW_DECIMALS_MIN);
                     return ;
                 case WEIGHT_KILO:
                     mInteger.setMaxValue(SHOW_INTEGER_KILO_MAX);
                     mInteger.setMinValue(SHOW_INTEGER_KILO_MIN);
+                    mInteger.setValue(SHOW_INTEGER_CURRENT_KILO);
                     mDecimals.setMaxValue(SHOW_DECIMALS_MAX);
                     mDecimals.setMinValue(SHOW_DECIMALS_MIN);
                     return ;
                 case WEIGHT_POUND:
                     mInteger.setMaxValue(SHOW_INTEGER_POUND_MAX);
                     mInteger.setMinValue(SHOW_INTEGER_POUND_MIN);
+                    mInteger.setValue(SHOW_INTEGER_CURRENT_POUND);
                     mDecimals.setMaxValue(SHOW_DECIMALS_MAX);
                     mDecimals.setMinValue(SHOW_DECIMALS_MIN);
                     return ;
@@ -149,13 +153,16 @@ public class WeightPickerDialogFragment extends BaseDialogFragment implements On
     private static final int WEIGHT_POUND = 2;
 
     private static final int SHOW_INTEGER_JIN_MAX = 800;
-    private static final int SHOW_INTEGER_JIN_MIN = 0;
+    private static final int SHOW_INTEGER_JIN_MIN = 50;
+    private static final int SHOW_INTEGER_CURRENT_JIN = 120;
 
     private static final int SHOW_INTEGER_KILO_MAX = 400;
-    private static final int SHOW_INTEGER_KILO_MIN = 0;
+    private static final int SHOW_INTEGER_KILO_MIN = 25;
+    private static final int SHOW_INTEGER_CURRENT_KILO = 60;
 
     private static final int SHOW_INTEGER_POUND_MAX = 1000;
-    private static final int SHOW_INTEGER_POUND_MIN = 0;
+    private static final int SHOW_INTEGER_POUND_MIN = 50;
+    private static final int SHOW_INTEGER_CURRENT_POUND = 200;
 
     private static final int SHOW_DECIMALS_MAX = 9;
     private static final int SHOW_DECIMALS_MIN = 1;

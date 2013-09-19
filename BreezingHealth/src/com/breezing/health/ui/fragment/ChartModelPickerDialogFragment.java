@@ -15,21 +15,21 @@ import android.widget.TextView;
 import com.breezing.health.R;
 
 public class ChartModelPickerDialogFragment extends BaseDialogFragment implements OnClickListener {
-    
+
     public enum CaloricHistoryChartModel {
         WEEK(R.string.week_chart_model), MONTH(R.string.month_chart_model), YEAR(R.string.year_chart_model);
-        
+
         private CaloricHistoryChartModel(int nameRes) {
             this.nameRes = nameRes;
         }
-        
+
         public int nameRes;
-        
+
         public static CaloricHistoryChartModel[] createChartModel() {
             return new CaloricHistoryChartModel[] {WEEK, MONTH, YEAR};
         }
     }
-    
+
     private View mFragmentView;
     private NumberPicker mNumberPicker;
     private TextView mTitle;
@@ -39,19 +39,19 @@ public class ChartModelPickerDialogFragment extends BaseDialogFragment implement
     private DialogFragmentInterface.OnClickListener mNegativeClickListener;
     private String mTitleString;
     private CaloricHistoryChartModel[] mModels;
-    
+
     public static ChartModelPickerDialogFragment newInstance() {
         ChartModelPickerDialogFragment fragment = new ChartModelPickerDialogFragment();
         return fragment;
     }
-    
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_TITLE, R.style.AppTheme_NoTitleBar);
     }
-    
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
@@ -60,47 +60,48 @@ public class ChartModelPickerDialogFragment extends BaseDialogFragment implement
         mTitle = (TextView) mFragmentView.findViewById(R.id.title);
         mCancel = (Button) mFragmentView.findViewById(R.id.cancel);
         mConfirm = (Button) mFragmentView.findViewById(R.id.confirm);
-        
+
         mModels = CaloricHistoryChartModel.createChartModel();
+
         final int length = mModels.length;
         String[] values = new String[length];
         for (int i = 0; i < length; i++) {
             values[i] = getActivity().getString(mModels[i].nameRes);
         }
-        
+
         mNumberPicker.setDisplayedValues(values);
         mNumberPicker.setMaxValue(length - 1);
         mNumberPicker.setMinValue(0);
         mNumberPicker.setFocusable(false);
         mNumberPicker.setFocusableInTouchMode(false);
-        
+
         if (mTitleString != null) {
             mTitle.setText(mTitleString);
         }
-        
+
         mCancel.setOnClickListener(this);
         mConfirm.setOnClickListener(this);
-        
+
         getDialog().getWindow().setBackgroundDrawable(new
                 ColorDrawable(Color.TRANSPARENT));
-        
+
         return mFragmentView;
     }
-    
+
     public void setTitle(String titleString) {
         mTitleString = titleString;
     }
-    
+
     public void setPositiveClickListener(DialogFragmentInterface.OnClickListener listener) {
         mPositiveClickListener = listener;
     }
-    
+
     public void setNegativeClickListener(DialogFragmentInterface.OnClickListener listener) {
         mNegativeClickListener = listener;
     }
-    
+
     @Override
-    public void onClick(View v) {       
+    public void onClick(View v) {
         if (v == mConfirm) {
             if (mPositiveClickListener != null) {
                 CaloricHistoryChartModel displayValue = mModels[mNumberPicker.getValue()];

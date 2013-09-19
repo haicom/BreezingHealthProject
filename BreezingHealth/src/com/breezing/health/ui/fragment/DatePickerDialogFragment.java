@@ -53,6 +53,7 @@ public class DatePickerDialogFragment extends BaseDialogFragment implements OnCl
         
         mYear.setMaxValue(SHOW_YEAR_MAX);
         mYear.setMinValue(SHOW_YEAR_MIN);
+        mYear.setValue(SHOW_CURRENT_YEAR);
         mYear.setFocusable(false);
         mYear.setFocusableInTouchMode(false);
         
@@ -124,6 +125,7 @@ public class DatePickerDialogFragment extends BaseDialogFragment implements OnCl
     
     private static final int SHOW_YEAR_MAX = DateFormatUtil.simpleDateFormat("yyyy") -10;
     private static final int SHOW_YEAR_MIN = SHOW_YEAR_MAX - 80;
+    private static final int SHOW_CURRENT_YEAR = SHOW_YEAR_MAX - 30;
     private static final int SHOW_MONTH_MAX = 12;
     private static final int SHOW_MONTH_MIN = 1;
     private static final int SHOW_DAY_MAX = 31;

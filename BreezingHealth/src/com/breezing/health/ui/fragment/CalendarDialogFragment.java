@@ -1,5 +1,7 @@
 package com.breezing.health.ui.fragment;
 
+import java.util.Calendar;
+
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -19,14 +21,20 @@ public class CalendarDialogFragment extends BaseDialogFragment implements OnClic
     private final static String TAG = "CalendarDialogFragment";
     private View mFragmentView;
     private CalendarView mCalendarView;
+    
     private TextView mTitle;
+    
     private Button mCancel;
     private Button mConfirm;
+    
     private DialogFragmentInterface.OnClickListener mPositiveClickListener;
     private DialogFragmentInterface.OnClickListener mNegativeClickListener;
     private static CalendarDialogFragment mCalendarDialogFragment;
+    
     private String mTitleString;
+    
     private static long mTimeInMillis;
+    
     private static int mYear;
     private static int mMonth;
     private static int mDay;
@@ -49,6 +57,12 @@ public class CalendarDialogFragment extends BaseDialogFragment implements OnClic
         
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_TITLE, R.style.AppTheme_NoTitleBar);
+        
+        Calendar  calendar = Calendar.getInstance();
+        
+        mYear = calendar.get(Calendar.YEAR);
+        mMonth = calendar.get(Calendar.MONTH);
+        mDay = calendar.get(Calendar.DAY_OF_MONTH);
     }
 
     @Override

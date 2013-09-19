@@ -21,7 +21,7 @@ public class ExceptedWeightPickerDialogFragment extends BaseDialogFragment imple
     private final String TAG = "ExceptedWeightPickerDialogFragment";
     private View mFragmentView;
     private NumberPicker mInteger;
-    private NumberPicker mDecimals;    
+    private NumberPicker mDecimals;
     private TextView mTitle;
     private Button mCancel;
     private Button mConfirm;
@@ -50,22 +50,25 @@ public class ExceptedWeightPickerDialogFragment extends BaseDialogFragment imple
         mTitle = (TextView) mFragmentView.findViewById(R.id.title);
         mCancel = (Button) mFragmentView.findViewById(R.id.cancel);
         mConfirm = (Button) mFragmentView.findViewById(R.id.confirm);
-        
+
         String weightUnit = ((FillInInformationActivity)getActivity()).getWeightUnit();
-        Log.d(TAG, " onCreateView weightUnit = " + weightUnit); 
+        Log.d(TAG, " onCreateView weightUnit = " + weightUnit);
         if ( weightUnit.equals( getString(R.string.weight_jin) ) ) {
             mInteger.setMaxValue(SHOW_INTEGER_JIN_MAX);
             mInteger.setMinValue(SHOW_INTEGER_JIN_MIN);
+            mInteger.setValue(SHOW_INTEGER_CURRENT_JIN);
             mDecimals.setMaxValue(SHOW_DECIMALS_MAX);
             mDecimals.setMinValue(SHOW_DECIMALS_MIN);
         } else if ( weightUnit.equals( getString(R.string.weight_kilo) ) ) {
             mInteger.setMaxValue(SHOW_INTEGER_KILO_MAX);
             mInteger.setMinValue(SHOW_INTEGER_KILO_MIN);
+            mInteger.setValue(SHOW_INTEGER_CURRENT_KILO);
             mDecimals.setMaxValue(SHOW_DECIMALS_MAX);
             mDecimals.setMinValue(SHOW_DECIMALS_MIN);
         } else if ( weightUnit.equals( getString(R.string.weight_pound) ) ) {
             mInteger.setMaxValue(SHOW_INTEGER_POUND_MAX);
             mInteger.setMinValue(SHOW_INTEGER_POUND_MIN);
+            mInteger.setValue(SHOW_INTEGER_CURRENT_POUND);
             mDecimals.setMaxValue(SHOW_DECIMALS_MAX);
             mDecimals.setMinValue(SHOW_DECIMALS_MIN);
         }
@@ -106,7 +109,7 @@ public class ExceptedWeightPickerDialogFragment extends BaseDialogFragment imple
             if (mPositiveClickListener != null) {
                 float weight = mInteger.getValue() +  (float) mDecimals.getValue()/(mDecimals.getMaxValue() + 1);
                 Log.d(TAG, " onClick weight = " + weight + " mInteger.getValue() = " + mInteger.getValue()
-                        + " mDecimals.getValue() = " + mDecimals.getValue() + " mDecimals.getMaxValue() = " + mDecimals.getMaxValue());                
+                        + " mDecimals.getValue() = " + mDecimals.getValue() + " mDecimals.getMaxValue() = " + mDecimals.getMaxValue());
                 mPositiveClickListener.onClick(this, weight);
             }
             dismiss();
@@ -122,12 +125,15 @@ public class ExceptedWeightPickerDialogFragment extends BaseDialogFragment imple
 
     private static final int SHOW_INTEGER_JIN_MAX = 800;
     private static final int SHOW_INTEGER_JIN_MIN = 0;
+    private static final int SHOW_INTEGER_CURRENT_JIN = 120;
 
     private static final int SHOW_INTEGER_KILO_MAX = 400;
     private static final int SHOW_INTEGER_KILO_MIN = 0;
+    private static final int SHOW_INTEGER_CURRENT_KILO = 60;
 
     private static final int SHOW_INTEGER_POUND_MAX = 1000;
     private static final int SHOW_INTEGER_POUND_MIN = 0;
+    private static final int SHOW_INTEGER_CURRENT_POUND = 200;
 
     private static final int SHOW_DECIMALS_MAX = 9;
     private static final int SHOW_DECIMALS_MIN = 1;

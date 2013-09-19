@@ -10,6 +10,7 @@ import android.widget.GridView;
 
 import com.breezing.health.R;
 import com.breezing.health.adapter.AddCaloricRecordAdapter;
+import com.breezing.health.adapter.CaloricPagerAdapter;
 import com.breezing.health.entity.PiePartEntity;
 import com.breezing.health.entity.RecordFunctionEntity;
 import com.breezing.health.widget.PieChart;
@@ -22,15 +23,18 @@ public class CaloricIntakeFragment extends BaseFragment {
     private GridView mGridView;
     private AddCaloricRecordAdapter mAdapter;
     private static CaloricIntakeFragment mCaloricIntakeFragment;
-    
+
     public static CaloricIntakeFragment newInstance() {
         CaloricIntakeFragment fragment = new CaloricIntakeFragment();
         return fragment;
     }
-    
-    public static CaloricIntakeFragment getInstance() {
+
+    public static CaloricIntakeFragment getInstance(int num) {
         if (mCaloricIntakeFragment == null) {
             mCaloricIntakeFragment = new CaloricIntakeFragment();
+            Bundle args = new Bundle();
+            args.putInt(CaloricPagerAdapter.MAIN_INTERFACE_SAVE_NUM, num);
+            mCaloricIntakeFragment.setArguments(args);
         }
         return mCaloricIntakeFragment;
     }
@@ -59,19 +63,19 @@ public class CaloricIntakeFragment extends BaseFragment {
             mPieChart.setClickable(false);
             mPieChart.setOnSelectedListener(new OnSelectedLisenter() {
                 @Override
-                public void onSelected(int iSelectedIndex) {                   
+                public void onSelected(int iSelectedIndex) {
 
                 }
             });
-        } catch (Exception e) {           
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         ArrayList<RecordFunctionEntity> funs = new ArrayList<RecordFunctionEntity>();
-        funs.add(new RecordFunctionEntity(R.string.breakfast, 30f, R.color.orange));
-        funs.add(new RecordFunctionEntity(R.string.lunch, 55f, R.color.orange));
-        funs.add(new RecordFunctionEntity(R.string.dinner, 15f, R.color.orange));
-        funs.add(new RecordFunctionEntity(R.string.other, 15f, R.color.orange));
+        funs.add(new RecordFunctionEntity(R.string.breakfast, 30, 100, R.color.orange));
+        funs.add(new RecordFunctionEntity(R.string.lunch, 55, 100, R.color.orange));
+        funs.add(new RecordFunctionEntity(R.string.dinner, 15, 100, R.color.orange));
+        funs.add(new RecordFunctionEntity(R.string.other, 15, 100, R.color.orange));
         mAdapter = new AddCaloricRecordAdapter(getActivity(), funs);
         mGridView.setAdapter(mAdapter);
 

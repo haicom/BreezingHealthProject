@@ -286,7 +286,7 @@ public class BreezingProvider extends  SQLiteContentProvider {
         int month = simpleDateFormat("yyyyMM");
         values.put(Breezing.BaseDateColumns.YEAR_MONTH, month);
 
-        int week = simpleDateFormat("yyyyMMww");
+        int week = simpleDateFormat("yyyyww");
         values.put(Breezing.BaseDateColumns.YEAR_WEEK, week);
 
         return values;
@@ -357,7 +357,7 @@ public class BreezingProvider extends  SQLiteContentProvider {
                 break;
             case BREEZING_UNIT_SETTINGS:
                 rowID = mDb.insert(TABLE_UNIT_SETTINGS, UnitSettings.UNIT_TYPE, initialValues);
-                break;    
+                break;
             default:
                 Log.e(TAG, "insert: invalid request: " + url);
                 return null;
@@ -752,7 +752,7 @@ public class BreezingProvider extends  SQLiteContentProvider {
     private static final int BREEZING_WEIGHT_ID = 17;
     private static final int BREEZING_WEIGHT_WEEKLY = 18;
     private static final int BREEZING_WEIGHT_MONTHLY = 19;
-    private static final int BREEZING_WEIGHT_YEARLY = 20;   
+    private static final int BREEZING_WEIGHT_YEARLY = 20;
     private static final int BREEZING_HEAT_CONSUMPTION = 21;
     private static final int BREEZING_HEAT_CONSUMPTION_ID = 22;
     private static final int BREEZING_HEAT_INGESTION = 23;

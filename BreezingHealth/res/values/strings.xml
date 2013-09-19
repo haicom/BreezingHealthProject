@@ -13,7 +13,7 @@
     <string name="edittext_hint_new_password">新密码</string>
     <string name="edittext_hint_check_password">确认密码</string>
     <string name="edittext_hint_exercise_amount">输入运动量</string>
-    
+
     <string name="title_fillin_personal_information">填写个人资料</string>
     <string name="title_select_born_date">选择出生日期</string>
     <string name="title_select_weight">选择体重</string>
@@ -55,7 +55,7 @@
     <string name="on_discovery_bluetooth">正在搜索蓝牙</string>
     <string name="on_opening_bluetooth">正在开启蓝牙</string>
     <string name="detail">详情</string>
-        
+
     <string name ="height_type">身高</string>
     <string name ="weight_type">体重</string>
     <string name ="distance_type">跑步</string>
@@ -80,7 +80,12 @@
 
     <string name = "breezing_date" >%1$d年%2$d月%3$d日</string>
     <string name = "breezing_weight" >体重:%1$s %2$s</string>
-
+    <string name = "first_day_last_day" >%1$d月%2$d日－%3$d月%4$d日</string>
+    <string name = "year_first_day_last_day" >%1$d年&#160;%2$s</string>
+    <string name = "year_and_month" >%1$d年&#160;第%2$d月</string>
+    <string name = "month_in_week">第%1$d周</string>
+    <string name = "year_in_month">%1$d月</string>
+    
     <string name="settings">设置</string>
     <string name="share">分享</string>
     <string name="history">历史</string>
@@ -92,7 +97,7 @@
     <string name="height">身高</string>
     <string name="weight">体重</string>
     <string name="hope_weight">目标体重</string>
-    
+
     <string name="modify_password">修改密码</string>
     <string name="modify_password_summary">修改您当前账户的密码，保护您的隐私</string>
     <string name="account_management">账户管理</string>
@@ -114,16 +119,16 @@
     <string name="related_links">相关链接</string>
     <string name="related_links_summary">教你如何使用微风健康客户端</string>
     <string name="account_detail">账户详情</string>
-    
+
     <string name="height_unit">身高单位</string>
     <string name="weight_unit">体重单位</string>
     <string name="distance_unit">距离单位</string>
-    
+
     <string name="my_breezing">Breezing</string>
     <string name="my_pedometer">计步器</string>
     <string name="my_weighing_scale">体重秤</string>
     <string name="please_choose_share_method">请选择分享方式</string>
-    
+
     <string name="input_food_name_keyword">输入食物名称关键字</string>
     <string name="tag_increase">+</string>
     <string name="tag_decrease">-</string>
@@ -135,16 +140,16 @@
     <string name="consume">消耗</string>
     <string name="type">类型</string>
     <string name="kilojoule">千焦</string>
-    
+
     <string name="caloric_intake_history">能量摄入历史</string>
     <string name="caloric_burn_history">能量消耗历史</string>
     <string name="caloric_balance_history">能量平衡历史</string>
-    
+
     <string name="week_chart_model">周模式</string>
     <string name="month_chart_model">月模式</string>
     <string name="year_chart_model">年模式</string>
     <string name="week">周</string>
     <string name="week_des_first">第</string>
-    
+
 
 </resources>

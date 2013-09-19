@@ -136,6 +136,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
                 + " round( avg( " + EnergyCost.TOTAL_ENERGY + " ) )  AS " + EnergyCost.AVG_TOTAL_ENERGY + " , "
                 + " total( " + EnergyCost.METABOLISM + " ) AS " +  EnergyCost.ALL_METABOLISM + " , "
                 + " total( " + EnergyCost.TOTAL_ENERGY + " )  AS " + EnergyCost.ALL_TOTAL_ENERGY + " , "
+                + EnergyCost.YEAR_MONTH + " , "
                 + EnergyCost.YEAR_WEEK
                 + " FROM " + BreezingProvider.TABLE_COST
                 + " GROUP BY " +  EnergyCost.ACCOUNT_ID + " , " + EnergyCost.YEAR_WEEK;
@@ -148,6 +149,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
                 + " round( avg( " + EnergyCost.TOTAL_ENERGY + " ) )  AS " + EnergyCost.AVG_TOTAL_ENERGY + " ,"
                 + " total( " + EnergyCost.METABOLISM + " ) AS " + EnergyCost.ALL_METABOLISM + " , "
                 + " total( " + EnergyCost.TOTAL_ENERGY + " )  AS " + EnergyCost.ALL_TOTAL_ENERGY + " , "
+                + EnergyCost.YEAR + " , "
                 + EnergyCost.YEAR_MONTH
                 + " FROM " + BreezingProvider.TABLE_COST
                 + " GROUP BY " +  EnergyCost.ACCOUNT_ID + "  , " + EnergyCost.YEAR_MONTH;
@@ -202,6 +204,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
                 + Ingestion.ACCOUNT_ID + " , "
                 + " round ( avg( " +  Ingestion.TOTAL_INGESTION + " ) ) AS " + Ingestion.AVG_TOTAL_INGESTION + " , "
                 + " total( " + Ingestion.TOTAL_INGESTION + " )  AS "+ Ingestion.ALL_TOTAL_INGESTION + " , "
+                +  Ingestion.YEAR_MONTH + " , "
                 +  Ingestion.YEAR_WEEK
                 + " FROM " + BreezingProvider.TABLE_INGESTION
                 + " GROUP BY " + Ingestion.ACCOUNT_ID + " , " + Ingestion.YEAR_WEEK;
@@ -212,6 +215,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
                 + Ingestion.ACCOUNT_ID + " , "
                 + " round ( avg( " +  Ingestion.TOTAL_INGESTION + " ) ) AS  " + Ingestion.AVG_TOTAL_INGESTION + " , "
                 + " total( " + Ingestion.TOTAL_INGESTION + " )  AS "+ Ingestion.ALL_TOTAL_INGESTION + " , "
+                +  Ingestion.YEAR + " , "
                 +  Ingestion.YEAR_MONTH
                 + " FROM " + BreezingProvider.TABLE_INGESTION
                 + " GROUP BY " + Ingestion.ACCOUNT_ID + " , " + Ingestion.YEAR_MONTH;
@@ -260,6 +264,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
                 + " round( avg( " + WeightChange.WEIGHT + " ), 2 ) AS " + WeightChange.AVG_WEIGHT + " , "
                 + " round( avg( " + WeightChange.EXPECTED_WEIGHT + " ) ,2)   AS "
                 + WeightChange.AVG_EXPECTED_WEIGHT + " , "
+                + WeightChange.YEAR_MONTH + " , "
                 + WeightChange.YEAR_WEEK
                 + " FROM " + BreezingProvider.TABLE_WEIGHT
                 + " GROUP BY " +  WeightChange.ACCOUNT_ID  + " ," + WeightChange.YEAR_WEEK;
@@ -269,8 +274,9 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
         String monthlyWeightSelect =  " SELECT "
                 + WeightChange.ACCOUNT_ID + " , "
                 + " round( avg( " + WeightChange.WEIGHT + " ), 2 ) AS " + WeightChange.AVG_WEIGHT + " , "
-                + " round( avg( " + WeightChange.EXPECTED_WEIGHT + " ) ,2)   AS " 
+                + " round( avg( " + WeightChange.EXPECTED_WEIGHT + " ) ,2)   AS "
                 + WeightChange.AVG_EXPECTED_WEIGHT + " , "
+                + WeightChange.YEAR + " , "
                 + WeightChange.YEAR_MONTH
                 + " FROM " + BreezingProvider.TABLE_WEIGHT
                 + " GROUP BY " +  WeightChange.ACCOUNT_ID  + " ," + WeightChange.YEAR_MONTH;
@@ -280,7 +286,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
         String yearlyWeightSelect =  " SELECT "
                 + WeightChange.ACCOUNT_ID + " , "
                 + " round( avg( " + WeightChange.WEIGHT + " ), 2 ) AS  " +  WeightChange.AVG_WEIGHT + " , "
-                + " round( avg( " + WeightChange.EXPECTED_WEIGHT + " ) ,2) AS " 
+                + " round( avg( " + WeightChange.EXPECTED_WEIGHT + " ) ,2) AS "
                 + WeightChange.AVG_EXPECTED_WEIGHT + " , "
                 + WeightChange.YEAR
                 + " FROM " + BreezingProvider.TABLE_WEIGHT
@@ -346,18 +352,18 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + BreezingProvider.TABLE_UNIT_SETTINGS  + " ("
                 +  UnitSettings._ID + " INTEGER PRIMARY KEY , "
                 +  UnitSettings.UNIT_TYPE + " TEXT NOT NULL , "
-                +  UnitSettings.UNIT_NAME + " TEXT NOT NULL , " 
-                +  UnitSettings.UNIT_UNIFY_DATA + " FLOAT NOT NULL , " 
+                +  UnitSettings.UNIT_NAME + " TEXT NOT NULL , "
+                +  UnitSettings.UNIT_UNIFY_DATA + " FLOAT NOT NULL , "
                 +  UnitSettings.UNIT_OBTAIN_DATA + " FLOAT NOT NULL  " +
                 ");");
-               
+
     }
-    
+
     /***
      * 产生基本信息 view
      * @param db
      */
-    private void createBaseInfomationViews(SQLiteDatabase db) {      
+    private void createBaseInfomationViews(SQLiteDatabase db) {
         String baseInfoSelect =  " SELECT "
                 + Account.INFO_ACCOUNT_ID + " , "
                 + Account.INFO_ACCOUNT_NAME + " , "
@@ -368,23 +374,23 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
                 + Information.INFO_CUSTOM + " , "
                 + Information.INFO_HEIGHT_UNIT + " , "
                 + Information.INFO_WEIGHT_UNIT + " , "
-                + Information.INFO_DISTANCE_UNIT + " , "                
+                + Information.INFO_DISTANCE_UNIT + " , "
                 + WeightChange.INFO_WEIGHT + " , "
                 + WeightChange.INFO_EXPECTED_WEIGHT + " , "
-                + WeightChange.INFO_DATE 
+                + WeightChange.INFO_DATE
                 + " FROM " + BreezingProvider.TABLE_ACCOUNT
-                + " LEFT OUTER JOIN " + BreezingProvider.TABLE_INFORMATION + " ON " 
+                + " LEFT OUTER JOIN " + BreezingProvider.TABLE_INFORMATION + " ON "
                 + BreezingProvider.TABLE_INFORMATION + "." + Information.ACCOUNT_ID + " = "
                 + BreezingProvider.TABLE_ACCOUNT + "." + Account.ACCOUNT_ID
                 +  " LEFT OUTER JOIN " + BreezingProvider.TABLE_WEIGHT + " ON "
                 + BreezingProvider.TABLE_WEIGHT + "." +  WeightChange.ACCOUNT_ID + " = "
-                + BreezingProvider.TABLE_INFORMATION + "." 
+                + BreezingProvider.TABLE_INFORMATION + "."
                 + Information.ACCOUNT_ID;
-        
+
         db.execSQL("CREATE VIEW " + Views.BASE_INFO + " AS " + baseInfoSelect);
 
     }
-    
+
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.d(TAG, " onUpgrade oldVersion = " + oldVersion + " newVersion = " + newVersion);

@@ -8,6 +8,8 @@ import com.breezing.health.providers.Breezing.EnergyCost;
 import com.breezing.health.tools.IntentAction;
 import com.breezing.health.transation.DataReceiver;
 import com.breezing.health.transation.DataTaskService;
+import com.breezing.health.util.BLog;
+import com.breezing.health.util.CalendarUtil;
 import com.breezing.health.util.DateFormatUtil;
 import com.breezing.health.util.LocalSharedPrefsUtil;
 
@@ -21,6 +23,8 @@ import android.util.Log;
 import android.view.KeyEvent;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 
 public class LauncherActivity extends BaseActivity {
@@ -50,8 +54,12 @@ public class LauncherActivity extends BaseActivity {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
-
-        mHandler = new Handler() {
+        int day =  CalendarUtil.getWeekOfYear(new Date());
+        Calendar calendar = Calendar.getInstance(); 
+        
+        BLog.d(TAG, " onCreate day = " + day + " calendar.get(Calendar.MONTH) = " + calendar.get(Calendar.MONTH) );
+        
+        mHandler = new Handler() {  
 
             @Override
             public void dispatchMessage(Message msg) {
@@ -82,7 +90,8 @@ public class LauncherActivity extends BaseActivity {
     private String verifyLocalAccountInfo() {
         String action = IntentAction.ACTIVITY_FILLIN_INFORMATION;
 
-        int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this, LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
+        int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this,
+                LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
         String accountPass = null;
 
         accountPass = LocalSharedPrefsUtil.getSharedPrefsValueString(this, String.valueOf(accountId) );
@@ -96,8 +105,8 @@ public class LauncherActivity extends BaseActivity {
                     if ( countEnergyDay == 0 ) {
                         appendEnergyCostById(accountId);
                     }
-//                    action = IntentAction.ACTIVITY_MAIN;
-                    action = IntentAction.ACTIVITY_CALORIC_HISTORY;
+                    action = IntentAction.ACTIVITY_MAIN;
+//                    action = IntentAction.ACTIVITY_CALORIC_HISTORY;
                 }
             }
         }
@@ -139,10 +148,10 @@ public class LauncherActivity extends BaseActivity {
         return count;
     }
 
-    private static final String[] PROJECTION_ENERGY_COST = new String[] {       
+    private static final String[] PROJECTION_ENERGY_COST = new String[] {
         EnergyCost.METABOLISM,      // 1
         EnergyCost.SPORT,    // 2
-        EnergyCost.TRAIN ,   //3
+        EnergyCost.DIGEST,   //3
         EnergyCost.ENERGY_COST_DATE   //4
     };
 
@@ -225,7 +234,7 @@ public class LauncherActivity extends BaseActivity {
                 cursor.close();
             }
         }
-        
+
         Log.d(TAG, " queryEnergyCostEveryDay count = " + count );
         return count;
     }

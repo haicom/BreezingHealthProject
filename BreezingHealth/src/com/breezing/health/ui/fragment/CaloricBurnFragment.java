@@ -18,6 +18,7 @@ import com.breezing.health.ui.activity.MainActivity;
 
 import com.breezing.health.R;
 import com.breezing.health.adapter.AddCaloricRecordAdapter;
+import com.breezing.health.adapter.CaloricPagerAdapter;
 import com.breezing.health.entity.PiePartEntity;
 import com.breezing.health.entity.RecordFunctionEntity;
 import com.breezing.health.providers.Breezing.EnergyCost;
@@ -28,10 +29,10 @@ import com.breezing.health.widget.PieGraph;
 import com.breezing.health.widget.PieSlice;
 
 public class CaloricBurnFragment extends BaseFragment {
-    private static final String TAG = "CaloricBurnFragment"; 
-    
+    private static final String TAG = "CaloricBurnFragment";
+
     private View mFragmentView;
-    
+
     private PieChart mPieChart;
     private GridView mGridView;
     private PieGraph mPieGraph;
@@ -44,21 +45,26 @@ public class CaloricBurnFragment extends BaseFragment {
         return fragment;
     }
 
-    public static CaloricBurnFragment getInstance() {
+    public static CaloricBurnFragment getInstance(int num) {
+
         if (mCaloricBurnFragment == null) {
             mCaloricBurnFragment = new CaloricBurnFragment();
+            Bundle args = new Bundle();
+            args.putInt(CaloricPagerAdapter.MAIN_INTERFACE_SAVE_NUM, num);
+            mCaloricBurnFragment.setArguments(args);
         }
+
         return mCaloricBurnFragment;
     }
-    
+
     @Override
-    public void onAttach(Activity activity) {       
+    public void onAttach(Activity activity) {
         super.onAttach(activity);
         Log.d(TAG, "onAttach");
     }
-    
+
     @Override
-    public void onCreate(Bundle savedInstanceState) {        
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
     }
@@ -72,7 +78,7 @@ public class CaloricBurnFragment extends BaseFragment {
         mGridView = (GridView) mFragmentView.findViewById(R.id.gridView);
         mPieGraph = (PieGraph) mFragmentView.findViewById(R.id.pie_graph);
         mBurnCaloric = (TextView)mFragmentView.findViewById(R.id.burn_caloric);
-        
+
 //        ArrayList<PiePartEntity> pieParts = new ArrayList<PiePartEntity>();
 //        pieParts.add(new PiePartEntity(70.0f, R.color.orange));
 //        pieParts.add(new PiePartEntity(30.0f, R.color.red));
@@ -91,28 +97,21 @@ public class CaloricBurnFragment extends BaseFragment {
 //        }
         int accountId = ((MainActivity)getActivity()).getAccountId();
         int date = ((MainActivity)getActivity()).getDate();
-        
+
         drawPieChar(accountId, date);
 
-        ArrayList<RecordFunctionEntity> funs = new ArrayList<RecordFunctionEntity>();
 
-        funs.add(new RecordFunctionEntity(R.string.energy_metabolism, 30f, R.color.orange));
-        funs.add(new RecordFunctionEntity(R.string.exercise, 55f, R.color.orange));
-        funs.add(new RecordFunctionEntity(R.string.other, 15f, R.color.orange));
-
-        mAdapter = new AddCaloricRecordAdapter(getActivity(), funs);
-        mGridView.setAdapter(mAdapter);
 
         return mFragmentView;
     }
-    
+
     @Override
-    public void onResume() {        
+    public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume");
     }
-    
-    private static final String[] PROJECTION_ENERGY_COST = new String[] {       
+
+    private static final String[] PROJECTION_ENERGY_COST = new String[] {
         EnergyCost.METABOLISM,      // 1
         EnergyCost.SPORT,    // 2
         EnergyCost.DIGEST,   //3
@@ -128,7 +127,7 @@ public class CaloricBurnFragment extends BaseFragment {
     private final static int ENERGY_COST_TOTAL_ENERGY_INDEX = 4;
     private final static int ENERGY_COST_ENERGY_COST_DATE_INDEX = 5;
 
-  
+
     public void drawPieChar(int accountId, int date) {
         int count = 0;
         int metabolism = 0;
@@ -137,16 +136,22 @@ public class CaloricBurnFragment extends BaseFragment {
         int train = 0;
         int totalEnergy = 0;
         int energyDate = 0;
-        
-        String sortOrder = EnergyCost.ENERGY_COST_DATE + " DESC";      
+
+        String sortOrder = EnergyCost.ENERGY_COST_DATE + " DESC";
 
         Log.d(TAG, " drawPieChar  accountId = " + accountId + " date = " + date);
+        
+        if ( date == 0 ) {
+            return;
+        }
         
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.setLength(0);
         stringBuilder.append(EnergyCost.ACCOUNT_ID + " = ? AND ");
         stringBuilder.append(EnergyCost.DATE + " = ?  ");
+        
         Cursor cursor = null;
+        
         try {
             cursor = getActivity().getContentResolver().query(EnergyCost.CONTENT_URI,
                     PROJECTION_ENERGY_COST,
@@ -162,7 +167,7 @@ public class CaloricBurnFragment extends BaseFragment {
                     digest = cursor.getInt(ENERGY_COST_DIGEST_INDEX);
                     train = cursor.getInt(ENERGY_COST_TRAIN_INDEX);
                     totalEnergy =  cursor.getInt(ENERGY_COST_TOTAL_ENERGY_INDEX);
-                    energyDate = cursor.getInt(ENERGY_COST_ENERGY_COST_DATE_INDEX);                
+                    energyDate = cursor.getInt(ENERGY_COST_ENERGY_COST_DATE_INDEX);
                 }
             }
         } finally {
@@ -170,44 +175,62 @@ public class CaloricBurnFragment extends BaseFragment {
                 cursor.close();
             }
         }
-        
+
         Log.d(TAG, " queryEnergyCostEveryDay count = " + count + " metabolism = " + metabolism
                 + " sport = " + sport + " digest = " + digest + " train = " + train);
         mPieGraph.removeSlices();
         mPieGraph.setPadding(2);
         PieSlice slice;
-        
+
         if (metabolism != 0) {
             slice = new PieSlice();
             slice.setColor( getActivity().getResources().getColor(R.color.brun_green) );
             slice.setValue(metabolism);
             mPieGraph.addSlice(slice);
-        } 
-        
+
+
+        }
+
         if (train != 0 ) {
             slice = new PieSlice();
             slice.setColor( getActivity().getResources().getColor(R.color.pale_green) );
             slice.setValue(train);
             mPieGraph.addSlice(slice);
         }
-        
+
         if ( ( sport + digest) != 0 ) {
             slice = new PieSlice();
             slice.setColor( getActivity().getResources().getColor(R.color.pale_yellow) );
             slice.setValue(sport + digest);
-            mPieGraph.addSlice(slice);     
+            mPieGraph.addSlice(slice);
         }
-            
-        if (   ( metabolism == 0 ) 
-               && ( sport == 0 ) 
-               && ( digest == 0 ) 
+
+        if (   ( metabolism == 0 )
+               && ( sport == 0 )
+               && ( digest == 0 )
                && ( train == 0 ) )  {
             slice = new PieSlice();
             slice.setColor(getActivity().getResources().getColor(R.color.pale_gray) );
-            slice.setValue(1);              
+            slice.setValue(1);
             mPieGraph.addSlice(slice);
         }
-        
+
+        ArrayList<RecordFunctionEntity> funs = new ArrayList<RecordFunctionEntity>();
+
+        funs.add(new RecordFunctionEntity(R.string.energy_metabolism,
+                metabolism, totalEnergy ,
+                getActivity().getResources().getColor(R.color.brun_green) ) );
+
+        funs.add(new RecordFunctionEntity(R.string.exercise,
+                train, totalEnergy,
+                getActivity().getResources().getColor(R.color.pale_green) ) );
+
+        funs.add(new RecordFunctionEntity(R.string.other,
+                sport + digest, totalEnergy ,
+                getActivity().getResources().getColor(R.color.pale_yellow) ) );
+
+        mAdapter = new AddCaloricRecordAdapter(getActivity(), funs);
+        mGridView.setAdapter(mAdapter);
         mBurnCaloric.setText(String.valueOf(totalEnergy));
     }
 

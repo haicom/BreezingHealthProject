@@ -61,6 +61,7 @@ public class HeightPickerDialogFragment extends BaseDialogFragment implements On
 
         mInteger.setMaxValue(SHOW_INTEGER_CENTIMETRE_MAX);
         mInteger.setMinValue(SHOW_INTEGER_CENTIMETRE_MIN);
+        mInteger.setValue(SHOW_INTEGER_CURRENT_CENTIMETRE);
         mInteger.setFocusable(false);
         mInteger.setFocusableInTouchMode(false);
 
@@ -83,6 +84,7 @@ public class HeightPickerDialogFragment extends BaseDialogFragment implements On
                 case HEIGHT_CENTIMETRE:
                     mInteger.setMaxValue(SHOW_INTEGER_CENTIMETRE_MAX);
                     mInteger.setMinValue(SHOW_INTEGER_CENTIMETRE_MIN);
+                    mInteger.setValue(SHOW_INTEGER_CURRENT_CENTIMETRE);
                     mDecimals.setMaxValue(SHOW_INTEGER_CENTIMETRE_MAX);
                     mDecimals.setMinValue(SHOW_DECIMALS_CENTIMETRE_MIN);
                     return ;
@@ -101,6 +103,7 @@ public class HeightPickerDialogFragment extends BaseDialogFragment implements On
                 case HEIGHT_INCH:
                     mInteger.setMaxValue(SHOW_INTEGER_INCH_MAX);
                     mInteger.setMinValue(SHOW_INTEGER_INCH_MIN);
+                    mInteger.setValue(SHOW_INTEGER_CURRENT_INCHE);
                     mDecimals.setMaxValue(SHOW_DECIMALS_INCH_MAX);
                     mDecimals.setMinValue(SHOW_DECIMALS_INCH_MIN);
                     return ;
@@ -160,6 +163,7 @@ public class HeightPickerDialogFragment extends BaseDialogFragment implements On
 
     private static final int SHOW_INTEGER_CENTIMETRE_MAX = 200;
     private static final int SHOW_INTEGER_CENTIMETRE_MIN = 50;
+    private static final int SHOW_INTEGER_CURRENT_CENTIMETRE = 170;
     private static final int SHOW_DECIMALS_CENTIMETRE_MAX = 9;
     private static final int SHOW_DECIMALS_CENTIMETRE_MIN = 1;
 
@@ -174,6 +178,7 @@ public class HeightPickerDialogFragment extends BaseDialogFragment implements On
     private static final int SHOW_DECIMALS_FEET_MIN = 1;
 
     private static final int SHOW_INTEGER_INCH_MAX = SHOW_INTEGER_FEET_MAX * 12;
+    private static final int SHOW_INTEGER_CURRENT_INCHE = 60;
     private static final int SHOW_INTEGER_INCH_MIN = 0;
     private static final int SHOW_DECIMALS_INCH_MAX = 99;
     private static final int SHOW_DECIMALS_INCH_MIN = 1;

@@ -13,6 +13,7 @@ import android.graphics.SweepGradient;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -20,7 +21,7 @@ import com.breezing.health.R;
 
 /**
  * Displays a holo-themed color picker.
- * 
+ *
  * <p>
  * Use {@link #getColor()} to retrieve the selected color.
  * </p>
@@ -29,6 +30,8 @@ public class HoloCircleSeekBar extends View {
     /*
      * Constants used to save/restore the instance state.
      */
+
+    private static final String TAG = "HoloCircleSeekBar";
     private static final String STATE_PARENT = "parent";
     private static final String STATE_ANGLE = "angle";
 
@@ -62,15 +65,15 @@ public class HoloCircleSeekBar extends View {
     /**
      * The rectangle enclosing the color wheel.
      */
-    private RectF mColorWheelRectangle = new RectF();
+    private final RectF mColorWheelRectangle = new RectF();
 
     /**
      * {@code true} if the user clicked on the pointer to start the move mode.
      * {@code false} once the user stops touching the screen.
-     * 
+     *
      * @see #onTouchEvent(MotionEvent)
      */
-    private boolean mUserIsMovingPointer = false;
+    private final boolean mUserIsMovingPointer = false;
 
     /**
      * The ARGB value of the currently selected color.
@@ -79,25 +82,25 @@ public class HoloCircleSeekBar extends View {
 
     /**
      * Number of pixels the origin of this view is moved in X- and Y-direction.
-     * 
+     *
      * <p>
      * We use the center of this (quadratic) View as origin of our internal
      * coordinate system. Android uses the upper left corner as origin for the
      * View-specific coordinate system. So this is the value we use to translate
      * from one coordinate system to the other.
      * </p>
-     * 
+     *
      * <p>
      * Note: (Re)calculated in {@link #onMeasure(int, int)}.
      * </p>
-     * 
+     *
      * @see #onDraw(Canvas)
      */
     private float mTranslationOffset;
 
     /**
      * Radius of the color wheel in pixels.
-     * 
+     *
      * <p>
      * Note: (Re)calculated in {@link #onMeasure(int, int)}.
      * </p>
@@ -110,7 +113,7 @@ public class HoloCircleSeekBar extends View {
     private float mAngle;
     private Paint textPaint;
     private String text;
-    private int conversion = 0;
+    private final int conversion = 0;
     private int max = 100;
     private String color_attr;
     private int color;
@@ -120,17 +123,17 @@ public class HoloCircleSeekBar extends View {
             pointer_color_attr, pointer_halo_color_attr, text_color_attr;
     private int wheel_color, unactive_wheel_color, pointer_color,
             pointer_halo_color, text_size, text_color, init_position;
-    private boolean block_end = false;
+    private final boolean block_end = false;
     private float lastX;
     private int last_radians = 0;
-    private boolean block_start = false;
+    private final boolean block_start = false;
 
     private int arc_finish_radians = 360;
     private int start_arc = 270;
 
     private float[] pointerPosition;
     private Paint mColorCenterHalo;
-    private RectF mColorCenterHaloRectangle = new RectF();
+    private final RectF mColorCenterHaloRectangle = new RectF();
     private Paint mCircleTextColor;
     private int end_wheel;
 
@@ -429,125 +432,21 @@ public class HoloCircleSeekBar extends View {
 
     /**
      * Get the selected value
-     * 
+     *
      * @return the value between 0 and max
      */
     public int getValue() {
         return conversion;
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        // Convert coordinates to our internal coordinate system
-        float x = event.getX() - mTranslationOffset;
-        float y = event.getY() - mTranslationOffset;
-
-        switch (event.getAction()) {
-        case MotionEvent.ACTION_DOWN:
-            // Check whether the user pressed on (or near) the pointer
-            mAngle = (float) java.lang.Math.atan2(y, x);
-
-            block_end = false;
-            block_start = false;
-            mUserIsMovingPointer = true;
-
-            arc_finish_radians = calculateRadiansFromAngle(mAngle);
-
-            if (arc_finish_radians > end_wheel) {
-                arc_finish_radians = end_wheel;
-                block_end = true;
-            }
-
-            if (!block_end && !block_start) {
-                text = String
-                        .valueOf(calculateTextFromAngle(arc_finish_radians));
-                pointerPosition = calculatePointerPosition(mAngle);
-                invalidate();
-            }
-            break;
-        case MotionEvent.ACTION_MOVE:
-            if (mUserIsMovingPointer) {
-                mAngle = (float) java.lang.Math.atan2(y, x);
-
-                int radians = calculateRadiansFromAngle(mAngle);
-
-                if (last_radians > radians && radians < (360 / 6) && x > lastX
-                        && last_radians > (360 / 6)) {
-
-                    if (!block_end && !block_start)
-                        block_end = true;
-                    // if (block_start)
-                    // block_start = false;
-                } else if (last_radians >= start_arc
-                        && last_radians <= (360 / 4) && radians <= (360 - 1)
-                        && radians >= ((360 / 4) * 3) && x < lastX) {
-                    if (!block_start && !block_end)
-                        block_start = true;
-                    // if (block_end)
-                    // block_end = false;
-
-                } else if (radians >= end_wheel && !block_start
-                        && last_radians < radians) {
-                    block_end = true;
-                } else if (radians < end_wheel && block_end
-                        && last_radians > end_wheel) {
-                    block_end = false;
-                } else if (radians < start_arc && last_radians > radians
-                        && !block_end) {
-                    block_start = true;
-                } else if (block_start && last_radians < radians
-                        && radians > start_arc && radians < end_wheel) {
-                    block_start = false;
-                }
-
-                if (block_end) {
-
-                    arc_finish_radians = end_wheel - 1;
-                    text = String.valueOf(max);
-                    mAngle = calculateAngleFromRadians(arc_finish_radians);
-                    pointerPosition = calculatePointerPosition(mAngle);
-                } else if (block_start) {
-
-                    arc_finish_radians = start_arc;
-                    mAngle = calculateAngleFromRadians(arc_finish_radians);
-                    text = String.valueOf(0);
-                    pointerPosition = calculatePointerPosition(mAngle);
-                } else {
-                    // text = String.valueOf(calculateTextFromAngle(mAngle));
-                    arc_finish_radians = calculateRadiansFromAngle(mAngle);
-                    text = String
-                            .valueOf(calculateTextFromAngle(arc_finish_radians));
-                    pointerPosition = calculatePointerPosition(mAngle);
-                }
-                invalidate();
-                if (mOnCircleSeekBarChangeListener != null)
-                    mOnCircleSeekBarChangeListener.onProgressChanged(this,
-                            Integer.parseInt(text), true);
-
-                last_radians = radians;
-
-            }
-            break;
-        case MotionEvent.ACTION_UP:
-            mUserIsMovingPointer = false;
-            break;
-        }
-        // Fix scrolling
-        if (event.getAction() == MotionEvent.ACTION_MOVE && getParent() != null) {
-            getParent().requestDisallowInterceptTouchEvent(true);
-        }
-        lastX = x;
-
-        return true;
-    }
 
     /**
      * Calculate the pointer's coordinates on the color wheel using the supplied
      * angle.
-     * 
+     *
      * @param angle
      *            The position of the pointer expressed as angle (in rad).
-     * 
+     *
      * @return The coordinates of the pointer's center in our internal
      *         coordinate system.
      */
@@ -595,6 +494,57 @@ public class HoloCircleSeekBar extends View {
         public abstract void onProgressChanged(HoloCircleSeekBar seekBar,
                 int progress, boolean fromUser);
 
+    }
+
+    public void setCircleSeekBar(int max, int value, int wheelColor) {
+
+        this.max = max;
+        this.text = String.valueOf(value);
+
+        wheel_color = wheelColor;
+
+        if (max == 0) {
+            arc_finish_radians = value * 360;
+        } else {
+            arc_finish_radians = (value * 360)/max;
+        }
+
+        mAngle = calculateAngleFromRadians(arc_finish_radians);
+        pointerPosition = calculatePointerPosition(mAngle);
+        mArcColor.setColor(wheel_color);
+        mPointerColor.setColor(wheel_color);
+        Log.d(TAG, " setCircleSeekBar arc_finish_radians = " + arc_finish_radians);
+        invalidate();
+    }
+
+    public void setMax(int max) {
+        this.max = max;
+        invalidate();
+    }
+
+    public void setWheelColor(int wheelColor) {
+        wheel_color = wheelColor;
+        mArcColor.setColor(wheel_color);
+        mPointerColor.setColor(wheel_color);
+        invalidate();
+    }
+
+    public void setText(int value) {
+        this.text = String.valueOf(value);
+        invalidate();
+    }
+
+    public void setFinishRadians(int max, int value) {
+
+        if (max == 0) {
+            arc_finish_radians = value * 360;
+        } else {
+            arc_finish_radians = (value * 360)/max;
+        }
+
+        mAngle = calculateAngleFromRadians(arc_finish_radians);
+        pointerPosition = calculatePointerPosition(mAngle);
+        invalidate();
     }
 
 }

@@ -18,19 +18,19 @@ public class CaloricIntakeActivity extends ActionBarActivity {
     public enum CaloricIntakeType {
         BREAKFAST, LUNCH, DINNER, OTHER
     }
-    
+
     private CaloricIntakeType mCaloricIntakeType;
-    
+
     private MultiDirectionSlidingDrawer mDrawer;
     private GridView mCatagoryGridView;
     private FoodCatagoryAdapter mCatagoryAdapter;
     private ListView mFoodList;
     private FoodAdapter mFoodAdapter;
-    
+
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         // TODO Auto-generated method stub
-        
+
         switch(keyCode) {
         case KeyEvent.KEYCODE_BACK: {
             if (mDrawer.isOpened()) {
@@ -38,12 +38,12 @@ public class CaloricIntakeActivity extends ActionBarActivity {
                 return true;
             }
         }
-        
+
         }
-        
+
         return super.onKeyUp(keyCode, event);
     }
-    
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,11 +75,11 @@ public class CaloricIntakeActivity extends ActionBarActivity {
         }
         addLeftActionItem(new ActionItem(ActionItem.ACTION_BACK));
         addRightActionItem(new ActionItem(ActionItem.ACTION_MORE));
-        
+
         mDrawer = (MultiDirectionSlidingDrawer) findViewById(R.id.drawer);
         mCatagoryGridView = (GridView) findViewById(R.id.gridView);
         mFoodList = (ListView) findViewById(R.id.list);
-        
+
     }
 
     private void valueToView() {
@@ -90,12 +90,11 @@ public class CaloricIntakeActivity extends ActionBarActivity {
     }
 
     private void initListeners() {
-        
+
     }
-    
+
     @Override
     public void onClickActionBarItems(ActionItem item, View v) {
-        // TODO Auto-generated method stub
         switch(item.getActionId()) {
         case ActionItem.ACTION_MORE:
             mDrawer.animateToggle();
@@ -103,5 +102,5 @@ public class CaloricIntakeActivity extends ActionBarActivity {
         }
         super.onClickActionBarItems(item, v);
     }
-    
+
 }
