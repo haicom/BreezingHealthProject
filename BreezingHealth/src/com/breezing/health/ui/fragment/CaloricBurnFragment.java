@@ -33,7 +33,6 @@ public class CaloricBurnFragment extends BaseFragment {
 
     private View mFragmentView;
 
-    private PieChart mPieChart;
     private GridView mGridView;
     private PieGraph mPieGraph;
     private TextView mBurnCaloric;
@@ -73,8 +72,8 @@ public class CaloricBurnFragment extends BaseFragment {
     public View onCreateView( LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState ) {
         Log.d(TAG, "onCreateView");
-        mFragmentView = inflater.inflate(R.layout.fragment_caloric_burn, null);
-        mPieChart = (PieChart) mFragmentView.findViewById(R.id.pieChart);
+        
+        mFragmentView = inflater.inflate(R.layout.fragment_caloric_burn, null);       
         mGridView = (GridView) mFragmentView.findViewById(R.id.gridView);
         mPieGraph = (PieGraph) mFragmentView.findViewById(R.id.pie_graph);
         mBurnCaloric = (TextView)mFragmentView.findViewById(R.id.burn_caloric);
@@ -95,8 +94,8 @@ public class CaloricBurnFragment extends BaseFragment {
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
-        int accountId = ((MainActivity)getActivity()).getAccountId();
-        int date = ((MainActivity)getActivity()).getDate();
+        int accountId = ( (MainActivity)getActivity() ).getAccountId();
+        int date = ( (MainActivity)getActivity() ).getDate();
 
         drawPieChar(accountId, date);
 

@@ -19,12 +19,15 @@ import com.breezing.health.adapter.CaloricPagerAdapter;
 import com.breezing.health.entity.ActionItem;
 import com.breezing.health.providers.Breezing.Account;
 import com.breezing.health.providers.Breezing.Information;
+import com.breezing.health.providers.Breezing.UnitSettings;
 import com.breezing.health.providers.Breezing.WeightChange;
 import com.breezing.health.tools.IntentAction;
 import com.breezing.health.ui.fragment.BaseDialogFragment;
 import com.breezing.health.ui.fragment.CalendarDialogFragment;
 import com.breezing.health.ui.fragment.CaloricBurnFragment;
+import com.breezing.health.ui.fragment.CaloricIntakeFragment;
 import com.breezing.health.ui.fragment.DialogFragmentInterface;
+import com.breezing.health.util.BLog;
 import com.breezing.health.util.DateFormatUtil;
 import com.breezing.health.util.LocalSharedPrefsUtil;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnClosedListener;
@@ -49,16 +52,17 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
         super.onCreate(savedInstanceState);
         setContentFrame(R.layout.activity_main);
-        initViews();
-        valueToView();
+        initViews();        
         initListeners();
+        initValues();
+        valueToView();
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        initValues();
+        
     }
 
     private void initValues() {
@@ -76,7 +80,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
     }
 
     private void initViews() {
-        addRightActionItem(new ActionItem(ActionItem.ACTION_DONE));
+        addRightActionItem( new ActionItem(ActionItem.ACTION_DONE) );
+        
         mWeight = (Button) findViewById(R.id.weight);
         mCalendar = (Button) findViewById(R.id.calendar);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
@@ -86,6 +91,13 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         setActionBarTitle(R.string.app_name);
         mCaloricPagerAdapter = new CaloricPagerAdapter( getSupportFragmentManager() );
         mViewPager.setAdapter(mCaloricPagerAdapter);
+        
+        CaloricIntakeFragment caloricIntakeFragment  = (CaloricIntakeFragment) mCaloricPagerAdapter.
+                getItem(mCaloricPagerAdapter.MAIN_INTERFACE_CALORIC_INTAKE);
+        Bundle bundle = new Bundle();
+        bundle.putInt(MAIN_ACCOUNT_ID, mAccountId);
+        bundle.putInt(MAIN_DATE, mDate);
+        caloricIntakeFragment.setArguments(bundle);
     }
 
     private void initListeners() {
@@ -133,6 +145,10 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         CaloricBurnFragment caloricBurnFragment  = (CaloricBurnFragment) mCaloricPagerAdapter.
                 getItem(mCaloricPagerAdapter.MAIN_INTERFACE_CALORIC_BURIN);
         caloricBurnFragment.drawPieChar( mAccountId, mDate );
+        
+        CaloricIntakeFragment caloricIntakeFragment  = (CaloricIntakeFragment) mCaloricPagerAdapter.
+                getItem(mCaloricPagerAdapter.MAIN_INTERFACE_CALORIC_INTAKE);
+        caloricIntakeFragment.drawPieChar( mAccountId, mDate );
     }
 
     public int getAccountId() {
@@ -145,7 +161,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if (v == mCalendar) {
+        
+        if ( v == mCalendar ) {
             showCalendar();
             return ;
         }
@@ -202,6 +219,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         Log.d(TAG, "queryBaseInfoView");
         String weightUnit = null;
         float  weight = 0;
+        float  unit = 1;
 
         String accountClause =  Account.ACCOUNT_ID + " = ?";
         String sortOrder = WeightChange.DATE + " DESC";
@@ -226,8 +244,40 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         } finally {
             cursor.close();
         }
+        
+        
+        //获得需要换算的值
+        cursor  = mContentResolver.query( UnitSettings.CONTENT_URI,
+                new String[] { UnitSettings.UNIT_OBTAIN_DATA }, 
+                UnitSettings.UNIT_TYPE + " =  ? ", 
+                new String[] { weightUnit }, 
+                null);
+        
+        if (cursor == null) {
+            Log.d(TAG, " testBaseInfoView cursor = " + cursor);
+        }
+
+
+        try {
+            
+            if (cursor != null) {
+                
+                if ( cursor.getCount() > 0 ) {
+                    
+                    cursor.moveToPosition(0);
+                    unit = cursor.getFloat(0);
+                    
+                }
+                
+            }
+        } finally {
+            cursor.close();
+        }
+        
+        BLog.d(TAG, " getBaseInfoViews unit = " + unit);
+        
         DecimalFormat df = new DecimalFormat("#.0");
-        String str = df.format(weight);
+        String str = df.format(weight * unit);
         Log.d(TAG, "getBaseInfoViews str = " + str);
         return getResources().getString(R.string.breezing_weight, str, weightUnit);
     }
@@ -240,12 +290,21 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                 if (mPosition ==
                          CaloricPagerAdapter.MAIN_INTERFACE_CALORIC_BURIN ) {
                     Intent intent = new Intent(IntentAction.ACTIVITY_CALORIC_HISTORY);
+                    intent.putExtra(CaloricHistoryActivity.CALORIC_HISROTY_TYPE, 
+                            CaloricPagerAdapter.MAIN_INTERFACE_CALORIC_BURIN );
                     startActivity(intent);
                 } else if ( mPosition ==
-                        CaloricPagerAdapter.MAIN_INTERFACE_CALORIC_BURIN ) {
-
+                        CaloricPagerAdapter.MAIN_INTERFACE_CALORIC_INTAKE ) {                    
+                    Intent intent = new Intent(IntentAction.ACTIVITY_CALORIC_HISTORY);
+                    intent.putExtra(CaloricHistoryActivity.CALORIC_HISROTY_TYPE, 
+                            CaloricPagerAdapter.MAIN_INTERFACE_CALORIC_INTAKE );
+                    startActivity(intent);
                 }
         }
+        
         super.onClickActionBarItems(item, v);
     }
+    
+    public static final String MAIN_ACCOUNT_ID = "account_id";
+    public static final String MAIN_DATE = "date";
 }

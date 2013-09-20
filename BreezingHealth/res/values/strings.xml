@@ -141,8 +141,9 @@
     <string name="type">类型</string>
     <string name="kilojoule">千焦</string>
 
-    <string name="caloric_intake_history">能量摄入历史</string>
-    <string name="caloric_burn_history">能量消耗历史</string>
+    <string name="caloric_intake_history">我的能量摄入</string>
+    <string name="caloric_burn_history">我的能量代谢</string>
+    
     <string name="caloric_balance_history">能量平衡历史</string>
 
     <string name="week_chart_model">周模式</string>

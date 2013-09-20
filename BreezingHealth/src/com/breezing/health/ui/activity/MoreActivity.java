@@ -2,6 +2,7 @@ package com.breezing.health.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import br.com.dina.ui.model.GroupIndex;
@@ -15,6 +16,7 @@ import com.breezing.health.tools.IntentAction;
 public class MoreActivity extends ActionBarActivity {
 
     private UITableView mTableView;
+    private static final String TAG = "MoreActivity";
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,10 +49,17 @@ public class MoreActivity extends ActionBarActivity {
         mTableView.setOnItemClickListener(new OnItemClickListener() {
             
             @Override
-            public void onClick(View view, ViewGroup contentView, String action, GroupIndex index) {
+            public void onClick(View view, ViewGroup contentView, 
+                    String action, GroupIndex index) {
                 
-                if (action == null) {
-                    return ;
+                if ( action == null )  {
+                    return;
+                }
+                
+                Log.d(TAG, " MoreActivity initListeners action = " + action);
+                
+                if ( action.isEmpty() || ( action.length() == 0 ) ) {
+                    return;
                 }
                 
                 Intent intent = new Intent(action);
@@ -63,9 +72,17 @@ public class MoreActivity extends ActionBarActivity {
      * create UITableView items
      */
     private void createList() {
-        mTableView.addBasicItem(getString(R.string.user_instructions), getString(R.string.user_instructions_summary), null);
-        mTableView.addBasicItem(getString(R.string.related_links), getString(R.string.related_links_summary), null);
-        mTableView.addBasicItem(getString(R.string.about_us), getString(R.string.about_us_summary), IntentAction.ACTIVITY_ABOUT);
+        mTableView.addBasicItem( getString(R.string.user_instructions), 
+                getString(R.string.user_instructions_summary), 
+                null );
+        mTableView.addBasicItem( 
+                getString(R.string.related_links), 
+                getString(R.string.related_links_summary), 
+                null );
+        mTableView.addBasicItem(
+                getString(R.string.about_us), 
+                getString(R.string.about_us_summary), 
+                IntentAction.ACTIVITY_ABOUT);
     }
     
 }
