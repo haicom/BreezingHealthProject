@@ -14,6 +14,12 @@
         breezing:type="insert"
         breezing:version="4.0"
         breezing:object="com.breezing.health.transation.UnitSettingsInserter"/>
+    
+    <data
+        breezing:name="sport"
+        breezing:type="insert"
+        breezing:version="1.0"
+        breezing:object="com.breezing.health.transation.ConsumptionRecordInserter"/>
 
 </datas>
 

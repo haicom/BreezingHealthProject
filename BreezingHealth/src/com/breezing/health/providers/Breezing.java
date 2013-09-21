@@ -239,17 +239,26 @@ public class Breezing {
         public static final Uri CONTENT_URI =
                 Uri.withAppendedPath(AUTHORITY_URI, "heat_consumption");
         public static final String SPORT_TYPE   = "sport_type";
-        public static final String SPORT_LONG   = "sport_long";
-        public static final String SPORT_STRENGTH = "sport_strength";
-        public static final String SPORT_DISTANCE   = "sport_distance";
-        public static final String SPORT_TIMES   = "sport_times";
+        public static final String SPORT_INTENSITY = "sport_intensity";
+        public static final String SPORT_QUANTITY = "sport_quantity";
+        public static final String SPORT_UNIT = "sport_unit";
         public static final String CALORIE   = "calorie";
-        public static final String DATE   = "date";
-        /**
-         * The default sort order for this table
-         */
-        public static final String DEFAULT_SORT_ORDER = "date DESC";
-
+        public static final String EQUIPMENT_NAME = "equipment_name";
+        
+//        public static final String SPORT_LONG   = "sport_long";
+//        public static final String SPORT_STRENGTH = "sport_strength";
+//        public static final String SPORT_DISTANCE   = "sport_distance";
+//        public static final String SPORT_TIMES   = "sport_times";
+//       
+//        public static final String DATE   = "date";
+//        /**
+//         * The default sort order for this table
+//         */
+//        public static final String DEFAULT_SORT_ORDER = "date DESC";
+        
+        public static final Uri CONTENT_SPORT_TYPE = Uri.withAppendedPath(AUTHORITY_URI,
+                "sport_type");
+        
         /**
          * The MIME type of {@link #CONTENT_URI} providing a directory of
          * people.
@@ -262,7 +271,42 @@ public class Breezing {
          */
         public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/heat_consumption";
     }
+    
+    public static final class HeatConsumptionRecord implements BaseColumns {
+        /**
+         * The content:// style URL for this table
+         */
+        public static final Uri CONTENT_URI =
+                Uri.withAppendedPath(AUTHORITY_URI, "consumption_record");
+        
+        public static final String ACCOUNT_ID   = "account_id";
+        public static final String SPORT_TYPE   = "sport_type";
+        public static final String SPORT_INTENSITY = "sport_intensity";
+        public static final String SPORT_QUANTITY = "sport_quantity";
+        public static final String SPORT_UNIT = "sport_unit";
+        public static final String CALORIE   = "calorie";
+        public static final String EQUIPMENT_NAME = "equipment_name";
+        public static final String DATE = "date";
+        
+        
+        /**
+         * The default sort order for this table
+         */
+        public static final String DEFAULT_SORT_ORDER = "date DESC";
 
+        /**
+         * The MIME type of {@link #CONTENT_URI} providing a directory of
+         * people.
+         */
+        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/consumption_record";
+
+        /**
+         * The MIME type of a {@link #CONTENT_URI} subdirectory of a single
+         * person.
+         */
+        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/consumption_record";
+    }
+    
     public static final class HeatIngestion implements BaseColumns {
         /**
          * The content:// style URL for this table
@@ -275,6 +319,10 @@ public class Breezing {
         public static final String PRIORITY   = "priority";
         public static final String FOOD_QUANTITY   = "food_quantity";
         public static final String CALORIE   = "calorie";
+        
+        public static final Uri CONTENT_FOOD_TYPE = Uri.withAppendedPath(AUTHORITY_URI,
+                "food_type");
+        
         /**
          * The default sort order for this table
          */
@@ -299,6 +347,8 @@ public class Breezing {
          */
         public static final Uri CONTENT_URI =
                 Uri.withAppendedPath(AUTHORITY_URI, "ingestive_record");
+        
+        public static final String ACCOUNT_ID   = "account_id";
         public static final String FOOD_NAME   = "food_name";
         public static final String NAME_EXPRESS   = "name_express";
         public static final String FOOD_QUANTITY   = "food_quantity";

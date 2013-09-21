@@ -3,6 +3,7 @@ package com.breezing.health.providers;
 import com.breezing.health.providers.Breezing.Account;
 import com.breezing.health.providers.Breezing.EnergyCost;
 import com.breezing.health.providers.Breezing.HeatConsumption;
+import com.breezing.health.providers.Breezing.HeatConsumptionRecord;
 import com.breezing.health.providers.Breezing.HeatIngestion;
 import com.breezing.health.providers.Breezing.Information;
 import com.breezing.health.providers.Breezing.Ingestion;
@@ -33,6 +34,8 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
         public static final String WEIGHT_MONTHLY = "view_weight_monthly";
         public static final String WEIGHT_YEARLY = "view_weight_yearly";
         public static final String BASE_INFO = "view_base_info";
+        public static final String SPORT_TYPE = "view_sport_type";
+        public static final String FOOD_TYPE = "view_food_type";
     }
 
     private BreezingDatabaseHelper(Context context) {
@@ -59,14 +62,17 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
         createEnergyCostTables(db);
         createIngestionTables(db);
         createWeightChangeTables(db);
-        createHeatConsumptionTables(db);
-        createHeatIngestionTables(db);
+        createHeatConsumptionTables(db);       
+        createConsumptionRecordTables(db);
+        createHeatIngestionTables(db);        
         createIngestiveRecordTables(db);
         createEnergyCostViews(db);
         createIngestionViews(db);
         createWeightChangeViews(db);
         createUnitSettings(db);
         createBaseInfomationViews(db);
+        createSportTypeViews(db);
+        createFoodTypeViews(db);
     }
 
 
@@ -249,7 +255,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
                  + WeightChange.YEAR_WEEK + " INTEGER NOT NULL " +
                    ");");
     }
-
+    
     /***
      * 产生体重变化视图，周，月，年
      * @param db
@@ -293,7 +299,8 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
                 + " GROUP BY " +  WeightChange.ACCOUNT_ID  + " ," + WeightChange.YEAR;
 
         db.execSQL("CREATE VIEW " + Views.WEIGHT_YEARLY + " AS " + yearlyWeightSelect);
-    }
+    }    
+   
 
     /***
      * 产生热量消耗参考表
@@ -303,15 +310,48 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + BreezingProvider.TABLE_HEAT_CONSUMPTION  + " ("
                  +  HeatConsumption._ID + " INTEGER PRIMARY KEY , "
                  +  HeatConsumption.SPORT_TYPE + " TEXT NOT NULL , "
-                 +  HeatConsumption.SPORT_LONG + " INTEGER , "
-                 +  HeatConsumption.SPORT_STRENGTH + " TEXT NOT NULL, "
-                 +  HeatConsumption.SPORT_DISTANCE + " INTEGER , "
-                 +  HeatConsumption.SPORT_TIMES + " INTEGER , "
+                 +  HeatConsumption.SPORT_INTENSITY + " TEXT NOT NULL , "
+                 +  HeatConsumption.SPORT_QUANTITY + " INTEGER NOT NULL, "
+                 +  HeatConsumption.SPORT_UNIT + " TEXT NOT NULL , "               
                  +  HeatConsumption.CALORIE + " INTEGER NOT NULL , "
-                 +  HeatConsumption.DATE + " INTEGER NOT NULL " +
+                 +  HeatConsumption.EQUIPMENT_NAME + " TEXT " +
                    ");");
     }
+    
+    /***
+     * 产生所有运动类型列表
+     * @param db
+     */
+    private void createSportTypeViews(SQLiteDatabase db) {
+        db.execSQL("DROP VIEW IF EXISTS " + Views.SPORT_TYPE + ";");
+        
+        String sportTypeSelect =  " SELECT "
+                + HeatConsumption.SPORT_TYPE          
+                + " FROM " + BreezingProvider.TABLE_HEAT_CONSUMPTION
+                + " GROUP BY " +  HeatConsumption.SPORT_TYPE;
 
+        db.execSQL("CREATE VIEW " + Views.SPORT_TYPE + " AS " + sportTypeSelect);
+        
+    }
+
+    
+    /***
+     * 产生热量消耗参考表
+     * @param db
+     */
+    private void createConsumptionRecordTables(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE " + BreezingProvider.TABLE_HEAT_CONSUMPTION_RECORD  + " ("
+                 +  HeatConsumptionRecord._ID + " INTEGER PRIMARY KEY , "
+                 +  HeatConsumptionRecord.ACCOUNT_ID + " INTEGER NOT NULL , "
+                 +  HeatConsumptionRecord.SPORT_TYPE + " TEXT NOT NULL , "
+                 +  HeatConsumptionRecord.SPORT_INTENSITY + " TEXT NOT NULL , "
+                 +  HeatConsumptionRecord.SPORT_QUANTITY + " INTEGER NOT NULL, "
+                 +  HeatConsumptionRecord.SPORT_UNIT + " TEXT NOT NULL , "               
+                 +  HeatConsumptionRecord.CALORIE + " INTEGER NOT NULL , "
+                 +  HeatConsumptionRecord.DATE + " INTEGER NOT NULL " +
+                   ");");
+    }
+    
     /***
      * 产生热量摄入参考表
      * @param db
@@ -327,7 +367,23 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
                    +  HeatIngestion.CALORIE + " INTEGER NOT NULL " +
                    ");");
     }
+    
+    /***
+     * 产生所有食物类型列表
+     * @param db
+     */
+    private void createFoodTypeViews(SQLiteDatabase db) {
+        db.execSQL("DROP VIEW IF EXISTS " + Views.FOOD_TYPE + ";");
+        
+        String foodTypeSelect =  " SELECT "
+                + HeatIngestion.FOOD_TYPE          
+                + " FROM " + BreezingProvider.TABLE_HEAT_INGESTION
+                + " GROUP BY " +  HeatIngestion.FOOD_TYPE ;
 
+        db.execSQL("CREATE VIEW " + Views.FOOD_TYPE + " AS " + foodTypeSelect);
+        
+    }
+    
     /***
      * 我的每天，每餐的摄入详情
      * @param db
@@ -335,6 +391,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
     private void createIngestiveRecordTables(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + BreezingProvider.TABLE_INGESTIVE_RECORD  + " ("
                    +  IngestiveRecord._ID + " INTEGER PRIMARY KEY , "
+                   +  IngestiveRecord.ACCOUNT_ID + " INTEGER NOT NULL , "
                    +  IngestiveRecord.FOOD_NAME + " TEXT NOT NULL , "
                    +  IngestiveRecord.NAME_EXPRESS + " TEXT NOT NULL , "
                    +  IngestiveRecord.FOOD_QUANTITY + " INTEGER NOT NULL , "

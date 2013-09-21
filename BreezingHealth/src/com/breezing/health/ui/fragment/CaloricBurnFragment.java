@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -11,14 +12,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 import android.widget.TextView;
 
+import com.breezing.health.tools.IntentAction;
 import com.breezing.health.ui.activity.MainActivity;
 
 import com.breezing.health.R;
 import com.breezing.health.adapter.AddCaloricRecordAdapter;
 import com.breezing.health.adapter.CaloricPagerAdapter;
+import com.breezing.health.adapter.AddCaloricRecordAdapter.ViewHolder;
 import com.breezing.health.entity.PiePartEntity;
 import com.breezing.health.entity.RecordFunctionEntity;
 import com.breezing.health.providers.Breezing.EnergyCost;
@@ -28,7 +34,7 @@ import com.breezing.health.widget.PieChart.OnSelectedLisenter;
 import com.breezing.health.widget.PieGraph;
 import com.breezing.health.widget.PieSlice;
 
-public class CaloricBurnFragment extends BaseFragment {
+public class CaloricBurnFragment extends BaseFragment implements OnItemClickListener{
     private static final String TAG = "CaloricBurnFragment";
 
     private View mFragmentView;
@@ -94,10 +100,7 @@ public class CaloricBurnFragment extends BaseFragment {
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
-        int accountId = ( (MainActivity)getActivity() ).getAccountId();
-        int date = ( (MainActivity)getActivity() ).getDate();
-
-        drawPieChar(accountId, date);
+       
 
 
 
@@ -108,6 +111,10 @@ public class CaloricBurnFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume");
+        int accountId = ( (MainActivity)getActivity() ).getAccountId();
+        int date = ( (MainActivity)getActivity() ).getDate();
+
+        drawPieChar(accountId, date);
     }
 
     private static final String[] PROJECTION_ENERGY_COST = new String[] {
@@ -230,7 +237,26 @@ public class CaloricBurnFragment extends BaseFragment {
 
         mAdapter = new AddCaloricRecordAdapter(getActivity(), funs);
         mGridView.setAdapter(mAdapter);
+        mGridView.setOnItemClickListener(this);
         mBurnCaloric.setText(String.valueOf(totalEnergy));
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        RecordFunctionEntity recordFunction =  (RecordFunctionEntity) mAdapter.getItem(position);
+        Log.d(TAG, "onItemClick view = " + view + " position =  " + position);
+        
+        if ( recordFunction.getTitleRes() == R.string.exercise ) {           
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(IntentAction.ACTIVITY_EXERCISE_RECORD);
+                    CaloricBurnFragment.this.startActivity(intent);                    
+                }
+                
+            });
+        }
+        
     }
 
 }

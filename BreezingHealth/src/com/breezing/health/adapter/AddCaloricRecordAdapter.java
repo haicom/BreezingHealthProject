@@ -59,9 +59,9 @@ public class AddCaloricRecordAdapter extends BaseAdapter {
         return convertView;
     }
 
-    class ViewHolder {
-        HoloCircleSeekBar seekBar;
-        Button title;
+    public class ViewHolder {
+        public HoloCircleSeekBar seekBar;
+        public Button title;
     }
 
 

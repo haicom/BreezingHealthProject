@@ -60,8 +60,13 @@ public class ExerciseRecordActivity extends ActionBarActivity {
         final String unit = getString(R.string.kilojoule);
         
         SpannableString span = new SpannableString(title + String.valueOf(count) + unit);
-        span.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.red)), title.length(), title.length() + String.valueOf(count).length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        span.setSpan(new RelativeSizeSpan(1.5f), title.length(), title.length() + String.valueOf(count).length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        span.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.red)), 
+                title.length(), 
+                title.length() + String.valueOf(count).length(), 
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        span.setSpan(new RelativeSizeSpan(1.5f), 
+                title.length(), title.length() + String.valueOf(count).length(), 
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         
         mTotalCaloric.setText(span);
     }

@@ -4,6 +4,7 @@ package com.breezing.health.providers;
 import com.breezing.health.providers.Breezing.Account;
 import com.breezing.health.providers.Breezing.EnergyCost;
 import com.breezing.health.providers.Breezing.HeatConsumption;
+import com.breezing.health.providers.Breezing.HeatConsumptionRecord;
 import com.breezing.health.providers.Breezing.HeatIngestion;
 import com.breezing.health.providers.Breezing.Information;
 import com.breezing.health.providers.Breezing.Ingestion;
@@ -43,6 +44,7 @@ public class BreezingProvider extends  SQLiteContentProvider {
     public  static String TABLE_INGESTION = "ingestion";
     public  static String TABLE_WEIGHT = "weight";
     public  static String TABLE_HEAT_CONSUMPTION  = "heat_consumption";
+    public  static String TABLE_HEAT_CONSUMPTION_RECORD = "consumption_record";
     public  static String TABLE_HEAT_INGESTION = "heat_ingestion";
     public  static String TABLE_INGESTIVE_RECORD = "ingestive_record";
     public  static String TABLE_UNIT_SETTINGS = "unit_settings";
@@ -79,6 +81,10 @@ public class BreezingProvider extends  SQLiteContentProvider {
                 return HeatConsumption.CONTENT_TYPE;
             case BREEZING_HEAT_CONSUMPTION_ID:
                 return HeatConsumption.CONTENT_ITEM_TYPE;
+            case BREEZING_CONSUMPTION_RECORD:
+                return HeatConsumptionRecord.CONTENT_TYPE;
+            case BREEZING_CONSUMPTION_RECORD_ID:
+                return HeatConsumptionRecord.CONTENT_ITEM_TYPE;
             case BREEZING_HEAT_INGESTION:
                 return HeatIngestion.CONTENT_TYPE;
             case BREEZING_HEAT_INGESTION_ID:
@@ -189,9 +195,19 @@ public class BreezingProvider extends  SQLiteContentProvider {
                 break;
             case BREEZING_HEAT_CONSUMPTION:
                 qb.setTables(TABLE_HEAT_CONSUMPTION);
-                break;
+                break;           
             case BREEZING_HEAT_CONSUMPTION_ID:
                 qb.setTables(TABLE_HEAT_CONSUMPTION);
+                qb.appendWhere("(_id = " + url.getPathSegments().get(1) + ")");
+                break;
+            case BREEZING_SPORT_TYPE:
+                qb.setTables(Views.SPORT_TYPE);
+                break;        
+            case BREEZING_CONSUMPTION_RECORD:
+                qb.setTables(TABLE_HEAT_CONSUMPTION_RECORD);
+                break;
+            case BREEZING_CONSUMPTION_RECORD_ID:
+                qb.setTables(TABLE_HEAT_CONSUMPTION_RECORD);
                 qb.appendWhere("(_id = " + url.getPathSegments().get(1) + ")");
                 break;
             case BREEZING_HEAT_INGESTION:
@@ -201,6 +217,9 @@ public class BreezingProvider extends  SQLiteContentProvider {
                 qb.setTables(TABLE_HEAT_INGESTION);
                 qb.appendWhere("(_id = " + url.getPathSegments().get(1) + ")");
                 break;
+            case BREEZING_FOOD_TYPE:
+                qb.setTables(Views.FOOD_TYPE);
+                break;          
             case BREEZING_INGESTIVE_RECORD:
                 qb.setTables(TABLE_INGESTIVE_RECORD);
                 break;
@@ -228,8 +247,8 @@ public class BreezingProvider extends  SQLiteContentProvider {
                 finalSortOrder = Breezing.Ingestion.DEFAULT_SORT_ORDER;
             } else if (qb.getTables().equals(TABLE_WEIGHT)) {
                 finalSortOrder = Breezing.WeightChange.DEFAULT_SORT_ORDER;
-            } else if (qb.getTables().equals(TABLE_HEAT_CONSUMPTION)) {
-                finalSortOrder = Breezing.HeatConsumption.DEFAULT_SORT_ORDER;
+            } else if (qb.getTables().equals(TABLE_HEAT_CONSUMPTION_RECORD)) {
+                finalSortOrder = Breezing.HeatConsumptionRecord.DEFAULT_SORT_ORDER;
             }
         } else {
             finalSortOrder = sort;
@@ -347,7 +366,10 @@ public class BreezingProvider extends  SQLiteContentProvider {
                 rowID = insertWeightTable(initialValues);
                 break;
             case BREEZING_HEAT_CONSUMPTION:
-                rowID = insertHeatConsumptionTable(initialValues);
+                rowID = mDb.insert(TABLE_HEAT_CONSUMPTION, HeatConsumption.SPORT_TYPE, initialValues);               
+                break;
+            case BREEZING_CONSUMPTION_RECORD:
+                rowID = insertConsumptionRecordTable(initialValues);               
                 break;
             case BREEZING_HEAT_INGESTION:
                 rowID = mDb.insert(TABLE_HEAT_INGESTION, HeatIngestion.FOOD_TYPE, initialValues);
@@ -448,20 +470,20 @@ public class BreezingProvider extends  SQLiteContentProvider {
         return mDb.insert(TABLE_WEIGHT, WeightChange.ACCOUNT_ID, values);
     }
 
-    private long insertHeatConsumptionTable(ContentValues initialValues) {
+    private long insertConsumptionRecordTable(ContentValues initialValues) {
         boolean addDate = false;
         ContentValues values = new ContentValues(initialValues);
 
-        if (!initialValues.containsKey(HeatConsumption.DATE)) {
+        if (!initialValues.containsKey(HeatConsumptionRecord.DATE)) {
             addDate = true;
         }
 
         if (addDate) {
             int date = simpleDateFormat("yyyyMMdd");
-            values.put(Breezing.BaseDateColumns.DATE, date);
+            values.put(HeatConsumptionRecord.DATE, date);
         }
 
-        return mDb.insert(TABLE_HEAT_CONSUMPTION, HeatConsumption.SPORT_TYPE, values);
+        return mDb.insert(TABLE_HEAT_CONSUMPTION_RECORD, HeatConsumptionRecord.SPORT_TYPE, values);
     }
 
     private long insertIngestiveRecordTable(ContentValues initialValues) {
@@ -529,6 +551,13 @@ public class BreezingProvider extends  SQLiteContentProvider {
                 break;
             case BREEZING_HEAT_CONSUMPTION_ID:
                 table = TABLE_HEAT_CONSUMPTION;
+                extraWhere = "_id=" + url.getPathSegments().get(1);
+                break;
+            case BREEZING_CONSUMPTION_RECORD:
+                table = TABLE_HEAT_CONSUMPTION_RECORD;
+                break;
+            case BREEZING_CONSUMPTION_RECORD_ID:
+                table = TABLE_HEAT_CONSUMPTION_RECORD;
                 extraWhere = "_id=" + url.getPathSegments().get(1);
                 break;
             case BREEZING_HEAT_INGESTION:
@@ -675,6 +704,21 @@ public class BreezingProvider extends  SQLiteContentProvider {
                 where = DatabaseUtils.concatenateWhere("_id = " + consumptionId, where);
                 count = mDb.delete(TABLE_HEAT_CONSUMPTION, where, whereArgs);
                 break;
+            case BREEZING_CONSUMPTION_RECORD:
+                count = mDb.delete(TABLE_HEAT_CONSUMPTION_RECORD, where, whereArgs);
+                break;
+            case BREEZING_CONSUMPTION_RECORD_ID:
+                int recordId;
+                try {
+                    recordId = Integer.parseInt(url.getPathSegments().get(1));
+                } catch (Exception e) {
+                    throw new IllegalArgumentException(
+                        "Bad message id: " + url.getPathSegments().get(1));
+                }
+
+                where = DatabaseUtils.concatenateWhere("_id = " + recordId, where);
+                count = mDb.delete(TABLE_HEAT_CONSUMPTION_RECORD, where, whereArgs);
+                break;
             case BREEZING_HEAT_INGESTION:
                 count = mDb.delete(TABLE_HEAT_INGESTION, where, whereArgs);
                 break;
@@ -755,12 +799,16 @@ public class BreezingProvider extends  SQLiteContentProvider {
     private static final int BREEZING_WEIGHT_YEARLY = 20;
     private static final int BREEZING_HEAT_CONSUMPTION = 21;
     private static final int BREEZING_HEAT_CONSUMPTION_ID = 22;
-    private static final int BREEZING_HEAT_INGESTION = 23;
-    private static final int BREEZING_HEAT_INGESTION_ID = 24;
-    private static final int BREEZING_INGESTIVE_RECORD = 25;
-    private static final int BREEZING_INGESTIVE_RECORD_ID = 26;
-    private static final int BREEZING_UNIT_SETTINGS = 27;
-    private static final int BREEZING_UNIT_SETTINGS_ID = 28;
+    private static final int BREEZING_SPORT_TYPE = 23;
+    private static final int BREEZING_CONSUMPTION_RECORD = 24;
+    private static final int BREEZING_CONSUMPTION_RECORD_ID = 25;
+    private static final int BREEZING_HEAT_INGESTION = 26;
+    private static final int BREEZING_HEAT_INGESTION_ID = 27;
+    private static final int BREEZING_FOOD_TYPE = 28;
+    private static final int BREEZING_INGESTIVE_RECORD = 29;
+    private static final int BREEZING_INGESTIVE_RECORD_ID = 30;
+    private static final int BREEZING_UNIT_SETTINGS = 31;
+    private static final int BREEZING_UNIT_SETTINGS_ID = 32;
 
     private static final UriMatcher sURLMatcher =
             new UriMatcher(UriMatcher.NO_MATCH);
@@ -788,8 +836,12 @@ public class BreezingProvider extends  SQLiteContentProvider {
         sURLMatcher.addURI(Breezing.AUTHORITY, "weight_yearly", BREEZING_WEIGHT_YEARLY);
         sURLMatcher.addURI(Breezing.AUTHORITY, "heat_consumption", BREEZING_HEAT_CONSUMPTION);
         sURLMatcher.addURI(Breezing.AUTHORITY, "heat_consumption/#", BREEZING_HEAT_CONSUMPTION_ID);
+        sURLMatcher.addURI(Breezing.AUTHORITY, "sport_type", BREEZING_SPORT_TYPE);
+        sURLMatcher.addURI(Breezing.AUTHORITY, "consumption_record", BREEZING_CONSUMPTION_RECORD);
+        sURLMatcher.addURI(Breezing.AUTHORITY, "consumption_record/#", BREEZING_CONSUMPTION_RECORD_ID);
         sURLMatcher.addURI(Breezing.AUTHORITY, "heat_ingestion", BREEZING_HEAT_INGESTION);
         sURLMatcher.addURI(Breezing.AUTHORITY, "heat_ingestion/#", BREEZING_HEAT_INGESTION_ID);
+        sURLMatcher.addURI(Breezing.AUTHORITY, "food_type", BREEZING_FOOD_TYPE);
         sURLMatcher.addURI(Breezing.AUTHORITY, "ingestive_record", BREEZING_INGESTIVE_RECORD);
         sURLMatcher.addURI(Breezing.AUTHORITY, "ingestive_record/#", BREEZING_INGESTIVE_RECORD_ID);
         sURLMatcher.addURI(Breezing.AUTHORITY, "unit_settings", BREEZING_UNIT_SETTINGS);

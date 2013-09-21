@@ -1,15 +1,23 @@
 package com.breezing.health.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
+import android.os.Parcelable;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.util.Log;
+
 
 import com.breezing.health.providers.Breezing.Account;
 import com.breezing.health.providers.Breezing.Information;
 import com.breezing.health.providers.Breezing.WeightChange;
 import com.breezing.health.providers.Breezing.EnergyCost;
 import com.breezing.health.providers.Breezing.Ingestion;
+import com.breezing.health.providers.Breezing.HeatIngestion;
 
 public class BreezingQueryViews {
     private static final String TAG = "BreezingQueryViews";
@@ -241,6 +249,78 @@ public class BreezingQueryViews {
         }
     }
     
+    /**
+     * 获取食物种类
+     */
+    private static final String[] PROJECTION_FOOD_SORT = new String[] {
+        HeatIngestion.FOOD_NAME,          // 0
+        HeatIngestion.NAME_EXPRESS,      // 1
+        HeatIngestion.PRIORITY,    // 2
+        HeatIngestion.FOOD_QUANTITY ,     //3
+        HeatIngestion.CALORIE   //4       
+    };
+    
+    
+    private static final int FOOD_NAME_INGESTION_INDEX = 0;
+    private static final int NAME_EXPRESS_INGESTION_INDEX = 1;
+    private static final int PRIORITY_INGESTION_INDEX = 2;
+    private static final int FOOD_QUANTITY_INGESTION_INDEX = 3;
+    private static final int CALORIE_INGESTION_INDEX = 4;
+    /**
+     * 获得食物种类通过食物的类型
+     * 
+     * 
+     */
+    public void getFoodSortFromFoodTypes(String[] foodTypes) {
+        
+        if (foodTypes.length == 0) {
+            return;
+        }
+        
+        StringBuilder foodBuilder = new StringBuilder();
+        boolean first = true;
+        Cursor cursor = null;
+        for (String food: foodTypes) {
+            if (first) {
+                first = false;
+                foodBuilder.append(food);
+            } else {
+                foodBuilder.append(',').append(food);
+            }            
+        }
+        
+     // Check whether there is content URI.
+        if (first) return ;
+        
+        if (foodBuilder.length() > 0 ) {
+            final String whereClause = HeatIngestion.FOOD_TYPE + " IN (" + foodBuilder.toString() + ")";
+            cursor = mContentResolver.query(
+                    HeatIngestion.CONTENT_URI, PROJECTION_FOOD_SORT, whereClause, null, null);
+        }
+        
+        if ( cursor == null ) {
+            return;
+        }
+        try {
+            cursor.moveToPosition(-1);
+            while (cursor.moveToNext() ) {
+                String foodName = cursor.getString(FOOD_NAME_INGESTION_INDEX);
+                String nameExpress = cursor.getString(NAME_EXPRESS_INGESTION_INDEX);
+                int  priority = cursor.getInt(PRIORITY_INGESTION_INDEX);
+                int  foodQuantity = cursor.getInt(FOOD_QUANTITY_INGESTION_INDEX);
+                int  calorie = cursor.getInt(CALORIE_INGESTION_INDEX);             
+            
+             
+                Log.d(TAG, " getFoodSortFromFoodTypes foodName = " + foodName + " nameExpress = " 
+                   + nameExpress
+                   + " priority = " + priority
+                   + " foodQuantity = " + foodQuantity 
+                   + " calorie = " + calorie);
+            }
+        } finally {
+            cursor.close();
+        }
+    }
     /**
      * 我的能量摄入查看每一周，某帐户的周信息
      */        
