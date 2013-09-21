@@ -5,12 +5,14 @@ public class RecordFunctionEntity {
     private int value;
     private int max;
     private int colorRes;
+    private int iconRes;
 
-    public RecordFunctionEntity(int titleRes, int value, int max, int colorRes) {
+    public RecordFunctionEntity(int titleRes, int value, int max, int colorRes, int iconRes) {
         this.titleRes = titleRes;
         this.value = value;
         this.max = max;
         this.colorRes = colorRes;
+        this.iconRes = iconRes;
     }
 
     public int getTitleRes() {
@@ -43,6 +45,14 @@ public class RecordFunctionEntity {
 
     public void setColorRes(int colorRes) {
         this.colorRes = colorRes;
+    }
+
+    public int getIconRes() {
+        return iconRes;
+    }
+
+    public void setIconRes(int iconRes) {
+        this.iconRes = iconRes;
     }
 
 }

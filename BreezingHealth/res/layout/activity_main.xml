@@ -4,63 +4,86 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity" >
 
-    <LinearLayout android:id="@+id/top"
+    <LinearLayout
+        android:id="@+id/top"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/information_cell_height"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_vertical_margin" >
 
         <Button
             android:id="@+id/calendar"
-            style="@style/ButtonStyle"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1.3"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="5dp"
+            android:layout_marginRight="@dimen/activity_horizontal_small_margin"
+            android:layout_weight="1.05"
+            android:background="@drawable/btn_white_round_selector"
+            android:drawableLeft="@drawable/ic_date_small"
+            android:drawablePadding="@dimen/activity_horizontal_small_margin"
+            android:gravity="left|center_vertical"
+            android:paddingLeft="@dimen/activity_horizontal_small_margin"
             android:singleLine="true"
-            android:text="@string/date_test" />
+            android:text="@string/date_test"
+            android:textColor="@color/black"
+            android:textSize="@dimen/small_textsize" />
 
         <Button
             android:id="@+id/weight"
-            style="@style/ButtonStyle"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_weight="1"
+            android:background="@drawable/btn_white_round_selector"
+            android:drawableLeft="@drawable/ic_weight_small"
+            android:drawablePadding="@dimen/activity_horizontal_small_margin"
+            android:gravity="left|center_vertical"
+            android:paddingLeft="@dimen/activity_horizontal_small_margin"
             android:singleLine="true"
-            android:text="@string/title_weight_test_result" />
+            android:text="@string/title_weight_test_result"
+            android:textColor="@color/black"
+            android:textSize="@dimen/small_textsize" />
     </LinearLayout>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/top"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:layout_above="@+id/bottom" />
+        android:layout_above="@+id/indicator"
+        android:layout_below="@+id/top" />
 
-    <LinearLayout android:id="@+id/bottom"
+    <com.viewpagerindicator.LinePageIndicator
+        android:id="@+id/indicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/bottom"
+        android:padding="@dimen/activity_vertical_small_margin"
+        android:layout_centerHorizontal="true" />
+
+    <LinearLayout
+        android:id="@+id/bottom"
         android:layout_width="match_parent"
         android:layout_height="@dimen/actionbar_height"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:layout_alignParentBottom="true" >
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/bg_bottom_notice" >
 
         <ImageView
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/activity_vertical_small_margin"
+            android:layout_marginTop="@dimen/activity_vertical_small_margin"
             android:contentDescription="@string/content_description"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_launcher" />
+            android:src="@drawable/ic_breezing_notice" />
 
         <TextView
-            style="@style/TitleTextViewStyle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:text="温馨提醒：预计您的体重将每年增加0.8kg。" />
+            android:layout_marginRight="@dimen/activity_horizontal_small_margin"
+            android:gravity="center_vertical"
+            android:maxLines="2"
+            android:text="@string/weight_trend_notice"
+            android:textColor="@color/black"
+            android:textSize="@dimen/middle_textsize" />
     </LinearLayout>
 
 </RelativeLayout>

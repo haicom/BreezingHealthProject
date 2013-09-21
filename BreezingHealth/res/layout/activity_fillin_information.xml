@@ -9,6 +9,12 @@
         android:orientation="vertical"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin" >
+        
+        <include android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            layout="@layout/step_header"
+            android:layout_marginTop="@dimen/activity_vertical_margin" />
 
         <EditText
             android:id="@+id/user_name"
@@ -17,7 +23,8 @@
             android:layout_height="@dimen/information_cell_height"
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:hint="@string/edittext_hint_username"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:background="@drawable/bg_edittext_selector" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -47,7 +54,8 @@
                     android:layout_weight="1"
                     android:text="@string/male"
                     android:textColor="@color/black"
-                    android:checked="true" />
+                    android:checked="true"
+                    android:button="@drawable/btn_radio_selector" />
 
                 <RadioButton
                     android:id="@+id/female"
@@ -56,7 +64,8 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:text="@string/female"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:button="@drawable/btn_radio_selector" />
             </RadioGroup>
         </LinearLayout>
 
@@ -67,7 +76,8 @@
                 android:layout_height="@dimen/information_cell_height"
                 android:hint="@string/edittext_hint_born_date"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:background="@drawable/btn_spinner_selector" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -88,7 +98,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="@dimen/activity_horizontal_small_margin"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:background="@drawable/btn_spinner_selector" />
         </LinearLayout>
 
        <RelativeLayout
@@ -102,7 +113,8 @@
                 android:layout_width="200dp"
                 android:layout_height="match_parent"
                 android:hint="@string/edittext_hint_height"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:background="@drawable/btn_spinner_selector" />
 
             <TextView
                 android:id="@+id/height_unit"
@@ -112,7 +124,10 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:singleLine="true"
-                android:text="@string/textview_title_unit" />
+                android:text="@string/textview_title_unit"
+                android:background="@drawable/btn_spinner_selector"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin" />
        </RelativeLayout>
 
 
@@ -127,7 +142,8 @@
                 android:layout_width="200dp"
                 android:layout_height="match_parent"
                 android:hint="@string/edittext_hint_weight"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:background="@drawable/btn_spinner_selector" />
 
             <TextView
                 android:id="@+id/weight_unit"
@@ -137,7 +153,10 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:singleLine="true"
-                android:text="@string/textview_title_unit" />
+                android:text="@string/textview_title_unit"
+                android:background="@drawable/btn_spinner_selector"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin" />
 
         </RelativeLayout>
 
@@ -152,7 +171,8 @@
                 android:layout_width="200dp"
                 android:layout_height="match_parent"
                 android:hint="@string/edittext_hint_hope_weight"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:background="@drawable/btn_spinner_selector" />
 
             <TextView
                 android:id="@+id/hope_weight_unit"
@@ -162,18 +182,23 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:singleLine="true"
-                android:text="@string/textview_title_unit" />
+                android:text="@string/textview_title_unit"
+                android:background="@drawable/btn_spinner_selector"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin" />
         </RelativeLayout>
 
         <Button
             android:id="@+id/next"
-            style="@style/ButtonStyle"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/information_cell_height"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:singleLine="true"
-            android:text="@string/next" />
+            android:text="@string/next"
+            android:background="@drawable/btn_red_round_selector"
+            android:textColor="@color/white"
+            android:textSize="@dimen/normal_textsize" />
 
     </LinearLayout>
 

@@ -59,6 +59,8 @@ public class FillInInformationActivity extends ActionBarActivity implements OnCl
     private TextView mHopeWeightUnit;
 
     private ArrayList<ContentProviderOperation> mOps;
+    
+    private TextView mStepOne;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -106,6 +108,9 @@ public class FillInInformationActivity extends ActionBarActivity implements OnCl
         mHopeWeightUnit = (TextView) findViewById(R.id.hope_weight_unit);
         mHopeWeight.setFocusable(false);
         mNext = (Button) findViewById(R.id.next);
+        
+        mStepOne = (TextView) findViewById(R.id.step_one);
+        mStepOne.setSelected(true);
     }
 
     private void valueToView() {

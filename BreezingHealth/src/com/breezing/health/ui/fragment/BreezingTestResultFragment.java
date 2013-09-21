@@ -3,6 +3,9 @@ package com.breezing.health.ui.fragment;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -77,8 +80,11 @@ public class BreezingTestResultFragment extends BaseFragment implements OnClickL
             String day = String.valueOf(mEnergyCostDate).subSequence( ENERGY_COST_YEAR + ENERGY_COST_MONTH  ,
                     String.valueOf(mEnergyCostDate).length() ).toString();
             Log.d(TAG, "onCreateView year = " + year + " month = " + month + " day =" +  day  );
-            mTextView.setText(getActivity().getString(R.string.breezing_result,
-                    year, month , day, mTotalEnergy) );
+            final String result = getActivity().getString(R.string.breezing_result,
+                    year, month , day, mTotalEnergy);
+            SpannableString spannable = new SpannableString(result);
+            spannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.black)), 2, 13, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            mTextView.setText(spannable);
         }
     }
 

@@ -7,7 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.breezing.health.R;
 import com.breezing.health.entity.RecordFunctionEntity;
@@ -45,7 +46,8 @@ public class AddCaloricRecordAdapter extends BaseAdapter {
             convertView = LayoutInflater.from(context).inflate(R.layout.gridview_caloric_item, null);
             viewHolder = new ViewHolder();
             viewHolder.seekBar = (HoloCircleSeekBar) convertView.findViewById(R.id.seekBar);
-            viewHolder.title = (Button) convertView.findViewById(R.id.title);
+            viewHolder.title = (TextView) convertView.findViewById(R.id.title);
+            viewHolder.divider = (ImageView) convertView.findViewById(R.id.divider);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -53,15 +55,22 @@ public class AddCaloricRecordAdapter extends BaseAdapter {
 
         final RecordFunctionEntity fun = (RecordFunctionEntity) getItem(position);
         viewHolder.title.setText(fun.getTitleRes());
+        viewHolder.title.setCompoundDrawablesWithIntrinsicBounds(0, fun.getIconRes(), 0, 0);
         viewHolder.seekBar.setCircleSeekBar(fun.getMax(), fun.getValue(), fun.getColorRes());
+        if (position == getCount() - 1) {
+            viewHolder.divider.setVisibility(View.INVISIBLE);
+        } else {
+            viewHolder.divider.setVisibility(View.VISIBLE);
+        }
 
        // viewHolder.seekBar.setTextAlignment(fun.getPercentage());
         return convertView;
     }
 
-    public class ViewHolder {
-        public HoloCircleSeekBar seekBar;
-        public Button title;
+    class ViewHolder {
+        HoloCircleSeekBar seekBar;
+        TextView title;
+        ImageView divider;
     }
 
 

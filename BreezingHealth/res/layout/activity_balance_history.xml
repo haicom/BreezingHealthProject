@@ -3,6 +3,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
+
+    <Button
+        android:id="@+id/model"
+        style="@style/ButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/information_cell_height"
+        android:singleLine="true"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin" />
+
+    <Button
+        android:id="@+id/during"
+        style="@style/ButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/information_cell_height"
+        android:singleLine="true"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin" />
     
+    <com.breezing.health.widget.CustomViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="@dimen/activity_vertical_margin" />
 
 </LinearLayout>

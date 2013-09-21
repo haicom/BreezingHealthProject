@@ -32,6 +32,7 @@ import com.breezing.health.util.DateFormatUtil;
 import com.breezing.health.util.LocalSharedPrefsUtil;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnClosedListener;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnOpenedListener;
+import com.viewpagerindicator.LinePageIndicator;
 
 public class MainActivity extends ActionBarActivity implements OnClickListener {
     private final static String TAG = "MainActivity";
@@ -41,6 +42,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
     private Button mCalendar;
     private ContentResolver mContentResolver;
     private CaloricPagerAdapter mCaloricPagerAdapter;
+    private LinePageIndicator mLinePageIndicator;
 
     private int mDate;
     private int mAccountId;
@@ -80,11 +82,12 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
     }
 
     private void initViews() {
-        addRightActionItem( new ActionItem(ActionItem.ACTION_DONE) );
-        
+        addRightActionItem(new ActionItem(ActionItem.ACTION_HISTORY));
+        addLeftActionItem(new ActionItem(ActionItem.ACTION_MENU));
         mWeight = (Button) findViewById(R.id.weight);
         mCalendar = (Button) findViewById(R.id.calendar);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
+        mLinePageIndicator = (LinePageIndicator) findViewById(R.id.indicator);
     }
 
     private void valueToView() {
@@ -98,6 +101,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         bundle.putInt(MAIN_ACCOUNT_ID, mAccountId);
         bundle.putInt(MAIN_DATE, mDate);
         caloricIntakeFragment.setArguments(bundle);
+		
+        mLinePageIndicator.setViewPager(mViewPager);
     }
 
     private void initListeners() {
@@ -126,6 +131,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
             @Override
             public void onPageSelected(int position) {
                 mPosition = position;
+                mLinePageIndicator.setCurrentItem(position);
             }
 
             @Override
@@ -164,6 +170,10 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         
         if ( v == mCalendar ) {
             showCalendar();
+            return ;
+        } else if (v == mWeight) {
+            Intent intent = new Intent(IntentAction.ACTIVITY_WEIGHT_RECORD);
+            startActivity(intent);
             return ;
         }
     }
@@ -286,7 +296,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
     public void onClickActionBarItems(ActionItem item, View v) {
 
         switch( item.getActionId() ) {
-            case ActionItem.ACTION_DONE:
+            case ActionItem.ACTION_HISTORY:
                 if (mPosition ==
                          CaloricPagerAdapter.MAIN_INTERFACE_CALORIC_BURIN ) {
                     Intent intent = new Intent(IntentAction.ACTIVITY_CALORIC_HISTORY);
@@ -300,8 +310,13 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                             CaloricPagerAdapter.MAIN_INTERFACE_CALORIC_INTAKE );
                     startActivity(intent);
                 }
+                return ;
+                
+            case ActionItem.ACTION_MENU: {
+                toggle();
+                return ;
+            }
         }
-        
         super.onClickActionBarItems(item, v);
     }
     

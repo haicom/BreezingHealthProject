@@ -7,6 +7,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -66,6 +67,7 @@ public class ActionBarActivity extends BaseActivity {
         button.setBackgroundResource(R.drawable.bg_action_item_selector);
         button.setPadding(Tools.dip2px(this, 5), Tools.dip2px(this, 5), Tools.dip2px(this, 5), Tools.dip2px(this, 5));
         button.setAdjustViewBounds(true);
+        button.setScaleType(ScaleType.CENTER_INSIDE);
         button.setImageResource(item.getActionIconRes());
         button.setTag(item);
         button.setOnClickListener(new OnClickListener() {
@@ -113,6 +115,7 @@ public class ActionBarActivity extends BaseActivity {
         button.setBackgroundResource(R.drawable.bg_action_item_selector);
         button.setPadding(Tools.dip2px(this, 5), Tools.dip2px(this, 5), Tools.dip2px(this, 5), Tools.dip2px(this, 5));
         button.setAdjustViewBounds(true);
+        button.setScaleType(ScaleType.CENTER_INSIDE);
         button.setImageResource(item.getActionIconRes());
         button.setTag(item);
         button.setOnClickListener(new OnClickListener() {
@@ -180,10 +183,10 @@ public class ActionBarActivity extends BaseActivity {
         
         if (mTitle == null) {
             mTitle = new TextView(this);
-            mTitle.setTextColor(getResources().getColor(android.R.color.white));
+            mTitle.setTextColor(getResources().getColor(R.color.black));
             mTitle.setTextSize(22f);
             mTitle.setSingleLine(true);
-            mTitle.setShadowLayer(1, 1, 1, getResources().getColor(android.R.color.black));
+            mTitle.setShadowLayer(1, 1, 1, getResources().getColor(R.color.white));
             mTitle.setGravity(Gravity.CENTER);
             mCenterActionLayout.addView(mTitle);
         }

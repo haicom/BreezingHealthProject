@@ -6,8 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.breezing.health.R;
+import com.breezing.health.entity.enums.ChartModel;
 import com.breezing.health.ui.activity.CaloricHistoryActivity.CaloricHistoryType;
-import com.breezing.health.ui.fragment.ChartModelPickerDialogFragment.CaloricHistoryChartModel;
 import com.breezing.health.widget.linechart.FancyChart;
 import com.breezing.health.widget.linechart.FancyChartPointListener;
 import com.breezing.health.widget.linechart.data.ChartData;
@@ -19,7 +19,7 @@ public class CaloricWeeklyHistoryFragment extends BaseFragment {
     private FancyChart mChart;
     
     private CaloricHistoryType mCaloricHistoryType;
-    private CaloricHistoryChartModel mCaloricHistoryChartModel;
+    private ChartModel mCaloricHistoryChartModel;
     
     private ChartData mChartData;
     
@@ -56,7 +56,7 @@ public class CaloricWeeklyHistoryFragment extends BaseFragment {
         mCaloricHistoryType = type;
     }
     
-    public void setChartModel(CaloricHistoryChartModel model) {
+    public void setChartModel(ChartModel model) {
         mCaloricHistoryChartModel = model;
     }
 

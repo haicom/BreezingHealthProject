@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     
-    <color name="red">#ffff0000</color>
+    <color name="red">#ed3d00</color>
     <color name="orange">#f77924</color>
     <color name="white">#ffffffff</color>
     <color name="black">#ff000000</color>
@@ -36,4 +36,5 @@
         <item>#CAF1E7</item>
     </string-array>
     
+    <color name="background_color">#f2f2f2</color>
 </resources>

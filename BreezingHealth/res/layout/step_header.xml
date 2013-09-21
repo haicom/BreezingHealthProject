@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:background="@color/gray"
+        android:contentDescription="@string/content_description" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/step_one"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:drawableTop="@drawable/btn_checkbox_selector"
+            android:singleLine="true"
+            android:text="@string/step_by_base_information"
+            android:textColor="@color/checkbox_text_selector"
+            android:textSize="@dimen/middle_textsize"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/step_two"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:drawableTop="@drawable/btn_checkbox_selector"
+            android:singleLine="true"
+            android:text="@string/step_by_breezing_test"
+            android:textColor="@color/checkbox_text_selector"
+            android:textSize="@dimen/middle_textsize"
+            android:gravity="center" />
+    </LinearLayout>
+
+</RelativeLayout>

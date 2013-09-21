@@ -3,11 +3,13 @@
     <style name="AppBaseTheme.NoTitleBar" parent="android:Theme.Light.NoTitleBar">
         <item name="numberPickerStyle">@style/NPWidget.Holo.Light.NumberPicker</item>
          <item name="calendarViewStyle">@style/CalendarView</item>
+         <item name="vpiLinePageIndicatorStyle">@style/CustomLinePageIndicator</item>
     </style>
 
     <style name="AppBaseTheme.NoTitleBar.Fullscreen" parent="android:Theme.Light.NoTitleBar.Fullscreen">
         <item name="numberPickerStyle">@style/NPWidget.Holo.Light.NumberPicker</item>
          <item name="calendarViewStyle">@style/CalendarView</item>
+         <item name="vpiLinePageIndicatorStyle">@style/CustomLinePageIndicator</item>
     </style>
 
     <!-- Application theme. -->
@@ -50,6 +52,12 @@
         <item name="weekSeparatorLineColor">#ccf</item>
         <item name="weekDayTextAppearance">?android:attr/textAppearanceMedium</item>
         <item name="dateTextSize">16sp</item>
+    </style>
+    
+    <style name="CustomLinePageIndicator">
+        <item name="strokeWidth">3dp</item>
+        <item name="lineWidth">20dp</item>
+        <item name="selectedColor">@color/red</item>
     </style>
 
 </resources>

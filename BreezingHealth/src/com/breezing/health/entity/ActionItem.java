@@ -9,6 +9,9 @@ public class ActionItem {
     public final static int ACTION_REFRESH = 0x103;
     public final static int ACTION_TITLE = 0x104;
     public final static int ACTION_MORE = 0X105;
+    public final static int ACTION_MENU = 0x106;
+    public final static int ACTION_HISTORY = 0x107;
+    public final static int ACTION_BREEZING_TEST_HISTORY = 0x108;
 
     private String actionName;
     private int actionId;
@@ -44,6 +47,24 @@ public class ActionItem {
             this.actionName = "more";
             this.actionId = ACTION_MORE;
             this.actionIconRes = R.drawable.btn_more_selector;
+            break;
+            
+        case ACTION_MENU:
+            this.actionName = "menu";
+            this.actionId = ACTION_MENU;
+            this.actionIconRes = R.drawable.ic_action_menu;
+            break;
+            
+        case ACTION_HISTORY:
+            this.actionName = "history";
+            this.actionId = ACTION_HISTORY;
+            this.actionIconRes = R.drawable.ic_action_chart;
+            break;
+            
+        case ACTION_BREEZING_TEST_HISTORY:
+            this.actionName = "test_history";
+            this.actionId = ACTION_BREEZING_TEST_HISTORY;
+            this.actionIconRes = R.drawable.ic_breezing_test_history;
             break;
             
         }

@@ -74,8 +74,8 @@
 
     <string name = "input_infomation" >输入信息是：能量代谢值为 %1$d 基本运动能值为 %2$d 消化能值为 %3$d</string>
 
-    <string name = "breezing_result" >您%1$s年%2$s月%3$s日的能量代谢值是%4$d千卡，低于平均水平。</string>
-    <string name = "breezing_result_more" >点击查看更多关于《运动和健康的饮食有助你提高您的代谢》</string>
+    <string name = "breezing_result" >您&#160;%1$s年%2$s月%3$s日&#160;的能量代谢值是</string>
+    <string name = "breezing_result_more" >点击查看更多关于\n《运动和健康的饮食有助你提高您的代谢》</string>
     <string name = "kilo_metabolism" >千焦</string>
 
     <string name = "breezing_date" >%1$d年%2$d月%3$d日</string>
@@ -151,6 +151,23 @@
     <string name="year_chart_model">年模式</string>
     <string name="week">周</string>
     <string name="week_des_first">第</string>
+    <string name="balance_history">平衡历史</string>
+    <string name="date">日期</string>
+    <string name="balance">平衡</string>
+    <string name="move_left">向左滑动</string>
+    <string name="breezing_test_notice">&#160;&#160;&#160;&#160;能量代谢是维持生命的基本能量需求，也是重要的生理参数之一。跟着提示，向左滑动一起开始使用Breezing测量您的能量代谢。</string>
 
+    <string name="less_than_normal">低于正常水平</string>
+    <string name="step_by_base_information">基本资料</string>
+    <string name="step_by_breezing_test">热量消耗测试</string>
+    <string name="weight_trend_notice">温馨提醒：预计您的体重将每年增加0.8kg。</string>
+    
+    <string name="update_weight">更新体重</string>
+    <string name="weight_update_notice">%1$d年%2$d月%3$d日测试的体重为：%4$d斤</string>
+    <string name="hope_weight_notice">◀%1$d斤</string>
+    <string name="different_weight_value_notice">距离目标体重：%1$d斤</string>
+    <string name="click_to_select_weight">点击选择体重</string>
+    <string name="record_current_weight">记录当前体重</string>
+    <string name="connect_to_weight_scale">连接蓝牙秤</string>
 
 </resources>

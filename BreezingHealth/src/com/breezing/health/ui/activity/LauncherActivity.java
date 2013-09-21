@@ -106,7 +106,10 @@ public class LauncherActivity extends BaseActivity {
                         appendEnergyCostById(accountId);
                     }
                     action = IntentAction.ACTIVITY_MAIN;
-//                    action = IntentAction.ACTIVITY_CALORIC_HISTORY;
+//                    action = IntentAction.ACTIVITY_BALANCE_HISTORY;
+//                    action = IntentAction.ACTIVITY_BREEZING_TEST;
+//                    action = IntentAction.ACTIVITY_FILLIN_INFORMATION; 
+//                    action = IntentAction.ACTIVITY_WEIGHT_RECORD; 
                 }
             }
         }

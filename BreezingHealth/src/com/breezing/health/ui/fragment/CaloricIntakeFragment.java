@@ -14,15 +14,11 @@ import android.widget.TextView;
 import com.breezing.health.R;
 import com.breezing.health.adapter.AddCaloricRecordAdapter;
 import com.breezing.health.adapter.CaloricPagerAdapter;
-import com.breezing.health.entity.PiePartEntity;
 import com.breezing.health.entity.RecordFunctionEntity;
-import com.breezing.health.providers.Breezing.EnergyCost;
 import com.breezing.health.providers.Breezing.Ingestion;
 import com.breezing.health.ui.activity.MainActivity;
-import com.breezing.health.widget.PieChart;
 import com.breezing.health.widget.PieGraph;
 import com.breezing.health.widget.PieSlice;
-import com.breezing.health.widget.PieChart.OnSelectedLisenter;
 
 public class CaloricIntakeFragment extends BaseFragment {  
     private static final String TAG = "CaloricIntakeFragment";
@@ -63,7 +59,7 @@ public class CaloricIntakeFragment extends BaseFragment {
         mFragmentView = inflater.inflate(R.layout.fragment_caloric_intake, null);     
         
      
-        mGridView = (GridView) mFragmentView.findViewById(R.id.grid_view);
+        mGridView = (GridView) mFragmentView.findViewById(R.id.gridView);
         mPieGraph = (PieGraph) mFragmentView.findViewById(R.id.pie_graph);
         mUptakeCaloric = (TextView)mFragmentView.findViewById(R.id.uptake_caloric);
 
@@ -218,19 +214,19 @@ public class CaloricIntakeFragment extends BaseFragment {
 
         funs.add(new RecordFunctionEntity(R.string.breakfast,
                 breakfast, totalIngestion ,
-                getActivity().getResources().getColor(R.color.red_brown) ) );
+                getActivity().getResources().getColor(R.color.red_brown), R.drawable.ic_breakfast ) );
 
         funs.add(new RecordFunctionEntity(R.string.lunch,
                 lunch, totalIngestion,
-                getActivity().getResources().getColor(R.color.brown_yellow) ) );
+                getActivity().getResources().getColor(R.color.brown_yellow), R.drawable.ic_lunch ) );
 
         funs.add(new RecordFunctionEntity(R.string.dinner,
                 dinner, totalIngestion ,
-                getActivity().getResources().getColor(R.color.orange_yellow) ) );
+                getActivity().getResources().getColor(R.color.orange_yellow), R.drawable.ic_dinner ) );
         
         funs.add(new RecordFunctionEntity(R.string.other,
                 etc, totalIngestion ,
-                getActivity().getResources().getColor(R.color.pink_yellow) ) );
+                getActivity().getResources().getColor(R.color.pink_yellow), R.drawable.ic_other ) );
 
         mAdapter = new AddCaloricRecordAdapter(getActivity(), funs);
         mGridView.setAdapter(mAdapter);

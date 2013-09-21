@@ -2,14 +2,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-    
-    <Button
+
+    <ImageButton
         android:id="@+id/begin"
-        style="@style/ButtonStyle"
-        android:layout_width="200dp"
-        android:layout_height="@dimen/information_cell_height"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
         android:singleLine="true"
-        android:text="@string/begin_testing"
-        android:layout_centerInParent="true" />
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/content_description"
+        android:src="@drawable/btn_breezing_selector"
+        android:background="@null" />
 
 </RelativeLayout>

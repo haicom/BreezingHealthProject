@@ -2,35 +2,26 @@ package com.breezing.health.ui.fragment;
 
 import java.util.ArrayList;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 import android.widget.TextView;
 
-import com.breezing.health.tools.IntentAction;
-import com.breezing.health.ui.activity.MainActivity;
-
 import com.breezing.health.R;
 import com.breezing.health.adapter.AddCaloricRecordAdapter;
 import com.breezing.health.adapter.CaloricPagerAdapter;
-import com.breezing.health.adapter.AddCaloricRecordAdapter.ViewHolder;
-import com.breezing.health.entity.PiePartEntity;
 import com.breezing.health.entity.RecordFunctionEntity;
 import com.breezing.health.providers.Breezing.EnergyCost;
-import com.breezing.health.util.DateFormatUtil;
-import com.breezing.health.widget.PieChart;
-import com.breezing.health.widget.PieChart.OnSelectedLisenter;
+import com.breezing.health.tools.IntentAction;
+import com.breezing.health.ui.activity.MainActivity;
 import com.breezing.health.widget.PieGraph;
 import com.breezing.health.widget.PieSlice;
 
@@ -225,15 +216,15 @@ public class CaloricBurnFragment extends BaseFragment implements OnItemClickList
 
         funs.add(new RecordFunctionEntity(R.string.energy_metabolism,
                 metabolism, totalEnergy ,
-                getActivity().getResources().getColor(R.color.brun_green) ) );
+                getActivity().getResources().getColor(R.color.brun_green), R.drawable.ic_metabolize ) );
 
         funs.add(new RecordFunctionEntity(R.string.exercise,
                 train, totalEnergy,
-                getActivity().getResources().getColor(R.color.pale_green) ) );
+                getActivity().getResources().getColor(R.color.pale_green), R.drawable.ic_sport ) );
 
         funs.add(new RecordFunctionEntity(R.string.other,
                 sport + digest, totalEnergy ,
-                getActivity().getResources().getColor(R.color.pale_yellow) ) );
+                getActivity().getResources().getColor(R.color.pale_yellow), R.drawable.ic_other ) );
 
         mAdapter = new AddCaloricRecordAdapter(getActivity(), funs);
         mGridView.setAdapter(mAdapter);

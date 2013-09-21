@@ -1,17 +1,16 @@
 package com.breezing.health.ui.fragment;
 
+import java.util.ArrayList;
+
 import android.content.ContentProviderOperation;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
-
-import java.util.ArrayList;
 
 import com.breezing.health.R;
 import com.breezing.health.providers.Breezing;
@@ -23,7 +22,7 @@ import com.breezing.health.util.LocalSharedPrefsUtil;
 public class BreezingTestSecondStepFragment extends BaseFragment implements OnClickListener {
     private static final String TAG = "BreezingTestSecondStepFragment";
     private View mFragmentView;
-    private Button mBegin;
+    private ImageButton mBegin;
     private String mTestInfo;
 
     public static BreezingTestSecondStepFragment newInstance() {
@@ -40,7 +39,7 @@ public class BreezingTestSecondStepFragment extends BaseFragment implements OnCl
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         mFragmentView = inflater.inflate(R.layout.fragment_breezing_test_second_step, null);
-        mBegin = (Button) mFragmentView.findViewById(R.id.begin);
+        mBegin = (ImageButton) mFragmentView.findViewById(R.id.begin);
         mBegin.setOnClickListener(this);
 
         return mFragmentView;

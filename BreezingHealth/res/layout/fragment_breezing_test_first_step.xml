@@ -1,17 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:gravity="center" >
 
     <TextView
-        android:id="@+id/name"
+        android:id="@+id/notice"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_vertical"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/activity_vertical_margin"
         android:gravity="center_vertical"
-        android:text="能量代谢是维持生命的基本能量需求，也是重要的生理参数之一。跟着提示，向左滑动一起开始使用Breezing测量您的能量代谢。"
+        android:text="@string/breezing_test_notice"
         android:textColor="@color/black"
-        android:textSize="@dimen/normal_textsize" />
+        android:textSize="@dimen/normal_textsize"
+        android:background="@drawable/bg_breezing_test_notice" />
 
-</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/notice"
+        android:gravity="center" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/content_description"
+            android:scaleType="centerInside"
+            android:src="@drawable/tag_move_left" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="@dimen/activity_vertical_margin"
+            android:gravity="center_vertical"
+            android:textColor="@color/red"
+            android:textSize="@dimen/normal_textsize"
+            android:text="@string/move_left"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/content_description"
+            android:scaleType="centerInside"
+            android:src="@drawable/tag_move_left" />
+    </LinearLayout>
+
+</RelativeLayout>

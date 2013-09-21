@@ -1,7 +1,6 @@
 package com.breezing.health.ui.activity;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
@@ -15,14 +14,13 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.breezing.health.R;
-import com.breezing.health.adapter.CaloricPagerAdapter;
 import com.breezing.health.entity.ActionItem;
+import com.breezing.health.entity.enums.ChartModel;
 import com.breezing.health.providers.Breezing.EnergyCost;
 import com.breezing.health.providers.Breezing.Ingestion;
 import com.breezing.health.ui.fragment.BaseDialogFragment;
 import com.breezing.health.ui.fragment.CaloricWeeklyHistoryFragment;
 import com.breezing.health.ui.fragment.ChartModelPickerDialogFragment;
-import com.breezing.health.ui.fragment.ChartModelPickerDialogFragment.CaloricHistoryChartModel;
 import com.breezing.health.ui.fragment.DialogFragmentInterface;
 import com.breezing.health.ui.fragment.MonthIntervalPickerDialogFragment;
 import com.breezing.health.ui.fragment.WeekIntervalPickerDialogFragment;
@@ -30,7 +28,6 @@ import com.breezing.health.ui.fragment.YearIntervalPickerDialogFragment;
 import com.breezing.health.util.BLog;
 import com.breezing.health.util.CalendarUtil;
 import com.breezing.health.util.DateFormatUtil;
-import com.breezing.health.util.ExtraName;
 import com.breezing.health.util.LocalSharedPrefsUtil;
 import com.breezing.health.widget.linechart.data.ChartData;
 
@@ -48,7 +45,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
     }
 
     private CaloricHistoryType mCaloricHistoryType;
-    private CaloricHistoryChartModel mCaloricHistoryChartModel = CaloricHistoryChartModel.WEEK;
+    private ChartModel mCaloricHistoryChartModel = ChartModel.WEEK;
 
     private Button mSelectModelButton;
     private Button mSelectIntervalButton;
@@ -206,7 +203,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
             @Override
             public void onClick(BaseDialogFragment dialog,
                     Object... params) {
-                mCaloricHistoryChartModel = (CaloricHistoryChartModel) params[0];
+                mCaloricHistoryChartModel = (ChartModel) params[0];
                 refreshFragment();
             }
 

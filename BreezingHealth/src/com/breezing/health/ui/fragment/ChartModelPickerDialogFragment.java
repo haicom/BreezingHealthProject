@@ -13,22 +13,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.breezing.health.R;
+import com.breezing.health.entity.enums.ChartModel;
 
 public class ChartModelPickerDialogFragment extends BaseDialogFragment implements OnClickListener {
-
-    public enum CaloricHistoryChartModel {
-        WEEK(R.string.week_chart_model), MONTH(R.string.month_chart_model), YEAR(R.string.year_chart_model);
-
-        private CaloricHistoryChartModel(int nameRes) {
-            this.nameRes = nameRes;
-        }
-
-        public int nameRes;
-
-        public static CaloricHistoryChartModel[] createChartModel() {
-            return new CaloricHistoryChartModel[] {WEEK, MONTH, YEAR};
-        }
-    }
 
     private View mFragmentView;
     private NumberPicker mNumberPicker;
@@ -38,7 +25,7 @@ public class ChartModelPickerDialogFragment extends BaseDialogFragment implement
     private DialogFragmentInterface.OnClickListener mPositiveClickListener;
     private DialogFragmentInterface.OnClickListener mNegativeClickListener;
     private String mTitleString;
-    private CaloricHistoryChartModel[] mModels;
+    private ChartModel[] mModels;
 
     public static ChartModelPickerDialogFragment newInstance() {
         ChartModelPickerDialogFragment fragment = new ChartModelPickerDialogFragment();
@@ -61,7 +48,7 @@ public class ChartModelPickerDialogFragment extends BaseDialogFragment implement
         mCancel = (Button) mFragmentView.findViewById(R.id.cancel);
         mConfirm = (Button) mFragmentView.findViewById(R.id.confirm);
 
-        mModels = CaloricHistoryChartModel.createChartModel();
+        mModels = ChartModel.createChartModel();
 
         final int length = mModels.length;
         String[] values = new String[length];
@@ -104,7 +91,7 @@ public class ChartModelPickerDialogFragment extends BaseDialogFragment implement
     public void onClick(View v) {
         if (v == mConfirm) {
             if (mPositiveClickListener != null) {
-                CaloricHistoryChartModel displayValue = mModels[mNumberPicker.getValue()];
+                ChartModel displayValue = mModels[mNumberPicker.getValue()];
                 mPositiveClickListener.onClick(this, displayValue);
             }
             dismiss();
