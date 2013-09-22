@@ -4,32 +4,41 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <Button
-        android:id="@+id/model"
-        style="@style/ButtonStyle"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/information_cell_height"
-        android:singleLine="true"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_vertical_margin" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin" >
 
-    <Button
-        android:id="@+id/during"
-        style="@style/ButtonStyle"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/information_cell_height"
-        android:singleLine="true"
-        android:text="@string/exercise_intensity"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_vertical_margin" />
+        <Button
+            android:id="@+id/model"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:background="@drawable/btn_white_round_selector"
+            android:singleLine="true"
+            android:textColor="@color/black"
+            android:textSize="@dimen/small_textsize" />
 
-    <LinearLayout android:id="@+id/chart_content"
+        <Button
+            android:id="@+id/during"
+            android:layout_width="0dp"
+            android:layout_weight="2.5"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:background="@drawable/btn_white_round_selector"
+            android:singleLine="true"
+            android:textColor="@color/black"
+            android:textSize="@dimen/small_textsize" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/chart_content"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_weight="1"
-        android:orientation="vertical"
-        android:layout_marginTop="@dimen/activity_vertical_margin" />
+        android:orientation="vertical" />
 
 </LinearLayout>

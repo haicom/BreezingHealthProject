@@ -238,14 +238,8 @@ public class CaloricBurnFragment extends BaseFragment implements OnItemClickList
         Log.d(TAG, "onItemClick view = " + view + " position =  " + position);
         
         if ( recordFunction.getTitleRes() == R.string.exercise ) {           
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(IntentAction.ACTIVITY_EXERCISE_RECORD);
-                    CaloricBurnFragment.this.startActivity(intent);                    
-                }
-                
-            });
+            Intent intent = new Intent(IntentAction.ACTIVITY_EXERCISE_RECORD);
+            CaloricBurnFragment.this.startActivity(intent); 
         }
         
     }

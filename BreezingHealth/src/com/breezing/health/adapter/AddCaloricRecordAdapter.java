@@ -48,6 +48,7 @@ public class AddCaloricRecordAdapter extends BaseAdapter {
             viewHolder.seekBar = (HoloCircleSeekBar) convertView.findViewById(R.id.seekBar);
             viewHolder.title = (TextView) convertView.findViewById(R.id.title);
             viewHolder.divider = (ImageView) convertView.findViewById(R.id.divider);
+            viewHolder.icon = (ImageView) convertView.findViewById(R.id.icon);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -55,7 +56,7 @@ public class AddCaloricRecordAdapter extends BaseAdapter {
 
         final RecordFunctionEntity fun = (RecordFunctionEntity) getItem(position);
         viewHolder.title.setText(fun.getTitleRes());
-        viewHolder.title.setCompoundDrawablesWithIntrinsicBounds(0, fun.getIconRes(), 0, 0);
+        viewHolder.icon.setImageResource(fun.getIconRes());
         viewHolder.seekBar.setCircleSeekBar(fun.getMax(), fun.getValue(), fun.getColorRes());
         if (position == getCount() - 1) {
             viewHolder.divider.setVisibility(View.INVISIBLE);
@@ -71,6 +72,7 @@ public class AddCaloricRecordAdapter extends BaseAdapter {
         HoloCircleSeekBar seekBar;
         TextView title;
         ImageView divider;
+        ImageView icon;
     }
 
 
