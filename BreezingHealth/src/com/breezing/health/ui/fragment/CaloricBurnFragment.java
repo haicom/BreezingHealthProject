@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import com.breezing.health.R;
 import com.breezing.health.adapter.AddCaloricRecordAdapter;
-import com.breezing.health.adapter.CaloricPagerAdapter;
 import com.breezing.health.entity.RecordFunctionEntity;
 import com.breezing.health.providers.Breezing.EnergyCost;
 import com.breezing.health.tools.IntentAction;
@@ -41,13 +40,10 @@ public class CaloricBurnFragment extends BaseFragment implements OnItemClickList
         return fragment;
     }
 
-    public static CaloricBurnFragment getInstance(int num) {
+    public static CaloricBurnFragment getInstance() {
 
         if (mCaloricBurnFragment == null) {
             mCaloricBurnFragment = new CaloricBurnFragment();
-            Bundle args = new Bundle();
-            args.putInt(CaloricPagerAdapter.MAIN_INTERFACE_SAVE_NUM, num);
-            mCaloricBurnFragment.setArguments(args);
         }
 
         return mCaloricBurnFragment;

@@ -6,20 +6,26 @@
     <LinearLayout
         android:id="@+id/searchLayout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/food_searchbar_height"
+        android:layout_height="wrap_content"
         android:background="@color/red" >
 
         <EditText
             android:id="@+id/keyword"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/searchbar_vertical_small_margin"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:layout_marginTop="@dimen/searchbar_vertical_small_margin"
             android:hint="@string/input_food_name_keyword"
             android:textColor="@color/black"
-            android:textSize="@dimen/middle_textsize" />
+            android:textSize="@dimen/middle_textsize"
+            android:background="@drawable/bg_search_edittext"
+            android:drawableLeft="@drawable/tag_search"
+            android:drawablePadding="@dimen/activity_horizontal_small_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin" />
+        
     </LinearLayout>
 
     <ImageView
@@ -27,7 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/searchLayout"
-        android:background="@color/black"
+        android:background="@drawable/divider_search"
         android:contentDescription="@string/content_description" />
 
     <RelativeLayout

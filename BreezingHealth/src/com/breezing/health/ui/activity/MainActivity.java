@@ -22,6 +22,7 @@ import com.breezing.health.providers.Breezing.Information;
 import com.breezing.health.providers.Breezing.UnitSettings;
 import com.breezing.health.providers.Breezing.WeightChange;
 import com.breezing.health.tools.IntentAction;
+import com.breezing.health.ui.activity.CaloricHistoryActivity.CaloricHistoryType;
 import com.breezing.health.ui.fragment.BaseDialogFragment;
 import com.breezing.health.ui.fragment.CalendarDialogFragment;
 import com.breezing.health.ui.fragment.CaloricBurnFragment;
@@ -29,6 +30,7 @@ import com.breezing.health.ui.fragment.CaloricIntakeFragment;
 import com.breezing.health.ui.fragment.DialogFragmentInterface;
 import com.breezing.health.util.BLog;
 import com.breezing.health.util.DateFormatUtil;
+import com.breezing.health.util.ExtraName;
 import com.breezing.health.util.LocalSharedPrefsUtil;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnClosedListener;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnOpenedListener;
@@ -46,7 +48,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
     private int mDate;
     private int mAccountId;
-    private int mPosition;
+    private CaloricHistoryType mPosition = CaloricHistoryType.BURN;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -96,7 +98,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         mViewPager.setAdapter(mCaloricPagerAdapter);
         
         CaloricIntakeFragment caloricIntakeFragment  = (CaloricIntakeFragment) mCaloricPagerAdapter.
-                getItem(mCaloricPagerAdapter.MAIN_INTERFACE_CALORIC_INTAKE);
+                getItem(CaloricHistoryType.INTAKE.ordinal());
         Bundle bundle = new Bundle();
         bundle.putInt(MAIN_ACCOUNT_ID, mAccountId);
         bundle.putInt(MAIN_DATE, mDate);
@@ -126,11 +128,12 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         mWeight.setOnClickListener(this);
         mCalendar.setOnClickListener(this);
 
-        mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
+        mLinePageIndicator.setOnPageChangeListener(new OnPageChangeListener() {
 
             @Override
             public void onPageSelected(int position) {
-                mPosition = position;
+                BLog.v(TAG, "ViewPager position =" + position);
+                mPosition = CaloricHistoryType.values()[position];
                 mLinePageIndicator.setCurrentItem(position);
             }
 
@@ -149,11 +152,11 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
     private void drawPiePicture() {
         CaloricBurnFragment caloricBurnFragment  = (CaloricBurnFragment) mCaloricPagerAdapter.
-                getItem(mCaloricPagerAdapter.MAIN_INTERFACE_CALORIC_BURIN);
+                getItem(CaloricHistoryType.BURN.ordinal());
         caloricBurnFragment.drawPieChar( mAccountId, mDate );
         
         CaloricIntakeFragment caloricIntakeFragment  = (CaloricIntakeFragment) mCaloricPagerAdapter.
-                getItem(mCaloricPagerAdapter.MAIN_INTERFACE_CALORIC_INTAKE);
+                getItem(CaloricHistoryType.INTAKE.ordinal());
         caloricIntakeFragment.drawPieChar( mAccountId, mDate );
     }
 
@@ -296,21 +299,13 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
     public void onClickActionBarItems(ActionItem item, View v) {
 
         switch( item.getActionId() ) {
-            case ActionItem.ACTION_HISTORY:
-                if (mPosition ==
-                         CaloricPagerAdapter.MAIN_INTERFACE_CALORIC_BURIN ) {
-                    Intent intent = new Intent(IntentAction.ACTIVITY_CALORIC_HISTORY);
-                    intent.putExtra(CaloricHistoryActivity.CALORIC_HISROTY_TYPE, 
-                            CaloricPagerAdapter.MAIN_INTERFACE_CALORIC_BURIN );
-                    startActivity(intent);
-                } else if ( mPosition ==
-                        CaloricPagerAdapter.MAIN_INTERFACE_CALORIC_INTAKE ) {                    
-                    Intent intent = new Intent(IntentAction.ACTIVITY_CALORIC_HISTORY);
-                    intent.putExtra(CaloricHistoryActivity.CALORIC_HISROTY_TYPE, 
-                            CaloricPagerAdapter.MAIN_INTERFACE_CALORIC_INTAKE );
-                    startActivity(intent);
-                }
+            case ActionItem.ACTION_HISTORY: {
+                BLog.v(TAG, "caloric history position =" + mPosition.ordinal());
+                Intent intent = new Intent(IntentAction.ACTIVITY_CALORIC_HISTORY);
+                intent.putExtra(ExtraName.EXTRA_TYPE, mPosition.ordinal() );
+                startActivity(intent);
                 return ;
+            }
                 
             case ActionItem.ACTION_MENU: {
                 toggle();

@@ -28,6 +28,7 @@ import com.breezing.health.ui.fragment.YearIntervalPickerDialogFragment;
 import com.breezing.health.util.BLog;
 import com.breezing.health.util.CalendarUtil;
 import com.breezing.health.util.DateFormatUtil;
+import com.breezing.health.util.ExtraName;
 import com.breezing.health.util.LocalSharedPrefsUtil;
 import com.breezing.health.widget.linechart.data.ChartData;
 
@@ -35,7 +36,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
     private final static String TAG = "CaloricHistoryActivity";
 
     public enum CaloricHistoryType {
-        BURN(R.string.caloric_intake_history), INTAKE(R.string.caloric_burn_history);
+        BURN(R.string.caloric_burn_history), INTAKE(R.string.caloric_intake_history);
 
         private CaloricHistoryType(int nameRes) {
             this.nameRes = nameRes;
@@ -76,7 +77,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
 
     private void initValues() {
         
-        mType = getIntent().getIntExtra( CALORIC_HISROTY_TYPE, CaloricHistoryType.BURN.ordinal() );
+        mType = getIntent().getIntExtra(ExtraName.EXTRA_TYPE, CaloricHistoryType.BURN.ordinal() );
         
         mCaloricHistoryType = CaloricHistoryType.values()[mType];
 
@@ -852,7 +853,4 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
     
     private final static int CALORIC_MONTH_NUMBER = 12;
     
-    public final static String CALORIC_HISROTY_TYPE = "type";
-
-
 }

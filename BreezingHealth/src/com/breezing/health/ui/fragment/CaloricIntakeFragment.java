@@ -2,12 +2,15 @@ package com.breezing.health.ui.fragment;
 
 import java.util.ArrayList;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 import android.widget.TextView;
 
@@ -16,11 +19,14 @@ import com.breezing.health.adapter.AddCaloricRecordAdapter;
 import com.breezing.health.adapter.CaloricPagerAdapter;
 import com.breezing.health.entity.RecordFunctionEntity;
 import com.breezing.health.providers.Breezing.Ingestion;
+import com.breezing.health.tools.IntentAction;
 import com.breezing.health.ui.activity.MainActivity;
+import com.breezing.health.ui.activity.CaloricIntakeActivity.CaloricIntakeType;
+import com.breezing.health.util.ExtraName;
 import com.breezing.health.widget.PieGraph;
 import com.breezing.health.widget.PieSlice;
 
-public class CaloricIntakeFragment extends BaseFragment {  
+public class CaloricIntakeFragment extends BaseFragment implements OnItemClickListener {  
     private static final String TAG = "CaloricIntakeFragment";
     
     private static CaloricIntakeFragment mCaloricIntakeFragment;
@@ -36,12 +42,9 @@ public class CaloricIntakeFragment extends BaseFragment {
         return fragment;
     }
 
-    public static CaloricIntakeFragment getInstance(int num) {
+    public static CaloricIntakeFragment getInstance() {
         if (mCaloricIntakeFragment == null) {
             mCaloricIntakeFragment = new CaloricIntakeFragment();
-            Bundle args = new Bundle();
-            args.putInt(CaloricPagerAdapter.MAIN_INTERFACE_SAVE_NUM, num);
-            mCaloricIntakeFragment.setArguments(args);
         }
         return mCaloricIntakeFragment;
     }
@@ -230,7 +233,33 @@ public class CaloricIntakeFragment extends BaseFragment {
 
         mAdapter = new AddCaloricRecordAdapter(getActivity(), funs);
         mGridView.setAdapter(mAdapter);
+        mGridView.setOnItemClickListener(this);
         mUptakeCaloric.setText(String.valueOf(totalIngestion));
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+        // TODO Auto-generated method stub
+        final RecordFunctionEntity fun = (RecordFunctionEntity) mAdapter.getItem(arg2);
+        
+        Intent intent = new Intent(IntentAction.ACTIVITY_CALORIC_INTAKE);
+        switch(fun.getTitleRes()) {
+        case R.string.breakfast:
+            intent.putExtra(ExtraName.EXTRA_TYPE, CaloricIntakeType.BREAKFAST.ordinal());
+            break;
+        case R.string.lunch:
+            intent.putExtra(ExtraName.EXTRA_TYPE, CaloricIntakeType.LUNCH.ordinal());
+            break;
+        case R.string.dinner:
+            intent.putExtra(ExtraName.EXTRA_TYPE, CaloricIntakeType.DINNER.ordinal());
+            break;
+        case R.string.other:
+            intent.putExtra(ExtraName.EXTRA_TYPE, CaloricIntakeType.OTHER.ordinal());
+            break;
+        }
+        startActivity(intent);
+        
+        return ;
     }
 
 }

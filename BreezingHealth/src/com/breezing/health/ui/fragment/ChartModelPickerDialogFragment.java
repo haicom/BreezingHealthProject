@@ -48,7 +48,7 @@ public class ChartModelPickerDialogFragment extends BaseDialogFragment implement
         mCancel = (Button) mFragmentView.findViewById(R.id.cancel);
         mConfirm = (Button) mFragmentView.findViewById(R.id.confirm);
 
-        mModels = ChartModel.createChartModel();
+        mModels = ChartModel.values();
 
         final int length = mModels.length;
         String[] values = new String[length];

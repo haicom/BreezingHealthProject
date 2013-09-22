@@ -46,7 +46,7 @@ public class ActionItem {
         case ACTION_MORE:
             this.actionName = "more";
             this.actionId = ACTION_MORE;
-            this.actionIconRes = R.drawable.btn_more_selector;
+            this.actionIconRes = R.drawable.ic_action_catagory;
             break;
             
         case ACTION_MENU:

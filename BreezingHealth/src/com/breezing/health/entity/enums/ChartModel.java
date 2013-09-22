@@ -10,8 +10,4 @@ public enum ChartModel {
     }
 
     public int nameRes;
-
-    public static ChartModel[] createChartModel() {
-        return new ChartModel[] {WEEK, MONTH, YEAR};
-    }
 }

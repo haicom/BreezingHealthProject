@@ -1,5 +1,6 @@
 package com.breezing.health.adapter;
 
+import com.breezing.health.ui.activity.CaloricHistoryActivity.CaloricHistoryType;
 import com.breezing.health.ui.fragment.CaloricBurnFragment;
 import com.breezing.health.ui.fragment.CaloricIntakeFragment;
 
@@ -15,25 +16,21 @@ public class CaloricPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        switch( position ) {
-            case MAIN_INTERFACE_CALORIC_BURIN:
-                return CaloricBurnFragment.getInstance(MAIN_INTERFACE_CALORIC_BURIN);
-            case MAIN_INTERFACE_CALORIC_INTAKE:
-                return CaloricIntakeFragment.getInstance(MAIN_INTERFACE_CALORIC_INTAKE);
+        switch( CaloricHistoryType.values()[position] ) {
+            case BURN:
+                return CaloricBurnFragment.getInstance();
+            case INTAKE:
+                return CaloricIntakeFragment.getInstance();
         }
 
         return null;
     }
+    
+    
 
     @Override
     public int getCount() {
-        return MAIN_INTERFACE_CALORIC_NUM;
+        return CaloricHistoryType.values().length;
     }
-
-    public static final int MAIN_INTERFACE_CALORIC_BURIN = 0;
-    public static final int MAIN_INTERFACE_CALORIC_INTAKE = 1;
-    public static final String MAIN_INTERFACE_SAVE_NUM = "num";
-
-    private static final int MAIN_INTERFACE_CALORIC_NUM = 2;
 
 }
