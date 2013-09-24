@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.breezing.health.R;
 import com.breezing.health.entity.CatagoryEntity;
+import com.breezing.health.util.BreezingQueryViews;
 
 public class FoodCatagoryAdapter extends BaseAdapter {
 
@@ -24,13 +25,8 @@ public class FoodCatagoryAdapter extends BaseAdapter {
     }
     
     private void initFoodCatagories() {
-        this.catagories = new ArrayList<CatagoryEntity>();
-        this.catagories.add(new CatagoryEntity("all catagory", R.drawable.ic_launcher));
-        this.catagories.add(new CatagoryEntity("catagory1", R.drawable.ic_launcher));
-        this.catagories.add(new CatagoryEntity("catagory2", R.drawable.ic_launcher));
-        this.catagories.add(new CatagoryEntity("catagory3", R.drawable.ic_launcher));
-        this.catagories.add(new CatagoryEntity("catagory4", R.drawable.ic_launcher));
-        this.catagories.add(new CatagoryEntity("catagory5", R.drawable.ic_launcher));
+    	BreezingQueryViews query = new BreezingQueryViews(context);
+        this.catagories = query.queryFoodTypes();
     }
     
     @Override
@@ -56,6 +52,36 @@ public class FoodCatagoryAdapter extends BaseAdapter {
     
     public void reset() {
         this.catagories.clear();
+    }
+    
+    public ArrayList<CatagoryEntity> getCheckedCatagories() {
+    	ArrayList<CatagoryEntity> checkedTypes = new ArrayList<CatagoryEntity>();
+    	for (CatagoryEntity catagory : catagories) {
+    		if (catagory.isChecked()) {
+    			checkedTypes.add(catagory);
+    		}
+    	}
+    	return checkedTypes;
+    }
+    
+    public int getCheckedCatagoryCount() {
+    	int size = 0;
+    	for (CatagoryEntity catagory : catagories) {
+    		if (catagory.isChecked()) {
+    			size++;
+    		}
+    	}
+    	return size;
+    }
+    
+    public void toggle(int position) {
+    	if (catagories != null && position < catagories.size()) {
+    		catagories.get(position).setChecked(!catagories.get(position).isChecked());
+    	}
+    }
+    
+    public ArrayList<CatagoryEntity> getAllCatagories() {
+    	return catagories;
     }
 
     @Override

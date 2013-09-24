@@ -1,23 +1,20 @@
 package com.breezing.health.util;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
-import android.os.Parcelable;
-import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.util.Log;
 
-
+import com.breezing.health.entity.CatagoryEntity;
+import com.breezing.health.entity.FoodEntity;
 import com.breezing.health.providers.Breezing.Account;
-import com.breezing.health.providers.Breezing.Information;
-import com.breezing.health.providers.Breezing.WeightChange;
 import com.breezing.health.providers.Breezing.EnergyCost;
-import com.breezing.health.providers.Breezing.Ingestion;
 import com.breezing.health.providers.Breezing.HeatIngestion;
+import com.breezing.health.providers.Breezing.Information;
+import com.breezing.health.providers.Breezing.Ingestion;
+import com.breezing.health.providers.Breezing.WeightChange;
 
 public class BreezingQueryViews {
     private static final String TAG = "BreezingQueryViews";
@@ -253,6 +250,7 @@ public class BreezingQueryViews {
      * 获取食物种类
      */
     private static final String[] PROJECTION_FOOD_SORT = new String[] {
+    	HeatIngestion.FOOD_TYPE,
         HeatIngestion.FOOD_NAME,          // 0
         HeatIngestion.NAME_EXPRESS,      // 1
         HeatIngestion.PRIORITY,    // 2
@@ -261,49 +259,57 @@ public class BreezingQueryViews {
     };
     
     
-    private static final int FOOD_NAME_INGESTION_INDEX = 0;
-    private static final int NAME_EXPRESS_INGESTION_INDEX = 1;
-    private static final int PRIORITY_INGESTION_INDEX = 2;
-    private static final int FOOD_QUANTITY_INGESTION_INDEX = 3;
-    private static final int CALORIE_INGESTION_INDEX = 4;
+    private static final int FOOD_TYPE_INGESTION_INDEX = 0;
+    private static final int FOOD_NAME_INGESTION_INDEX = 1;
+    private static final int NAME_EXPRESS_INGESTION_INDEX = 2;
+    private static final int PRIORITY_INGESTION_INDEX = 3;
+    private static final int FOOD_QUANTITY_INGESTION_INDEX = 4;
+    private static final int CALORIE_INGESTION_INDEX = 5;
     /**
      * 获得食物种类通过食物的类型
      * 
      * 
      */
-    public void getFoodSortFromFoodTypes(String[] foodTypes) {
-        
-        if (foodTypes.length == 0) {
-            return;
+    public ArrayList<FoodEntity> getFoodSortFromFoodTypes(ArrayList<CatagoryEntity> foodTypes) {
+    	ArrayList<FoodEntity> foods = new ArrayList<FoodEntity>();
+    	
+    	if (foodTypes.size() == 0) {
+            return foods;
         }
-        
+
         StringBuilder foodBuilder = new StringBuilder();
         boolean first = true;
         Cursor cursor = null;
-        for (String food: foodTypes) {
+        for (CatagoryEntity catagory: foodTypes) {
             if (first) {
                 first = false;
-                foodBuilder.append(food);
+                foodBuilder.append("'");
+                foodBuilder.append(catagory.getName());
+                foodBuilder.append("'");
             } else {
-                foodBuilder.append(',').append(food);
-            }            
+                foodBuilder.append(',');
+                foodBuilder.append("'");
+                foodBuilder.append(catagory.getName());
+                foodBuilder.append("'");
+            }
         }
-        
+
      // Check whether there is content URI.
-        if (first) return ;
-        
+        if (first) return foods;
+
         if (foodBuilder.length() > 0 ) {
             final String whereClause = HeatIngestion.FOOD_TYPE + " IN (" + foodBuilder.toString() + ")";
             cursor = mContentResolver.query(
                     HeatIngestion.CONTENT_URI, PROJECTION_FOOD_SORT, whereClause, null, null);
         }
-        
+
         if ( cursor == null ) {
-            return;
+            return foods;
         }
         try {
             cursor.moveToPosition(-1);
             while (cursor.moveToNext() ) {
+            	String foodType = cursor.getString(FOOD_TYPE_INGESTION_INDEX);
                 String foodName = cursor.getString(FOOD_NAME_INGESTION_INDEX);
                 String nameExpress = cursor.getString(NAME_EXPRESS_INGESTION_INDEX);
                 int  priority = cursor.getInt(PRIORITY_INGESTION_INDEX);
@@ -316,10 +322,21 @@ public class BreezingQueryViews {
                    + " priority = " + priority
                    + " foodQuantity = " + foodQuantity 
                    + " calorie = " + calorie);
+                
+                FoodEntity food = new FoodEntity();
+                food.setFoodType(foodType);
+                food.setFoodName(foodName);
+                food.setNameExpress(nameExpress);
+                food.setPriority(priority);
+                food.setFoodQuantity(foodQuantity);
+                food.setCalorie(calorie);
+                foods.add(food);
             }
         } finally {
             cursor.close();
         }
+        
+        return foods;
     }
     /**
      * 我的能量摄入查看每一周，某帐户的周信息
@@ -612,4 +629,40 @@ public class BreezingQueryViews {
              cursor.close();
          }
      }
+     
+     
+     /**
+      * 我的体重变化查看每年，某一个帐户的年信息
+      */
+     private static final String[] PROJECTION_FOOD_TYPE = new String[] {
+    	 HeatIngestion.FOOD_TYPE,               // 0
+     };
+
+     private static final int FOOD_TYPE_INDEX = 0;
+     
+     public ArrayList<CatagoryEntity> queryFoodTypes() {
+    	 ArrayList<CatagoryEntity> catatories = new ArrayList<CatagoryEntity>();
+
+         Cursor cursor  = mContentResolver.query(
+                 HeatIngestion.CONTENT_FOOD_TYPE,
+                 PROJECTION_FOOD_TYPE, null, null, null);
+
+         if (cursor == null) {
+             BLog.d(TAG, " queryFoodTypes cursor = " + cursor);
+         }
+
+         try {
+             cursor.moveToPosition(-1);
+             while (cursor.moveToNext() ) {
+                 CatagoryEntity catagory = new CatagoryEntity(cursor.getString(FOOD_TYPE_INDEX), 0);
+                 catatories.add(catagory);
+             }
+         } finally {
+             cursor.close();
+         }
+
+         return catatories;
+
+     }
+
 }

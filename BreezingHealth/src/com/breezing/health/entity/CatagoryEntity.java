@@ -4,6 +4,7 @@ public class CatagoryEntity {
 
     private String name;
     private int iconRes;
+    private boolean isChecked;
     
     public CatagoryEntity(String name, int iconRes) {
         this.name = name;
@@ -23,5 +24,13 @@ public class CatagoryEntity {
     public void setIconRes(int iconRes) {
         this.iconRes = iconRes;
     }
+
+	public boolean isChecked() {
+		return isChecked;
+	}
+
+	public void setChecked(boolean isChecked) {
+		this.isChecked = isChecked;
+	}
     
 }

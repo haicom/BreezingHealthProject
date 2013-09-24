@@ -169,5 +169,7 @@
     <string name="click_to_select_weight">点击选择体重</string>
     <string name="record_current_weight">记录当前体重</string>
     <string name="connect_to_weight_scale">连接蓝牙秤</string>
+    
+    <string name="all_catagory">所有分类</string>
 
 </resources>

@@ -24,7 +24,8 @@
         android:layout_toRightOf="@+id/image"
         android:textColor="@color/black"
         android:textSize="@dimen/normal_textsize"
-        android:layout_toLeftOf="@+id/selectLayout" />
+        android:layout_toLeftOf="@+id/selectLayout"
+        android:textIsSelectable="false" />
 
     <TextView
         android:id="@+id/unit"
@@ -38,7 +39,8 @@
         android:layout_toRightOf="@+id/image"
         android:textColor="@color/gray"
         android:textSize="@dimen/middle_textsize"
-        android:layout_toLeftOf="@+id/selectLayout" />
+        android:layout_toLeftOf="@+id/selectLayout"
+        android:textIsSelectable="false" />
 
     <LinearLayout
         android:id="@+id/selectLayout"

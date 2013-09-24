@@ -140,7 +140,8 @@
         
         <activity
             android:name=".ui.activity.CaloricIntakeActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
             <intent-filter>
                 <action android:name="action.intent.breezing.health.ACTIVITY_CALORIC_INTAKE" />
                 <category android:name="android.intent.category.DEFAULT" />
