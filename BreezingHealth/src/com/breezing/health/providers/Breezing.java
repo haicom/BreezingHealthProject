@@ -313,20 +313,26 @@ public class Breezing {
          */
         public static final Uri CONTENT_URI =
                 Uri.withAppendedPath(AUTHORITY_URI, "heat_ingestion");
+        
+        public static final String FOOD_CLASSIFY_ID = "classify_id";
         public static final String FOOD_TYPE   = "food_type ";
         public static final String FOOD_NAME   = "food_name";
         public static final String NAME_EXPRESS   = "name_express";
         public static final String PRIORITY   = "priority";
         public static final String FOOD_QUANTITY   = "food_quantity";
         public static final String CALORIE   = "calorie";
-        
+        public static final String FOOD_PICTURE = "food_picture";                
+                
         public static final Uri CONTENT_FOOD_TYPE = Uri.withAppendedPath(AUTHORITY_URI,
                 "food_type");
+        
+        public static final Uri CONTENT_FOOD_INGESTION = Uri.withAppendedPath(AUTHORITY_URI,
+                "food_ingestion");
         
         /**
          * The default sort order for this table
          */
-        public static final String DEFAULT_SORT_ORDER = "date DESC";
+        public static final String DEFAULT_SORT_ORDER = "food_type DESC";
 
         /**
          * The MIME type of {@link #CONTENT_URI} providing a directory of
@@ -341,6 +347,35 @@ public class Breezing {
         public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/heat_ingestion";
     }
 
+    public static final class FoodClassify implements BaseColumns {
+        /**
+         * The content:// style URL for this table
+         */
+        public static final Uri CONTENT_URI =
+                Uri.withAppendedPath(AUTHORITY_URI, "food_classify");
+        
+        public static final String FOOD_CLASSIFY_ID = "classify_id";
+        public static final String FOOD_TYPE   = "food_type ";
+        public static final String CLASSIFY_PICTURE   = "classify_picture";   
+        
+        /**
+         * The default sort order for this table
+         */
+        public static final String DEFAULT_SORT_ORDER = "food_type DESC";
+        
+        /**
+         * The MIME type of {@link #CONTENT_URI} providing a directory of
+         * people.
+         */
+        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/food_classify";
+
+        /**
+         * The MIME type of a {@link #CONTENT_URI} subdirectory of a single
+         * person.
+         */
+        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/food_classify";
+    }
+    
     public static final class IngestiveRecord implements BaseColumns {
         /**
          * The content:// style URL for this table

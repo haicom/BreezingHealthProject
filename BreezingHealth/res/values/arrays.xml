@@ -32,11 +32,18 @@
         <item>历史</item>
         <item>更多</item>
     </string-array>
-    
+
     <string-array name="chartViewModel">
         <item>周视图</item>
         <item>月视图</item>
         <item>年视图</item>
+    </string-array>
+
+    <string-array name="sport_intensity">
+        <item>低强度</item>
+        <item>中等强度</item>
+        <item>高强度</item>
+        <item>剧烈运动</item>
     </string-array>
 
 </resources>

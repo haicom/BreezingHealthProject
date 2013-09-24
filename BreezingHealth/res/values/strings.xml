@@ -85,7 +85,8 @@
     <string name = "year_and_month" >%1$d年&#160;第%2$d月</string>
     <string name = "month_in_week">第%1$d周</string>
     <string name = "year_in_month">%1$d月</string>
-    
+    <string name = "intensity_unit">%1$s&#160;&#160;2$s</string>
+
     <string name="settings">设置</string>
     <string name="share">分享</string>
     <string name="history">历史</string>
@@ -123,6 +124,10 @@
     <string name="height_unit">身高单位</string>
     <string name="weight_unit">体重单位</string>
     <string name="distance_unit">距离单位</string>
+
+    <string name = "unit" >单位</string>
+    <string name = "sport_type_runing">跑步</string>
+    <string name = "sport_type_gengeral">次</string>
 
     <string name="my_breezing">Breezing</string>
     <string name="my_pedometer">计步器</string>

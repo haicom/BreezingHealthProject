@@ -33,7 +33,7 @@ public class WeekIntervalPickerDialogFragment extends BaseDialogFragment impleme
     private String mTitleString;
     private String[] mYearValues;
     private String[] mWeekValues;
-    
+
     private int mYearWeek;
 
     public static WeekIntervalPickerDialogFragment newInstance() {
@@ -42,25 +42,23 @@ public class WeekIntervalPickerDialogFragment extends BaseDialogFragment impleme
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {       
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_TITLE, R.style.AppTheme_NoTitleBar);
-        
+
         mYearWeek = getArguments().getInt(WEEK_PICKER_DIALOG_WEEK, 0);
-        
+
         if (mYearWeek == 0) {
-            
             mYearWeek = CalendarUtil.getWeekOfYear( new Date() );
-            
         }
-        
+
         Log.d(TAG, " onCreate mYearWeek = " + mYearWeek);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        
+
         mFragmentView = inflater.inflate(R.layout.fragment_dialog_week_interval_picker, null);
         mYear = (NumberPicker) mFragmentView.findViewById(R.id.year);
         mWeek = (NumberPicker) mFragmentView.findViewById(R.id.week);
@@ -85,7 +83,7 @@ public class WeekIntervalPickerDialogFragment extends BaseDialogFragment impleme
         for (int week = 1; week <= totalWeeks; week++) {
             try {
                 mWeekValues[ week - 1 ] = CalendarUtil.getFirstDayAndLastDayOfWeek( getActivity(), year, week );
-                
+
                 Log.d(TAG, "initWeeks mWeekValues[week] =  " + mWeekValues[week] + " week = " + week);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -173,7 +171,7 @@ public class WeekIntervalPickerDialogFragment extends BaseDialogFragment impleme
             return ;
         }
     }
-    
+
     public final static String  WEEK_PICKER_DIALOG_WEEK = "week";
 
 }
