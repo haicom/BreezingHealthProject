@@ -18,7 +18,7 @@ public class LeftMenuAdapter extends BaseAdapter {
     
     public LeftMenuAdapter(Context context) {
         this.context = context;
-        this.menuItems = LeftMenuFunction.createLeftMenu();
+        this.menuItems = LeftMenuFunction.values();
     }
 
     @Override
