@@ -7,7 +7,7 @@
         breezing:name="food"
         breezing:type="insert"
         breezing:version="6.0"
-        breezing:object="com.breezing.health.transation.HeatIngestionUpdater"/>
+        breezing:object="com.breezing.health.transation.HeatIngestionInserter"/>
   
     <data
         breezing:name="settings"
@@ -20,6 +20,12 @@
         breezing:type="insert"
         breezing:version="1.0"
         breezing:object="com.breezing.health.transation.ConsumptionRecordInserter"/>
+    
+     <data
+        breezing:name="classify"
+        breezing:type="insert"
+        breezing:version="1.0"
+        breezing:object="com.breezing.health.transation.FoodClassifyInserter"/>
 
 </datas>
 

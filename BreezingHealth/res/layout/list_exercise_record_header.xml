@@ -22,15 +22,32 @@
         android:singleLine="true"
         android:text="@string/exercise_intensity" />
 
-    <EditText
-        android:id="@+id/amount"
-        style="@style/EditTextStyle"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/information_cell_height"
         android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:hint="@string/edittext_hint_exercise_amount"
-        android:singleLine="true" />
-    
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/amount"
+            style="@style/ButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:hint="@string/edittext_hint_exercise_amount"
+            android:singleLine="true" />
+
+         <Button
+            android:id="@+id/equipment"
+            style="@style/ButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+             android:layout_weight="2"
+            android:text="@string/edittext_hint_exercise_amount"
+            android:singleLine="true" />
+
+    </LinearLayout>
+
     <Button
         android:id="@+id/record"
         style="@style/ButtonStyle"
@@ -39,7 +56,7 @@
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:singleLine="true"
         android:text="@string/record" />
-    
+
     <TextView
         android:id="@+id/totalCaloric"
         android:layout_width="match_parent"

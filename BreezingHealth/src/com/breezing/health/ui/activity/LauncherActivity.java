@@ -9,6 +9,7 @@ import com.breezing.health.tools.IntentAction;
 import com.breezing.health.transation.DataReceiver;
 import com.breezing.health.transation.DataTaskService;
 import com.breezing.health.util.BLog;
+import com.breezing.health.util.BreezingQueryViews;
 import com.breezing.health.util.CalendarUtil;
 import com.breezing.health.util.DateFormatUtil;
 import com.breezing.health.util.LocalSharedPrefsUtil;
@@ -54,17 +55,26 @@ public class LauncherActivity extends BaseActivity {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
-        int day =  CalendarUtil.getWeekOfYear(new Date());
-        Calendar calendar = Calendar.getInstance(); 
+//        int day =  CalendarUtil.getWeekOfYear(new Date());
+//        Calendar calendar = Calendar.getInstance();
+//
+//        BLog.d(TAG, " onCreate day = " + day + " calendar.get(Calendar.MONTH) = " + calendar.get(Calendar.MONTH) );
+//        BreezingQueryViews  breezingQueryViews = new BreezingQueryViews(this);
+//        breezingQueryViews.getFoodSortFromFoodTypes(new String[] {"主事类","你好" });
         
-        BLog.d(TAG, " onCreate day = " + day + " calendar.get(Calendar.MONTH) = " + calendar.get(Calendar.MONTH) );
+        //表示数据导入开始
+        LocalSharedPrefsUtil.saveSharedPrefsValueInt(this, 
+                LocalSharedPrefsUtil.PREFS_LOADING_FINISH, 0);
         
-        mHandler = new Handler() {  
+        sendBroadcast(new Intent(DataTaskService.ACTION_IMPORT_DATA,
+                null,
+                this,
+                DataReceiver.class));
+        
+        mHandler = new Handler() {
 
             @Override
             public void dispatchMessage(Message msg) {
-                // TODO Auto-generated method stub
-
                 final int what = msg.what;
                 switch(what) {
                     case MSG_AUTO:
@@ -72,6 +82,12 @@ public class LauncherActivity extends BaseActivity {
                         Intent intent = new Intent(action);
                         startActivity(intent);
                         finish();
+//                        while ( LocalSharedPrefsUtil.getSharedPrefsValueInt( LauncherActivity.this, 
+//                                LocalSharedPrefsUtil.PREFS_LOADING_FINISH ) == 1 ) {
+//                            
+//                            
+//                        }
+                       
                         return ;
                 }
 
@@ -80,11 +96,8 @@ public class LauncherActivity extends BaseActivity {
 
         };
 
-        mHandler.sendEmptyMessageDelayed(MSG_AUTO, 3 * 1000);
-        sendBroadcast(new Intent(DataTaskService.ACTION_IMPORT_DATA,
-                null,
-                this,
-                DataReceiver.class));
+        mHandler.sendEmptyMessageDelayed(MSG_AUTO, 2 * 1000);
+       
     }
 
     private String verifyLocalAccountInfo() {
@@ -108,8 +121,8 @@ public class LauncherActivity extends BaseActivity {
                     action = IntentAction.ACTIVITY_MAIN;
 //                    action = IntentAction.ACTIVITY_BALANCE_HISTORY;
 //                    action = IntentAction.ACTIVITY_BREEZING_TEST;
-//                    action = IntentAction.ACTIVITY_FILLIN_INFORMATION; 
-//                    action = IntentAction.ACTIVITY_WEIGHT_RECORD; 
+//                    action = IntentAction.ACTIVITY_FILLIN_INFORMATION;
+//                    action = IntentAction.ACTIVITY_WEIGHT_RECORD;
                 }
             }
         }

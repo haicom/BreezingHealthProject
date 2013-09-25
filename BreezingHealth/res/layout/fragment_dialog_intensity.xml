@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/translucence"
+    android:orientation="vertical" >
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/fragment_container"
+        layout="@layout/fragment_dialog_picker_actionbar" />
+
+    <LinearLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/picker_height"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:padding="@dimen/activity_horizontal_margin" >
+
+        <net.simonvt.numberpicker.NumberPicker
+            android:id="@+id/intensity"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+
+</RelativeLayout>

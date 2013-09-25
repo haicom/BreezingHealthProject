@@ -7,6 +7,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import java.util.Date;
+
 import com.breezing.health.R;
 import com.breezing.health.adapter.BalanceHistoryPagerAdapter;
 import com.breezing.health.entity.ActionItem;
@@ -24,25 +26,25 @@ import com.breezing.health.widget.linechart.FancyChartPointListener;
 import com.breezing.health.widget.linechart.data.Point;
 
 public class BalanceHistoryActivity extends ActionBarActivity implements OnClickListener {
-    
+
     private Button mSelectModelButton;
     private Button mSelectIntervalButton;
     private ViewPager mBalancePager;
     private BalanceHistoryPagerAdapter mPagerAdapter;
-    
+
     private View mWeightHistoryPage;
     private FancyChart mWeightHistoryChart;
-    
+
     private ViewGroup mBalanceHistoryPage;
     private BalanceBarChartView mBalanceBarChartView;
-    
-    
+
+
     private ChartModel mBalanceChartModel = ChartModel.WEEK;
-    
+
     private int mYear;
     private int mMonth;
     private int mWeek;
-    
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,21 +57,21 @@ public class BalanceHistoryActivity extends ActionBarActivity implements OnClick
 
     private void initValues() {
         mYear = CalendarUtil.getCurrentYear();
-        mWeek = CalendarUtil.getCurrentWeek();     
+        mWeek = CalendarUtil.getWeekOfYear( new Date() );
         mMonth = CalendarUtil.getCurrentMonth();
     }
 
     private void initViews() {
         setActionBarTitle(R.string.balance_history);
         addLeftActionItem(new ActionItem(ActionItem.ACTION_BACK));
-        
+
         mSelectModelButton = (Button) findViewById(R.id.model);
         mSelectIntervalButton = (Button) findViewById(R.id.during);
         mBalancePager = (ViewPager) findViewById(R.id.viewPager);
-        
+
         mWeightHistoryPage = getLayoutInflater().inflate(R.layout.page_of_weight_history, null);
         mWeightHistoryChart = (FancyChart) mWeightHistoryPage.findViewById(R.id.chart);
-        
+
         mBalanceHistoryPage = (ViewGroup) getLayoutInflater().inflate(R.layout.page_of_caloric_balance_history, null);
         mBalanceBarChartView = new BalanceBarChartView(this);
         mBalanceBarChartView.setZoomable(false);
@@ -78,7 +80,7 @@ public class BalanceHistoryActivity extends ActionBarActivity implements OnClick
 
     private void valueToView() {
         refreshChartData();
-        
+
         mPagerAdapter = new BalanceHistoryPagerAdapter();
         mPagerAdapter.addViewPage(mWeightHistoryPage);
         mPagerAdapter.addViewPage(mBalanceHistoryPage);
@@ -89,21 +91,21 @@ public class BalanceHistoryActivity extends ActionBarActivity implements OnClick
         mSelectModelButton.setOnClickListener(this);
         mSelectIntervalButton.setOnClickListener(this);
         mWeightHistoryChart.setOnPointClickListener(new FancyChartPointListener() {
-            
+
             @Override
             public void onClick(Point point) {
-                
+
             }
         });
     }
-    
+
     @Override
     public void onClick(View v) {
         if ( v == mSelectModelButton ) {
             showModelPickerDialog();
             return ;
         } else if ( v == mSelectIntervalButton ) {
-            
+
                 switch ( mBalanceChartModel ) {
                     case WEEK: {
                         showWeekIntervalPickerDialog();
@@ -124,7 +126,7 @@ public class BalanceHistoryActivity extends ActionBarActivity implements OnClick
             return;
         }
     }
-    
+
     private void showModelPickerDialog() {
 
         ChartModelPickerDialogFragment chartModelPicker =
@@ -179,7 +181,7 @@ public class BalanceHistoryActivity extends ActionBarActivity implements OnClick
             }
 
         });
-        
+
         Bundle args = new Bundle();
         args.putInt(WeekIntervalPickerDialogFragment.WEEK_PICKER_DIALOG_WEEK, mWeek);
         weekIntervalPicker.setArguments(args);
@@ -187,7 +189,7 @@ public class BalanceHistoryActivity extends ActionBarActivity implements OnClick
     }
 
     private void showMonthIntervalPickerDialog() {
-        
+
         MonthIntervalPickerDialogFragment monthIntervalPicker =
                 (MonthIntervalPickerDialogFragment) getSupportFragmentManager().findFragmentByTag("monthIntervalPicker");
 
@@ -209,12 +211,12 @@ public class BalanceHistoryActivity extends ActionBarActivity implements OnClick
 
                 mSelectIntervalButton.setText(
                         getString(R.string.year_and_month, mYear, mMonth) );
-                
+
                 refreshChartData();
             }
 
         });
-        
+
         Bundle args = new Bundle();
         args.putInt(MonthIntervalPickerDialogFragment.MONTH_PICKER_DIALOG_MONTH, mMonth);
         monthIntervalPicker.setArguments(args);
@@ -239,7 +241,7 @@ public class BalanceHistoryActivity extends ActionBarActivity implements OnClick
             @Override
             public void onClick(BaseDialogFragment dialog,
                     Object... params) {
-                
+
                 mYear = Integer.valueOf( String.valueOf(params[0]) );
                 mSelectIntervalButton.setText(mYear + getString(R.string.year));
                 refreshChartData();
@@ -249,14 +251,14 @@ public class BalanceHistoryActivity extends ActionBarActivity implements OnClick
 
         yearIntervalPicker.show(getSupportFragmentManager(), "yearIntervalPicker");
     }
-    
+
     private void refreshChartData() {
         mSelectModelButton.setText(mBalanceChartModel.nameRes);
-        
+
         switch ( mBalanceChartModel ) {
 
         case WEEK: {
-            
+
             mSelectIntervalButton.setText(
                     getString(R.string.year_first_day_last_day,
                     mYear,
@@ -266,27 +268,27 @@ public class BalanceHistoryActivity extends ActionBarActivity implements OnClick
             break;
         }
 
-        case MONTH: {              
+        case MONTH: {
             mSelectIntervalButton.setText(
-                    getString(R.string.year_and_month, mYear, mMonth) );                  
+                    getString(R.string.year_and_month, mYear, mMonth) );
             break;
         }
 
         case YEAR: {
-           
+
             mSelectIntervalButton.setText(mYear + getString(R.string.year));
-            
+
             break;
         }
 
     }
     }
-    
+
     private void refreshWeightView() {
-        
+
     }
-    
+
     private void refreshBalanceView() {
-        
+
     }
 }

@@ -2,6 +2,7 @@ package com.breezing.health.providers;
 
 import com.breezing.health.providers.Breezing.Account;
 import com.breezing.health.providers.Breezing.EnergyCost;
+import com.breezing.health.providers.Breezing.FoodClassify;
 import com.breezing.health.providers.Breezing.HeatConsumption;
 import com.breezing.health.providers.Breezing.HeatConsumptionRecord;
 import com.breezing.health.providers.Breezing.HeatIngestion;
@@ -36,6 +37,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
         public static final String BASE_INFO = "view_base_info";
         public static final String SPORT_TYPE = "view_sport_type";
         public static final String FOOD_TYPE = "view_food_type";
+        public static final String FOOD_INGESTION = "view_food_ingestion";
     }
 
     private BreezingDatabaseHelper(Context context) {
@@ -64,15 +66,16 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
         createWeightChangeTables(db);
         createHeatConsumptionTables(db);       
         createConsumptionRecordTables(db);
-        createHeatIngestionTables(db);        
+        createHeatIngestionTables(db);   
+        createFoodClassifyTables(db);
         createIngestiveRecordTables(db);
         createEnergyCostViews(db);
         createIngestionViews(db);
         createWeightChangeViews(db);
         createUnitSettings(db);
         createBaseInfomationViews(db);
-        createSportTypeViews(db);
-        createFoodTypeViews(db);
+        createSportTypeViews(db);       
+        createFoodIngestionViews(db);
     }
 
 
@@ -359,13 +362,54 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
     private void createHeatIngestionTables(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + BreezingProvider.TABLE_HEAT_INGESTION  + " ("
                    +  HeatIngestion._ID + " INTEGER PRIMARY KEY , "
-                   +  HeatIngestion.FOOD_TYPE + " TEXT NOT NULL , "
+                   +  HeatIngestion.FOOD_CLASSIFY_ID + " INTEGER NOT NULL , "
                    +  HeatIngestion.FOOD_NAME + " TEXT NOT NULL , "
                    +  HeatIngestion.NAME_EXPRESS + " TEXT NOT NULL , "
                    +  HeatIngestion.PRIORITY + " INTEGER , "
                    +  HeatIngestion.FOOD_QUANTITY + " INTEGER NOT NULL , "
-                   +  HeatIngestion.CALORIE + " INTEGER NOT NULL " +
+                   +  HeatIngestion.CALORIE + " INTEGER NOT NULL , " 
+                   +  HeatIngestion.FOOD_PICTURE + " TEXT " +
                    ");");
+    }
+    
+    /***
+     * 产生热量摄入参考表
+     * @param db
+     */
+    private void createFoodClassifyTables(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE " + BreezingProvider.TABLE_FOOD_CLASSIFY  + " ("
+                   +  FoodClassify._ID + " INTEGER PRIMARY KEY , "
+                   +  FoodClassify.FOOD_CLASSIFY_ID + " INTEGER NOT NULL , "
+                   +  FoodClassify.FOOD_TYPE + " TEXT NOT NULL , "
+                   +  FoodClassify.CLASSIFY_PICTURE + " TEXT  " +                 
+                   ");");
+    }
+    
+    /***
+     * 产生基本信息 view
+     * @param db
+     */
+    private void createFoodIngestionViews(SQLiteDatabase db) {
+        db.execSQL("DROP VIEW IF EXISTS " + Views.FOOD_INGESTION + ";");
+        
+        String foodIngestionSelect =  " SELECT "
+                + FoodClassify.FOOD_TYPE + " , "
+                + FoodClassify.CLASSIFY_PICTURE + " , "
+                + HeatIngestion.FOOD_NAME + " , "
+                + HeatIngestion.NAME_EXPRESS + " , "
+                + HeatIngestion.PRIORITY + " , "
+                + HeatIngestion.FOOD_QUANTITY + " , "
+                + HeatIngestion.CALORIE + " , "
+                + HeatIngestion.FOOD_PICTURE 
+                + " FROM " + BreezingProvider.TABLE_HEAT_INGESTION
+                + " LEFT OUTER JOIN " + BreezingProvider.TABLE_FOOD_CLASSIFY + " ON "
+                + BreezingProvider.TABLE_HEAT_INGESTION + "." 
+                + HeatIngestion.FOOD_CLASSIFY_ID + " = "
+                + BreezingProvider.TABLE_FOOD_CLASSIFY + "."
+                + FoodClassify.FOOD_CLASSIFY_ID;               
+
+        db.execSQL("CREATE VIEW " + Views.FOOD_INGESTION + " AS " + foodIngestionSelect);
+
     }
     
     /***
@@ -389,6 +433,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
      * @param db
      */
     private void createIngestiveRecordTables(SQLiteDatabase db) {
+        
         db.execSQL("CREATE TABLE " + BreezingProvider.TABLE_INGESTIVE_RECORD  + " ("
                    +  IngestiveRecord._ID + " INTEGER PRIMARY KEY , "
                    +  IngestiveRecord.ACCOUNT_ID + " INTEGER NOT NULL , "
@@ -421,6 +466,8 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
      * @param db
      */
     private void createBaseInfomationViews(SQLiteDatabase db) {
+        db.execSQL("DROP VIEW IF EXISTS " + Views.BASE_INFO + ";");
+        
         String baseInfoSelect =  " SELECT "
                 + Account.INFO_ACCOUNT_ID + " , "
                 + Account.INFO_ACCOUNT_NAME + " , "

@@ -1,6 +1,7 @@
 package com.breezing.health.ui.activity;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
@@ -65,24 +66,24 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
         initValues();
         initViews();
         valueToView();
-        initListeners();       
+        initListeners();
     }
-    
+
     @Override
-    protected void onResume() {      
+    protected void onResume() {
         super.onResume();
-        
+
         refreshFragment();
     }
 
     private void initValues() {
-        
+
         mType = getIntent().getIntExtra(ExtraName.EXTRA_TYPE, CaloricHistoryType.BURN.ordinal() );
-        
+
         mCaloricHistoryType = CaloricHistoryType.values()[mType];
 
         mContentResolver = getContentResolver();
-        
+
         mAccountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this,
                 LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
 
@@ -95,9 +96,10 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
         mSelectModelButton = (Button) findViewById(R.id.model);
         mSelectIntervalButton = (Button) findViewById(R.id.during);
         mYear = CalendarUtil.getCurrentYear();
-        mWeek = CalendarUtil.getCurrentWeek();     
+        mWeek = CalendarUtil.getWeekOfYear(new Date() );
         mMonth = CalendarUtil.getCurrentMonth();
-        
+
+        Log.d(TAG, " onCreate mYear = " + mYear  + " mWeek " + mWeek + "mMonth = " + mMonth);
     }
 
     private void valueToView() {
@@ -112,11 +114,11 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
     private void refreshFragment() {
         mSelectModelButton.setText(mCaloricHistoryChartModel.nameRes);
         ChartData data = new ChartData(ChartData.LINE_COLOR_BLUE);
-        
+
         switch ( mCaloricHistoryChartModel ) {
 
             case WEEK: {
-                
+
               //  Log.d(TAG, " refreshFragment  year = " + year);
                 mSelectIntervalButton.setText(
                         getString(R.string.year_first_day_last_day,
@@ -124,25 +126,25 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
                         CalendarUtil.getFirstDayAndLastDayOfWeek( this,
                         mYear,
                         mWeek ) ) );
-                
+
                 drawChartDataWeekly(data);
                 break;
             }
 
-            case MONTH: {              
+            case MONTH: {
                 mSelectIntervalButton.setText(
-                        getString(R.string.year_and_month, mYear, mMonth) );  
-                
-                drawChartDataMonthly(data);                
+                        getString(R.string.year_and_month, mYear, mMonth) );
+
+                drawChartDataMonthly(data);
                 break;
             }
 
             case YEAR: {
-               
+
                 mSelectIntervalButton.setText(mYear + getString(R.string.year));
-                
+
                 drawChartDataYearly(data);
-                
+
                 break;
             }
 
@@ -164,7 +166,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
             showModelPickerDialog();
             return ;
         } else if ( v == mSelectIntervalButton ) {
-            
+
                 switch ( mCaloricHistoryChartModel ) {
                     case WEEK: {
                         showWeekIntervalPickerDialog();
@@ -241,7 +243,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
             }
 
         });
-        
+
         Bundle args = new Bundle();
         args.putInt(WeekIntervalPickerDialogFragment.WEEK_PICKER_DIALOG_WEEK, mWeek);
         weekIntervalPicker.setArguments(args);
@@ -249,7 +251,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
     }
 
     private void showMonthIntervalPickerDialog() {
-        
+
     	MonthIntervalPickerDialogFragment monthIntervalPicker =
     	        (MonthIntervalPickerDialogFragment) getSupportFragmentManager().findFragmentByTag("monthIntervalPicker");
 
@@ -275,7 +277,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
             }
 
         });
-        
+
         Bundle args = new Bundle();
         args.putInt(MonthIntervalPickerDialogFragment.MONTH_PICKER_DIALOG_MONTH, mMonth);
         monthIntervalPicker.setArguments(args);
@@ -300,10 +302,10 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
             @Override
             public void onClick(BaseDialogFragment dialog,
                     Object... params) {
-                
+
                 mYear = Integer.valueOf( String.valueOf(params[0]) );
                 mSelectIntervalButton.setText(mYear + getString(R.string.year));
-                
+
                 refreshFragment();
             }
 
@@ -319,13 +321,13 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
      * @return
      */
     private ChartData drawChartDataWeekly( ChartData chartData ) {
-        
-        int  yearWeek =  DateFormatUtil.getCompleteWeek(mYear, mWeek);        
-       
-        
+
+        int  yearWeek =  DateFormatUtil.getCompleteWeek(mYear, mWeek);
+
+
         Calendar fistCalendar = CalendarUtil.getFirstDayOfWeek(mYear, mWeek) ;
         Calendar lastCalendar = CalendarUtil.getLastDayOfWeek(mYear, mWeek);
-        
+
         HashMap<Integer, Integer> hashMap =
                 new HashMap<Integer, Integer>();
 
@@ -354,7 +356,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
             Log.d(TAG, " drawChartDataWeekly index = " + index);
             index++;
         }  while ( fistCalendar.compareTo(lastCalendar) <= 0 );
-        
+
         if ( mCaloricHistoryType.equals(mCaloricHistoryType.BURN ) ) {
             Log.d(TAG, " drawChartDataWeekly fillInTotalEnergyInWeek ");
             chartData =  fillInTotalEnergyInWeek(yearWeek, chartData, hashMap);
@@ -362,19 +364,19 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
             Log.d(TAG, " drawChartDataWeekly fillInTotalIngestionInWeek ");
             chartData = fillInTotalIngestionInWeek(yearWeek, chartData, hashMap);
         }
-        
+
         return chartData;
     }
 
-    private static final String[] PROJECTION_ENERGY_COST_DAYLY = new String[] {     
+    private static final String[] PROJECTION_ENERGY_COST_DAYLY = new String[] {
         EnergyCost.TOTAL_ENERGY ,   // 0
         EnergyCost.DATE       // 1
     };
 
-  
+
     private static final int ALL_TOTAL_ENERGY_COLUMN_DAYLY_INDEX = 0;
     private static final int DATE_COLUMN_DAYLY_INDEX = 1;
-    
+
 
     /***
      * 周视图,我的能量代谢到ChartData队列中
@@ -391,7 +393,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
         stringBuilder.setLength(0);
         stringBuilder.append(EnergyCost.ACCOUNT_ID + " = ? AND ");
         stringBuilder.append(EnergyCost.YEAR_WEEK + " = ? ");
-        
+
         String sortOrder = EnergyCost.DATE + " ASC ";
 
         Cursor cursor = null;
@@ -418,7 +420,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
                             getString(mCaloricHistoryChartModel.nameRes),
                             String.valueOf(allTotalEnergy) );
                 }
-               
+
             }
         } finally {
             if (cursor != null) {
@@ -428,15 +430,15 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
 
         return chartData;
     }
-    
-    private static final String[] PROJECTION_INGESTION_COST_DAYLY = new String[] {     
+
+    private static final String[] PROJECTION_INGESTION_COST_DAYLY = new String[] {
         Ingestion.TOTAL_INGESTION ,   // 1
         Ingestion.DATE       // 2
     };
 
     private static final int TOTAL_INGESTION_COLUMN_DAYLY_INDEX = 0;
     private static final int INGESTION_DATE_COLUMN_DAYLY_INDEX = 1;
-    
+
 
     /***
      * 周视图,我的能量消耗到ChartData队列中
@@ -453,7 +455,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
         stringBuilder.setLength(0);
         stringBuilder.append(Ingestion.ACCOUNT_ID + " = ? AND ");
         stringBuilder.append(Ingestion.YEAR_WEEK + " = ? ");
-        
+
         String sortOrder = Ingestion.DATE + " ASC ";
 
         Cursor cursor = null;
@@ -480,7 +482,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
                             getString(mCaloricHistoryChartModel.nameRes),
                             String.valueOf(allTotalEnergy) );
                 }
-               
+
             }
         } finally {
             if (cursor != null) {
@@ -491,7 +493,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
         return chartData;
     }
 
-    
+
     /**
      * 画我的消耗，我的摄入月视图
      * @param chartData
@@ -501,36 +503,36 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
 
         int  yearMonth =  DateFormatUtil.getCompleteWeek(mYear, mMonth);
         int  weekNum = CalendarUtil.getTotalWeeksInMonth(mYear, mMonth);
-        
+
         HashMap<Integer, Integer> hashMap =
                 new HashMap<Integer, Integer>();
-        
+
         Calendar fistCalendar = CalendarUtil.getFirstCalendarOfMonth(mYear, mMonth);
-      
+
 
         BLog.d(TAG, " drawChartDataMonthly yearMonth = " + yearMonth
                 + " mYear = " + mYear + " mMonth = " + mMonth + " weekNum = " + weekNum);
 
         for ( int index = 0; index < weekNum; index++ ) {
-            
+
              int weeks = fistCalendar.get(Calendar.WEEK_OF_YEAR);
-             int yearWeek = DateFormatUtil.getCompleteWeek(mYear, weeks);            
-             
+             int yearWeek = DateFormatUtil.getCompleteWeek(mYear, weeks);
+
              hashMap.put(yearWeek, index);
-             
+
              BLog.d(TAG, " drawChartDataMonthly weeks = " + weeks
                      + " yearWeek = " + yearWeek);
 
              chartData.addXValue( index, getString(R.string.month_in_week, index + 1) );
              fistCalendar.add(Calendar.WEEK_OF_YEAR, 1);
         }
-        
+
         if ( mCaloricHistoryType.equals(mCaloricHistoryType.BURN ) ) {
             chartData =  fillInTotalEnergyInMonth(yearMonth, chartData, hashMap);
         } else if (mCaloricHistoryType.equals(mCaloricHistoryType.INTAKE) ) {
             chartData = fillInTotalIngestionInMonth(yearMonth, chartData, hashMap);
         }
-        
+
         return chartData;
     }
 
@@ -542,11 +544,11 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
         EnergyCost.YEAR_WEEK            //5
     };
 
- 
-    private static final int AVG_TOTAL_ENERGY_COLUMN_WEEKLY_INDEX = 0;  
+
+    private static final int AVG_TOTAL_ENERGY_COLUMN_WEEKLY_INDEX = 0;
     private static final int YEAR_WEEK_COLUMN_WEEKLY_INDEX = 1;
-    
-    
+
+
     /***
      * 填写我的能量消耗月视图总能量到ChartData队列中
      * @param yearWeek
@@ -564,7 +566,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
         stringBuilder.append(EnergyCost.YEAR_MONTH + " = ? ");
 
         String sortOrder = EnergyCost.YEAR_WEEK + " ASC ";
-        
+
         Cursor cursor = null;
         try {
             cursor = mContentResolver.query(EnergyCost.CONTENT_WEEKLY_URI,
@@ -582,7 +584,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
             while (cursor.moveToNext() ) {
                 long avgTotalEnergy = cursor.getLong(AVG_TOTAL_ENERGY_COLUMN_WEEKLY_INDEX);
                 int  yearWeek = cursor.getInt(YEAR_WEEK_COLUMN_WEEKLY_INDEX);
-                Log.d(TAG, " fillInTotalEnergyInMonth avgTotalEnergy = " + avgTotalEnergy + " yearWeek = " + yearWeek);  
+                Log.d(TAG, " fillInTotalEnergyInMonth avgTotalEnergy = " + avgTotalEnergy + " yearWeek = " + yearWeek);
                 if ( hashMap.containsKey(yearWeek) ) {
                     int index = hashMap.get(yearWeek);
                     Log.d(TAG, " fillInTotalEnergyInMonth index = " + index);
@@ -591,7 +593,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
                             getString(mCaloricHistoryChartModel.nameRes),
                             String.valueOf(avgTotalEnergy) );
                 }
-               
+
             }
         } finally {
             if (cursor != null) {
@@ -601,7 +603,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
 
         return chartData;
     }
-    
+
     /**
      * 我的能量摄入查看每一周，某一个帐户的周信息列表
      */
@@ -610,11 +612,11 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
         Ingestion.YEAR_WEEK            //2
     };
 
- 
-    private static final int AVG_TOTAL_INGESTION_COLUMN_WEEKLY_INDEX = 0;  
+
+    private static final int AVG_TOTAL_INGESTION_COLUMN_WEEKLY_INDEX = 0;
     private static final int INGESTION_YEAR_WEEK_COLUMN_WEEKLY_INDEX = 1;
-    
-    
+
+
     /***
      * 填写我的摄入月视图总能量到ChartData队列中
      * @param yearWeek
@@ -632,7 +634,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
         stringBuilder.append(Ingestion.YEAR_MONTH + " = ? ");
 
         String sortOrder = Ingestion.YEAR_WEEK + " ASC ";
-        
+
         Cursor cursor = null;
         try {
             cursor = mContentResolver.query(Ingestion.CONTENT_WEEKLY_URI,
@@ -648,26 +650,26 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
             cursor.moveToPosition(-1);
 
             while (cursor.moveToNext() ) {
-                
+
                 long avgTotalEnergy = cursor.getLong(AVG_TOTAL_INGESTION_COLUMN_WEEKLY_INDEX);
                 int  yearWeek = cursor.getInt(INGESTION_YEAR_WEEK_COLUMN_WEEKLY_INDEX);
-                
+
                 Log.d(TAG, " fillInTotalEnergyInMonth avgTotalEnergy = " + avgTotalEnergy + " yearWeek = " + yearWeek);
-                
+
                 if ( hashMap.containsKey(yearWeek) ) {
-                    
+
                     int index = hashMap.get(yearWeek);
-                    
+
                     Log.d(TAG, " fillInTotalEnergyInMonth index = " + index);
-                    
+
                     chartData.addPoint(index,
                             (int)avgTotalEnergy,
                             getString(mCaloricHistoryChartModel.nameRes),
                             String.valueOf(avgTotalEnergy) );
                 }
-               
+
             }
-            
+
         } finally {
             if (cursor != null) {
                 cursor.close();
@@ -676,45 +678,45 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
 
         return chartData;
     }
-    
-    
+
+
     /**
      * 画年视图
      * @param chartData
      * @return
      */
     private ChartData drawChartDataYearly(ChartData  chartData) {
-      
+
         HashMap<Integer, Integer> hashMap =
                 new HashMap<Integer, Integer>();
-        
+
         Calendar fistCalendar = CalendarUtil.getFirstCalendarOfMonth(mYear, mMonth);
-      
+
 
         BLog.d(TAG, " drawChartDataMonthly  mYear = " + mYear + " mMonth = " + mMonth );
 
         for ( int index = 0; index < CALORIC_MONTH_NUMBER; index++ ) {
-            
+
              int weeks = fistCalendar.get(Calendar.WEEK_OF_YEAR);
-             int yearMonth = DateFormatUtil.getCompleteYearMonth(mYear, index + 1);             
+             int yearMonth = DateFormatUtil.getCompleteYearMonth(mYear, index + 1);
              hashMap.put(yearMonth, index);
-             
+
              BLog.d(TAG, " drawChartDataMonthly weeks = " + weeks
                      + " yearMonth = " + yearMonth);
 
              chartData.addXValue( index, getString(R.string.year_in_month, index + 1) );
              fistCalendar.add(Calendar.WEEK_OF_YEAR, 1);
         }
-        
+
         if ( mCaloricHistoryType.equals(mCaloricHistoryType.BURN ) ) {
             chartData =  fillInTotalEnergyInYear(chartData, hashMap);
         } else if (mCaloricHistoryType.equals(mCaloricHistoryType.INTAKE) ) {
             chartData = fillInIngestionInYear(chartData, hashMap);
         }
-        
+
         return chartData;
     }
-    
+
     /**
      * 我的总能量消耗查看每一月，某一个帐户的周信息列表
      */
@@ -723,10 +725,10 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
         EnergyCost.YEAR_MONTH            //2
     };
 
- 
-    private static final int AVG_TOTAL_ENERGY_COLUMN_MONTHLY_INDEX = 0;  
+
+    private static final int AVG_TOTAL_ENERGY_COLUMN_MONTHLY_INDEX = 0;
     private static final int YEAR_MONTH_COLUMN_INDEX = 1;
-    
+
     /***
      * 填写年视图总能量到ChartData队列中
      * @param yearWeek
@@ -743,7 +745,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
         stringBuilder.append(EnergyCost.YEAR + " = ? ");
 
         String sortOrder = EnergyCost.YEAR_MONTH + " ASC ";
-        
+
         Cursor cursor = null;
         try {
             cursor = mContentResolver.query(EnergyCost.CONTENT_MONTHLY_URI,
@@ -761,9 +763,9 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
             while (cursor.moveToNext() ) {
                 long avgTotalEnergy = cursor.getLong(AVG_TOTAL_ENERGY_COLUMN_MONTHLY_INDEX);
                 int  yearMonth = cursor.getInt(YEAR_MONTH_COLUMN_INDEX);
-                
-                Log.d(TAG, " fillInTotalEnergyInYear avgTotalEnergy = " + avgTotalEnergy + " yearMonth = " + yearMonth); 
-                
+
+                Log.d(TAG, " fillInTotalEnergyInYear avgTotalEnergy = " + avgTotalEnergy + " yearMonth = " + yearMonth);
+
                 if ( hashMap.containsKey(yearMonth) ) {
                     int index = hashMap.get(yearMonth);
                     Log.d(TAG, " fillInTotalEnergyInMonth index = " + index);
@@ -772,7 +774,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
                             getString(mCaloricHistoryChartModel.nameRes),
                             String.valueOf(avgTotalEnergy) );
                 }
-               
+
             }
         } finally {
             if (cursor != null) {
@@ -782,7 +784,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
 
         return chartData;
     }
-    
+
     /**
      * 我的能量摄入查看每一月，某一个帐户的月信息列表
      */
@@ -791,10 +793,10 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
         Ingestion.YEAR_MONTH            //2
     };
 
- 
-    private static final int AVG_INGESTION_COLUMN_MONTHLY_INDEX = 0;  
+
+    private static final int AVG_INGESTION_COLUMN_MONTHLY_INDEX = 0;
     private static final int INGESTION_YEAR_MONTH_COLUMN_INDEX = 1;
-    
+
     /***
      * 填写年视图能量摄入到ChartData队列中
      * @param yearWeek
@@ -811,7 +813,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
         stringBuilder.append(EnergyCost.YEAR + " = ? ");
 
         String sortOrder = EnergyCost.YEAR_MONTH + " ASC ";
-        
+
         Cursor cursor = null;
         try {
             cursor = mContentResolver.query(EnergyCost.CONTENT_MONTHLY_URI,
@@ -829,9 +831,9 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
             while (cursor.moveToNext() ) {
                 long avgTotalEnergy = cursor.getLong(AVG_INGESTION_COLUMN_MONTHLY_INDEX);
                 int  yearMonth = cursor.getInt(INGESTION_YEAR_MONTH_COLUMN_INDEX);
-                
-                Log.d(TAG, " fillInTotalEnergyInYear avgTotalEnergy = " + avgTotalEnergy + " yearMonth = " + yearMonth); 
-                
+
+                Log.d(TAG, " fillInTotalEnergyInYear avgTotalEnergy = " + avgTotalEnergy + " yearMonth = " + yearMonth);
+
                 if ( hashMap.containsKey(yearMonth) ) {
                     int index = hashMap.get(yearMonth);
                     Log.d(TAG, " fillInTotalEnergyInMonth index = " + index);
@@ -840,7 +842,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
                             getString(mCaloricHistoryChartModel.nameRes),
                             String.valueOf(avgTotalEnergy) );
                 }
-               
+
             }
         } finally {
             if (cursor != null) {
@@ -850,7 +852,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
 
         return chartData;
     }
-    
+
     private final static int CALORIC_MONTH_NUMBER = 12;
-    
+
 }

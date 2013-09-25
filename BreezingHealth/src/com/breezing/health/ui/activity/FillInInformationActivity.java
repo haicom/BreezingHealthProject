@@ -493,8 +493,11 @@ public class FillInInformationActivity extends ActionBarActivity implements OnCl
                     null);
 
             if (cursor != null) {
-                cursor.moveToPosition(0);
-                unifyUnit = cursor.getFloat(UNIT_SETTINGS_UNIFY_DATA);
+                if ( cursor.getCount() > 0 ) {
+                    cursor.moveToPosition(0);
+                    unifyUnit = cursor.getFloat(UNIT_SETTINGS_UNIFY_DATA);
+                }
+                
             }
         } finally {
             if (cursor != null) {

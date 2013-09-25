@@ -79,7 +79,7 @@ public class CalendarUtil {
 
     public static int getTotalWeeksInYear(int year) {
 
-        Calendar cal = GregorianCalendar.getInstance();
+        Calendar cal = new  GregorianCalendar();
 
         cal.set(GregorianCalendar.YEAR, year);
         cal.set(GregorianCalendar.MONTH, GregorianCalendar.DECEMBER);
@@ -102,18 +102,6 @@ public class CalendarUtil {
         }
     }
 
-    /***
-     * 获得当前日期的周数
-     *
-     * @param date
-     * @return
-     */
-    public static int getWeekOfYear(Date date) {
-        GregorianCalendar calendar = new GregorianCalendar();
-        calendar.setTime(date);
-
-        return calendar.get(Calendar.WEEK_OF_YEAR);// 获得周数
-    }
 
     /**
      * 得到某一年周的总数
@@ -216,9 +204,9 @@ public class CalendarUtil {
      */
     public static String[] getYearsFrom2013() {
 
-        final Calendar calendar = GregorianCalendar.getInstance();
+        Calendar calendar = new GregorianCalendar();
 
-        final int currentYear = calendar.get(GregorianCalendar.YEAR);
+        int currentYear = calendar.get(GregorianCalendar.YEAR);
 
         if (currentYear < CALENDAR_UTIL_YEAR_2013) {
             return null;
@@ -250,7 +238,7 @@ public class CalendarUtil {
         // calendar.setFirstDayOfWeek(Calendar.MONDAY);
         return calendar.get(Calendar.WEEK_OF_MONTH);
     }
-    
+
     /***
      * 获得指定月的全部周数
      * @param year
@@ -265,15 +253,15 @@ public class CalendarUtil {
         calendar.set(GregorianCalendar.YEAR, year);
         calendar.set(GregorianCalendar.MONTH, month - 1);
         calendar.set(GregorianCalendar.DAY_OF_MONTH, 1);
-        int maxMum = calendar.getActualMaximum(GregorianCalendar.DAY_OF_MONTH);       
+        int maxMum = calendar.getActualMaximum(GregorianCalendar.DAY_OF_MONTH);
         calendar.add(GregorianCalendar.DATE, maxMum - 1);
-        
-        Log.d(TAG, "getTotalWeeksInMonth maxMum = " + maxMum + " month = " 
+
+        Log.d(TAG, "getTotalWeeksInMonth maxMum = " + maxMum + " month = "
         + month + " calendar.get(GregorianCalendar.MONTH)  =" + calendar.get(GregorianCalendar.MONTH)
-        + " calendar.get(GregorianCalendar.DATE) = " + calendar.get(GregorianCalendar.DATE) ); 
+        + " calendar.get(GregorianCalendar.DATE) = " + calendar.get(GregorianCalendar.DATE) );
         return calendar.get(Calendar.WEEK_OF_MONTH);
     }
-    
+
     /****
      * 得到指定月第一天的Calendar
      * @param year
@@ -286,26 +274,52 @@ public class CalendarUtil {
         calendar.clear();
         calendar.set(GregorianCalendar.YEAR, year);
         calendar.set(GregorianCalendar.MONTH, month - 1);
-        
+
         return calendar;
     }
 
     public static int getCurrentYear() {
-        final Calendar calendar = GregorianCalendar.getInstance();
-        final int currentYear = calendar.get(GregorianCalendar.YEAR);
+        Calendar calendar =  new GregorianCalendar();
+        int currentYear = calendar.get(GregorianCalendar.YEAR);
         return currentYear;
     }
 
     public static int getCurrentMonth() {
-        final Calendar calendar = GregorianCalendar.getInstance();
+        final Calendar calendar =  new GregorianCalendar();
         final int currentMonth = calendar.get(GregorianCalendar.MONTH) + 1;
         return currentMonth;
     }
 
     public static int getCurrentWeek() {
-        final Calendar calendar = GregorianCalendar.getInstance();
-        final int currentWeek = calendar.get(GregorianCalendar.WEEK_OF_YEAR);
+        Calendar calendar = new GregorianCalendar();
+        calendar.setFirstDayOfWeek(Calendar.MONDAY);
+        //calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        int currentWeek = calendar.get(GregorianCalendar.WEEK_OF_YEAR);
+        BLog.d(TAG, " getCurrentWeek currentWeek = " + currentWeek);
         return currentWeek;
+    }
+
+    /***
+     * 获得当前日期的周数
+     *
+     * @param date
+     * @return
+     */
+    public static int getWeekOfYear(Date date) {
+        Log.d(TAG, "getWeekOfYear date = " + date.getDate()
+                + " date.getMonth() = " +
+                date.getMonth());
+        Calendar calendar = new GregorianCalendar();
+        calendar.clear();
+        calendar.setFirstDayOfWeek(Calendar.MONDAY);
+        calendar.setTime(date);
+
+        int weekNum = calendar.get(Calendar.WEEK_OF_YEAR);
+
+        Log.d(TAG, "getWeekOfYear weekNum = " + weekNum);
+
+        return weekNum;
+
     }
 
     public static String getFirstDayAndLastDayOfWeek(Context context,

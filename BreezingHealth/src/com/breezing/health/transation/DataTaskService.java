@@ -4,6 +4,7 @@ package com.breezing.health.transation;
 
 import com.breezing.health.R;
 import com.breezing.health.providers.Breezing;
+import com.breezing.health.util.LocalSharedPrefsUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -147,6 +148,9 @@ public class DataTaskService extends Service {
                 for (DataInfo dataInfo: mDataInfo) {
                     saveSharedPrefsVersion(dataInfo.getName(), dataInfo.getVersion());
                 }
+                //表示导入已经完成
+                LocalSharedPrefsUtil.saveSharedPrefsValueInt(this, 
+                        LocalSharedPrefsUtil.PREFS_LOADING_FINISH, 1);
             } catch (Exception e) {
                 // Log exception
                 Log.e(TAG, "Exceptoin encoutered while inserting contact: " + e);
