@@ -179,5 +179,12 @@
     <string name="connect_to_weight_scale">连接蓝牙秤</string>
 
     <string name="all_catagory">所有分类</string>
+    <string name="breezing_webside">http://breezing.co/</string>
+    <string name="helper">新手指引</string>
+    <string name="helper_step_one_intro">能量消耗与摄入类别一目了然！</string>
+    <string name="helper_step_two_intro">准确记录您的各项身体变化，便于您的查阅！</string>
+    <string name="helper_step_three_intro">只需三步，您的新陈代谢便可了如指掌！</string>
+    <string name="helper_step_four_intro">随时记录您的饮食材料，让您的健康“有理有据”！</string>
+    <string name="begin_breezing_life">开始体验</string>
 
 </resources>

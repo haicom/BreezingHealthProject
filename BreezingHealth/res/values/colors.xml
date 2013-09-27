@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     
-    <color name="red">#ed3d00</color>
+    <color name="red">#d95860</color>
     <color name="orange">#f77924</color>
     <color name="white">#ffffffff</color>
     <color name="black">#ff000000</color>
     <color name="gray">#ff666666</color>
+    <color name="silver">#757575</color>
     <color name="transparent">#00000000</color>
     <color name="translucence">#88000000</color>
     <!-- brun cloror -->

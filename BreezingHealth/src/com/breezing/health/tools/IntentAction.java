@@ -19,6 +19,7 @@ public class IntentAction {
     public final static String ACTIVITY_ABOUT = "action.intent.breezing.health.ACTIVITY_ABOUT";
     public final static String ACTIVITY_CALORIC_HISTORY = "action.intent.breezing.health.ACTIVITY_CALORIC_HISTORY";
     public final static String ACTIVITY_WEIGHT_RECORD = "action.intent.breezing.health.ACTIVITY_WEIGHT_RECORD";
+    public final static String ACTIVITY_HELPER = "action.intent.breezing.health.ACTIVITY_HELPER";
 
     public final static String BROADCAST_TASK_SERVICE = "android.intent.breezing.health.DATA_TASK";
 
