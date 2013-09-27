@@ -2,18 +2,23 @@ package com.breezing.health.util;
 
 import java.util.ArrayList;
 
+import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 
+import com.breezing.health.R;
 import com.breezing.health.entity.CatagoryEntity;
 import com.breezing.health.entity.FoodEntity;
+import com.breezing.health.providers.Breezing;
 import com.breezing.health.providers.Breezing.Account;
 import com.breezing.health.providers.Breezing.EnergyCost;
+import com.breezing.health.providers.Breezing.HeatConsumptionRecord;
 import com.breezing.health.providers.Breezing.HeatIngestion;
 import com.breezing.health.providers.Breezing.Information;
 import com.breezing.health.providers.Breezing.Ingestion;
+import com.breezing.health.providers.Breezing.IngestiveRecord;
 import com.breezing.health.providers.Breezing.WeightChange;
 
 public class BreezingQueryViews {
@@ -664,5 +669,102 @@ public class BreezingQueryViews {
          return catatories;
 
      }
+     
+     /***
+      * 插入食物的记录
+      * @param RowData
+      * @return
+      */
+     public boolean insertIngestiveRecord(String[] RowData) {
+         boolean result = false;
+
+       
+         ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
+         ops.add(ContentProviderOperation.newInsert(IngestiveRecord.CONTENT_URI)
+                 .withValue(IngestiveRecord.ACCOUNT_ID, RowData[0])
+                 .withValue(IngestiveRecord.FOOD_NAME, RowData[1])
+                 .withValue(IngestiveRecord.NAME_EXPRESS, RowData[2])
+                 .withValue(IngestiveRecord.FOOD_QUANTITY, RowData[3] )
+                 .withValue(IngestiveRecord.CALORIE, RowData[4])
+                 .withValue(IngestiveRecord.DINING, RowData[5])
+                 .build());
+
+         try {
+             mContentResolver.applyBatch(Breezing.AUTHORITY, ops);
+             result = true;
+         } catch (Exception e) {
+           
+             // Log exception
+             Log.e(TAG, "Exceptoin encoutered while inserting contact: " + e);
+         }
+
+         return result;
+     }
+     
+     /**
+      * 食物记录查询表
+      */
+     private static final String[] PROJECTION_INGESTIVE_RECORD = new String[] {
+         IngestiveRecord._ID,
+         IngestiveRecord.ACCOUNT_ID,          // 0
+         IngestiveRecord.FOOD_NAME,      // 1
+         IngestiveRecord.NAME_EXPRESS,    // 2
+         IngestiveRecord.FOOD_QUANTITY ,     //3
+         IngestiveRecord.CALORIE,   //4
+         IngestiveRecord.DINING   //5
+
+     };
+
+     private static final int INGESTIVE_RECORD_ID_INDEX = 0;
+     private static final int INGESTIVE_RECORD_ACCOUNT_ID_INDEX = 1;
+     private static final int INGESTIVE_RECORD_FOOD_NAME_INDEX = 2;
+     private static final int INGESTIVE_RECORD_NAME_EXPRESS_INDEX = 3;
+     private static final int INGESTIVE_RECORD_FOOD_QUANTITY_INDEX = 4;
+     private static final int INGESTIVE_RECORD_CALORIE_INDEX = 5;
+     private static final int INGESTIVE_RECORD_DINING_INDEX = 6;
+   
+     /***
+      * 根据帐户和时间查询食物
+      * @param accountId
+      * @param date
+      */
+         private void queryIngestiveRecord(int accountId, int date) {
+     
+             StringBuilder stringBuilder = new StringBuilder();
+             stringBuilder.setLength(0);
+             stringBuilder.append(HeatConsumptionRecord.ACCOUNT_ID + " = ? AND ");
+             stringBuilder.append(HeatConsumptionRecord.DATE + " = ? ");
+     
+     
+             Cursor cursor = null;
+     
+     
+             cursor = mContentResolver.query(IngestiveRecord.CONTENT_URI,
+                         PROJECTION_INGESTIVE_RECORD,
+                         stringBuilder.toString(),
+                         new String[] {String.valueOf(accountId), String.valueOf(date) },
+                         null);
+     
+             if (cursor == null) {
+                 Log.d(TAG, " testBaseInfoView cursor = " + cursor);
+             }
+     
+     
+             try {
+     
+                 cursor.moveToPosition(-1);
+                 while (cursor.moveToNext() ) {                   
+                     String   foodName = cursor.getString(INGESTIVE_RECORD_FOOD_NAME_INDEX);
+                     String   nameExpress = cursor.getString(INGESTIVE_RECORD_NAME_EXPRESS_INDEX);
+                     int      foodQuantity = cursor.getInt(INGESTIVE_RECORD_FOOD_QUANTITY_INDEX);
+                     int      calorie = cursor.getInt(INGESTIVE_RECORD_CALORIE_INDEX);
+                     String    dining = cursor.getString(INGESTIVE_RECORD_DINING_INDEX);
+              
+                 }
+     
+             } finally {
+                 cursor.close();
+             }
+         }
 
 }
