@@ -67,14 +67,18 @@ public class SportIntensityPickerDialogFragment extends BaseDialogFragment imple
         mIntensity.setFocusableInTouchMode(false);
 
         String[] units;
-
-        if (mType.equals(getActivity().
-                getResources().getString(R.string.sport_type_runing))) {
-            units = getActivity().getResources().
-                    getStringArray(R.array.distance_units);
-        } else {
+        if (mType == null) {
             units = new String[] { getActivity().getResources().
-                    getString(R.string.sport_type_runing) };
+                    getString(R.string.sport_type_gengeral) };
+        } else {
+            if (mType.equals(getActivity().
+                    getResources().getString(R.string.sport_type_runing))) {
+                units = getActivity().getResources().
+                        getStringArray(R.array.distance_units);
+            } else {
+                units = new String[] { getActivity().getResources().
+                        getString(R.string.sport_type_gengeral) };
+            }
         }
 
         mUnit.setDisplayedValues(units);

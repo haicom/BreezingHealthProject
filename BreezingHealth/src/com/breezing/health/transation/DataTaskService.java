@@ -4,6 +4,7 @@ package com.breezing.health.transation;
 
 import com.breezing.health.R;
 import com.breezing.health.providers.Breezing;
+import com.breezing.health.tools.IntentAction;
 import com.breezing.health.util.LocalSharedPrefsUtil;
 
 import java.io.BufferedReader;
@@ -47,7 +48,7 @@ public class DataTaskService extends Service {
         // separate thread because the service normally runs in the process's
         // main thread, which we don't want to block.
         Log.d(TAG, "onCreate()");
-        HandlerThread thread = new HandlerThread(TAG, Process.THREAD_PRIORITY_BACKGROUND);
+        HandlerThread thread = new HandlerThread(TAG, Process.THREAD_PRIORITY_DEFAULT);
         thread.start();
 
         mServiceLooper = thread.getLooper();
@@ -149,8 +150,13 @@ public class DataTaskService extends Service {
                     saveSharedPrefsVersion(dataInfo.getName(), dataInfo.getVersion());
                 }
                 //表示导入已经完成
-                LocalSharedPrefsUtil.saveSharedPrefsValueInt(this, 
+                LocalSharedPrefsUtil.saveSharedPrefsValueInt(this,
                         LocalSharedPrefsUtil.PREFS_LOADING_FINISH, 1);
+
+                Log.d(TAG, " LocalSharedPrefsUtil.PREFS_LOADING_FINISH ");
+
+                Intent intent = new Intent(IntentAction.BROADCAST_TASK_SERVICE);
+                sendBroadcast(intent);
             } catch (Exception e) {
                 // Log exception
                 Log.e(TAG, "Exceptoin encoutered while inserting contact: " + e);

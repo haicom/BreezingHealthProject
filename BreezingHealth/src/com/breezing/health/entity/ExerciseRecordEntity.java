@@ -4,7 +4,7 @@ public class ExerciseRecordEntity {
 
     private String name;
     private String des;
-    private String caloric;
+    private float caloric;
     
     public String getName() {
         return name;
@@ -18,10 +18,10 @@ public class ExerciseRecordEntity {
     public void setDes(String des) {
         this.des = des;
     }
-    public String getCaloric() {
+    public float getCaloric() {
         return caloric;
     }
-    public void setCaloric(String caloric) {
+    public void setCaloric(float caloric) {
         this.caloric = caloric;
     }
     

@@ -302,7 +302,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
             case ActionItem.ACTION_HISTORY: {
                 BLog.v(TAG, "caloric history position =" + mPosition.ordinal());
                 Intent intent = new Intent(IntentAction.ACTIVITY_CALORIC_HISTORY);
-                intent.putExtra(ExtraName.EXTRA_TYPE, mPosition.ordinal() );
+                intent.putExtra(ExtraName.EXTRA_TYPE, mPosition.ordinal() );              
                 startActivity(intent);
                 return ;
             }

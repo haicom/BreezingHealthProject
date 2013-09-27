@@ -316,7 +316,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
                  +  HeatConsumption.SPORT_INTENSITY + " TEXT NOT NULL , "
                  +  HeatConsumption.SPORT_QUANTITY + " INTEGER NOT NULL, "
                  +  HeatConsumption.SPORT_UNIT + " TEXT NOT NULL , "               
-                 +  HeatConsumption.CALORIE + " INTEGER NOT NULL , "
+                 +  HeatConsumption.CALORIE + " FLOAT NOT NULL , "
                  +  HeatConsumption.EQUIPMENT_NAME + " TEXT " +
                    ");");
     }
@@ -350,7 +350,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
                  +  HeatConsumptionRecord.SPORT_INTENSITY + " TEXT NOT NULL , "
                  +  HeatConsumptionRecord.SPORT_QUANTITY + " INTEGER NOT NULL, "
                  +  HeatConsumptionRecord.SPORT_UNIT + " TEXT NOT NULL , "               
-                 +  HeatConsumptionRecord.CALORIE + " INTEGER NOT NULL , "
+                 +  HeatConsumptionRecord.CALORIE + " FLOAT NOT NULL , "
                  +  HeatConsumptionRecord.DATE + " INTEGER NOT NULL " +
                    ");");
     }

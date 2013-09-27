@@ -21,6 +21,7 @@ import com.breezing.health.entity.RecordFunctionEntity;
 import com.breezing.health.providers.Breezing.EnergyCost;
 import com.breezing.health.tools.IntentAction;
 import com.breezing.health.ui.activity.MainActivity;
+import com.breezing.health.util.ExtraName;
 import com.breezing.health.widget.PieGraph;
 import com.breezing.health.widget.PieSlice;
 
@@ -34,6 +35,8 @@ public class CaloricBurnFragment extends BaseFragment implements OnItemClickList
     private TextView mBurnCaloric;
     private AddCaloricRecordAdapter mAdapter;
     private static CaloricBurnFragment mCaloricBurnFragment;
+    
+    private int mDate;
 
     public static CaloricBurnFragment newInstance() {
         CaloricBurnFragment fragment = new CaloricBurnFragment();
@@ -99,9 +102,9 @@ public class CaloricBurnFragment extends BaseFragment implements OnItemClickList
         super.onResume();
         Log.d(TAG, "onResume");
         int accountId = ( (MainActivity)getActivity() ).getAccountId();
-        int date = ( (MainActivity)getActivity() ).getDate();
+        mDate = ( (MainActivity)getActivity() ).getDate();
 
-        drawPieChar(accountId, date);
+        drawPieChar(accountId, mDate);
     }
 
     private static final String[] PROJECTION_ENERGY_COST = new String[] {
@@ -235,6 +238,7 @@ public class CaloricBurnFragment extends BaseFragment implements OnItemClickList
         
         if ( recordFunction.getTitleRes() == R.string.exercise ) {           
             Intent intent = new Intent(IntentAction.ACTIVITY_EXERCISE_RECORD);
+            intent.putExtra(ExtraName.EXTRA_DATE, mDate);
             CaloricBurnFragment.this.startActivity(intent); 
         }
         

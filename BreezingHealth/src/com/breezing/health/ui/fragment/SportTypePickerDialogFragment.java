@@ -28,25 +28,32 @@ public class SportTypePickerDialogFragment
     private static final String TAG = "SportTypePickerDialogFragment";
 
     private HashSet<String> mHashSet;
+    
     private View mFragmentView;
+    
     private NumberPicker mType;
+    
     private TextView mTitle;
+    
     private Button mCancel;
     private Button mConfirm;
     private DialogFragmentInterface.OnClickListener mPositiveClickListener;
     private DialogFragmentInterface.OnClickListener mNegativeClickListener;
     private String mTitleString;
-
-    public static SportTypePickerDialogFragment newInstance() {
-        SportTypePickerDialogFragment fragment = new SportTypePickerDialogFragment();
+    
+    
+    public static SportTypePickerDialogFragment newInstance(HashSet hashSet) {
+        SportTypePickerDialogFragment fragment = new SportTypePickerDialogFragment(hashSet);
         return fragment;
+    }
+    
+    private SportTypePickerDialogFragment(HashSet hashSet) {
+        mHashSet = hashSet;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mHashSet = new HashSet<String>();
-        querySportType();
+        super.onCreate(savedInstanceState);          
         setStyle(DialogFragment.STYLE_NO_TITLE, R.style.AppTheme_NoTitleBar);
     }
 
@@ -60,7 +67,7 @@ public class SportTypePickerDialogFragment
         mCancel = (Button) mFragmentView.findViewById(R.id.cancel);
         mConfirm = (Button) mFragmentView.findViewById(R.id.confirm);
 
-        final String[] types = (String[]) mHashSet.toArray();
+        final String[] types = (String[]) mHashSet.toArray(new String[0]);
         mType.setDisplayedValues(types);
         mType.setMaxValue(types.length - 1);
         mType.setMinValue(0);
@@ -120,25 +127,6 @@ public class SportTypePickerDialogFragment
 
 
 
-    private void querySportType(){
-        Cursor cursor  = getActivity().getContentResolver().query(
-                HeatConsumption.CONTENT_SPORT_TYPE,
-                new String[] { HeatConsumption.SPORT_TYPE }, null, null, null);
-
-        if (cursor == null) {
-            BLog.d(TAG, " querySportType cursor = " + cursor);
-        }
-
-        try {
-            cursor.moveToPosition(-1);
-            while (cursor.moveToNext() ) {
-                String sportType = cursor.getString(0);
-                mHashSet.add(sportType);
-            }
-        } finally {
-            cursor.close();
-        }
-
-    }
+   
 
 }

@@ -14,12 +14,17 @@ import com.breezing.health.util.CalendarUtil;
 import com.breezing.health.util.DateFormatUtil;
 import com.breezing.health.util.LocalSharedPrefsUtil;
 
+import android.content.BroadcastReceiver;
 import android.content.ContentProviderOperation;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
+import android.hardware.usb.UsbManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.KeyEvent;
 
@@ -40,9 +45,11 @@ public class LauncherActivity extends BaseActivity {
     private int mDigest = 0;
     private int mEnergyDate = 0;
 
+    private boolean mDateLoadFinish = false;
+    private  boolean mDateWaitFinish = false;
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        // TODO Auto-generated method stub
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             exitApplication();
             return true;
@@ -55,22 +62,22 @@ public class LauncherActivity extends BaseActivity {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
-//        int day =  CalendarUtil.getWeekOfYear(new Date());
-//        Calendar calendar = Calendar.getInstance();
-//
-//        BLog.d(TAG, " onCreate day = " + day + " calendar.get(Calendar.MONTH) = " + calendar.get(Calendar.MONTH) );
-//        BreezingQueryViews  breezingQueryViews = new BreezingQueryViews(this);
-//        breezingQueryViews.getFoodSortFromFoodTypes(new String[] {"主事类","你好" });
-        
+
+        mDateLoadFinish = false;
+        mDateWaitFinish = false;
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(IntentAction.BROADCAST_TASK_SERVICE);
+     //   registerReceiver(mBroadcastReceiver, filter);
+
         //表示数据导入开始
-        LocalSharedPrefsUtil.saveSharedPrefsValueInt(this, 
+        LocalSharedPrefsUtil.saveSharedPrefsValueInt(this,
                 LocalSharedPrefsUtil.PREFS_LOADING_FINISH, 0);
-        
+
         sendBroadcast(new Intent(DataTaskService.ACTION_IMPORT_DATA,
                 null,
                 this,
                 DataReceiver.class));
-        
+
         mHandler = new Handler() {
 
             @Override
@@ -78,17 +85,22 @@ public class LauncherActivity extends BaseActivity {
                 final int what = msg.what;
                 switch(what) {
                     case MSG_AUTO:
+                        Log.d(TAG, "onCreate dispatchMessage");
+//                        mDateWaitFinish = true;
+//
+//                        if (mDateLoadFinish) {
+//                            String  action = verifyLocalAccountInfo();
+//                            Intent intent = new Intent(action);
+//                            startActivity(intent);
+//                            finish();
+//                        }
+
                         String  action = verifyLocalAccountInfo();
                         Intent intent = new Intent(action);
                         startActivity(intent);
                         finish();
-//                        while ( LocalSharedPrefsUtil.getSharedPrefsValueInt( LauncherActivity.this, 
-//                                LocalSharedPrefsUtil.PREFS_LOADING_FINISH ) == 1 ) {
-//                            
-//                            
-//                        }
-                       
-                        return ;
+
+                        return;
                 }
 
                 super.dispatchMessage(msg);
@@ -97,7 +109,14 @@ public class LauncherActivity extends BaseActivity {
         };
 
         mHandler.sendEmptyMessageDelayed(MSG_AUTO, 2 * 1000);
-       
+
+    }
+
+    @Override
+    protected void onDestroy () {
+        super.onDestroy();
+       // unregisterReceiver(mBroadcastReceiver);
+
     }
 
     private String verifyLocalAccountInfo() {
@@ -119,10 +138,6 @@ public class LauncherActivity extends BaseActivity {
                         appendEnergyCostById(accountId);
                     }
                     action = IntentAction.ACTIVITY_MAIN;
-//                    action = IntentAction.ACTIVITY_BALANCE_HISTORY;
-//                    action = IntentAction.ACTIVITY_BREEZING_TEST;
-//                    action = IntentAction.ACTIVITY_FILLIN_INFORMATION;
-//                    action = IntentAction.ACTIVITY_WEIGHT_RECORD;
                 }
             }
         }
@@ -284,4 +299,24 @@ public class LauncherActivity extends BaseActivity {
 
         return result;
     }
+
+//    private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+//
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            String action = intent.getAction();
+//
+//            if (action.equals(IntentAction.BROADCAST_TASK_SERVICE)) {
+//                mDateLoadFinish = true;
+//
+//                if (mDateWaitFinish) {
+//                    String  verifyAction = verifyLocalAccountInfo();
+//                    Intent  verifyIntent = new Intent(verifyAction);
+//                    startActivity(verifyIntent);
+//                    finish();
+//                }
+//            }
+//
+//        }
+//    };
 }

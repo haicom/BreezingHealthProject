@@ -107,6 +107,7 @@ public class BreezingProvider extends  SQLiteContentProvider {
     }
 
     private void notifyChange(Uri uri) {
+        Log.d(TAG, " notifyChange uri = " + uri);
         ContentResolver cr = getContext().getContentResolver();
         cr.notifyChange(uri, null);
     }
@@ -419,7 +420,7 @@ public class BreezingProvider extends  SQLiteContentProvider {
             if (Log.isLoggable(TAG, Log.VERBOSE)) {
                 Log.d(TAG, "insert " + uri + " succeeded");
             }
-            notifyChange(uri);
+            notifyChange(url);
             return uri;
         } else {
             Log.e(TAG,"insert: failed! " + initialValues.toString());

@@ -85,7 +85,10 @@
     <string name = "year_and_month" >%1$d年&#160;第%2$d月</string>
     <string name = "month_in_week">第%1$d周</string>
     <string name = "year_in_month">%1$d月</string>
-    <string name = "intensity_unit">%1$s&#160;&#160;2$s</string>
+    <string name = "intensity_unit">%1$s&#160;&#160;%2$s</string>
+
+    <string name = "exercise_calorie">共计%1$f千焦</string>
+    <string name = "exercise_description">%1$s&#160;%2$d%3$s，%4$s</string>
 
     <string name="settings">设置</string>
     <string name="share">分享</string>
@@ -148,7 +151,7 @@
 
     <string name="caloric_intake_history">我的能量摄入</string>
     <string name="caloric_burn_history">我的能量代谢</string>
-    
+
     <string name="caloric_balance_history">能量平衡历史</string>
 
     <string name="week_chart_model">周模式</string>
@@ -166,7 +169,7 @@
     <string name="step_by_base_information">基本资料</string>
     <string name="step_by_breezing_test">热量消耗测试</string>
     <string name="weight_trend_notice">温馨提醒：预计您的体重将每年增加0.8kg。</string>
-    
+
     <string name="update_weight">更新体重</string>
     <string name="weight_update_notice">%1$d年%2$d月%3$d日测试的体重为：%4$d斤</string>
     <string name="hope_weight_notice">◀%1$d斤</string>
@@ -174,7 +177,7 @@
     <string name="click_to_select_weight">点击选择体重</string>
     <string name="record_current_weight">记录当前体重</string>
     <string name="connect_to_weight_scale">连接蓝牙秤</string>
-    
+
     <string name="all_catagory">所有分类</string>
 
 </resources>
