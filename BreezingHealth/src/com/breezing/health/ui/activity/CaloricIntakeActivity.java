@@ -1,15 +1,20 @@
 package com.breezing.health.ui.activity;
 
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.breezing.health.R;
 import com.breezing.health.adapter.FoodAdapter;
@@ -35,6 +40,7 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
     private ListView mFoodList;
     private FoodAdapter mFoodAdapter;
     
+    private TextView mTotal;
     private Button mDetail;
 
     @Override
@@ -90,7 +96,7 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
         mCatagoryGridView = (GridView) findViewById(R.id.gridView);
         mFoodList = (ListView) findViewById(R.id.list);
         mDetail = (Button) findViewById(R.id.detail);
-
+        mTotal = (TextView) findViewById(R.id.total);
     }
 
     private void valueToView() {
@@ -98,6 +104,8 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
         mCatagoryGridView.setAdapter(mCatagoryAdapter);
         mFoodAdapter = new FoodAdapter(this, mCatagoryAdapter);
         mFoodList.setAdapter(mFoodAdapter);
+        
+        updateTotalCaloric();
     }
 
     private void initListeners() {
@@ -163,5 +171,21 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
 		});
         detailDialog.show(getSupportFragmentManager(), "detailPicker");
     }
+	
+	public void updateTotalCaloric() {
+	    final String total = mFoodAdapter.getTotalCaloric();
+	    final String title = getString(R.string.total_food_intake, total);
+
+        SpannableString span = new SpannableString(title);
+        span.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.gray)),
+                0,
+                5,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        span.setSpan(new RelativeSizeSpan(1.2f),
+                5, span.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        mTotal.setText(span);
+	}
 
 }

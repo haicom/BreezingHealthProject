@@ -2,7 +2,7 @@ package com.breezing.health.entity;
 
 public class FoodEntity {
 
-	private String foodType;
+	private int foodClassifyId;
     private String foodName;
     private String nameExpress;
     private int priority;
@@ -12,12 +12,12 @@ public class FoodEntity {
     private int selectedNumber;
     
     
-    public String getFoodType() {
-		return foodType;
-	}
-    public void setFoodType(String foodType) {
-		this.foodType = foodType;
-	}
+    public int getFoodClassifyId() {
+        return foodClassifyId;
+    }
+    public void setFoodClassifyId(int foodClassifyId) {
+        this.foodClassifyId = foodClassifyId;
+    }
 	public String getFoodName() {
 		return foodName;
 	}

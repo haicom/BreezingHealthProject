@@ -14,6 +14,7 @@ import com.breezing.health.entity.FoodEntity;
 import com.breezing.health.providers.Breezing;
 import com.breezing.health.providers.Breezing.Account;
 import com.breezing.health.providers.Breezing.EnergyCost;
+import com.breezing.health.providers.Breezing.FoodClassify;
 import com.breezing.health.providers.Breezing.HeatConsumptionRecord;
 import com.breezing.health.providers.Breezing.HeatIngestion;
 import com.breezing.health.providers.Breezing.Information;
@@ -255,7 +256,7 @@ public class BreezingQueryViews {
      * 获取食物种类
      */
     private static final String[] PROJECTION_FOOD_SORT = new String[] {
-    	HeatIngestion.FOOD_TYPE,
+        HeatIngestion.FOOD_CLASSIFY_ID,
         HeatIngestion.FOOD_NAME,          // 0
         HeatIngestion.NAME_EXPRESS,      // 1
         HeatIngestion.PRIORITY,    // 2
@@ -264,7 +265,7 @@ public class BreezingQueryViews {
     };
     
     
-    private static final int FOOD_TYPE_INGESTION_INDEX = 0;
+    private static final int FOOD_CLASSIFY_ID_INGESTION_INDEX = 0;
     private static final int FOOD_NAME_INGESTION_INDEX = 1;
     private static final int NAME_EXPRESS_INGESTION_INDEX = 2;
     private static final int PRIORITY_INGESTION_INDEX = 3;
@@ -288,14 +289,14 @@ public class BreezingQueryViews {
         for (CatagoryEntity catagory: foodTypes) {
             if (first) {
                 first = false;
-                foodBuilder.append("'");
-                foodBuilder.append(catagory.getName());
-                foodBuilder.append("'");
+//                foodBuilder.append("'");
+                foodBuilder.append(catagory.getId());
+//                foodBuilder.append("'");
             } else {
                 foodBuilder.append(',');
-                foodBuilder.append("'");
-                foodBuilder.append(catagory.getName());
-                foodBuilder.append("'");
+//                foodBuilder.append("'");
+                foodBuilder.append(catagory.getId());
+//                foodBuilder.append("'");
             }
         }
 
@@ -303,7 +304,7 @@ public class BreezingQueryViews {
         if (first) return foods;
 
         if (foodBuilder.length() > 0 ) {
-            final String whereClause = HeatIngestion.FOOD_TYPE + " IN (" + foodBuilder.toString() + ")";
+            final String whereClause = HeatIngestion.FOOD_CLASSIFY_ID + " IN (" + foodBuilder.toString() + ")";
             cursor = mContentResolver.query(
                     HeatIngestion.CONTENT_URI, PROJECTION_FOOD_SORT, whereClause, null, null);
         }
@@ -314,7 +315,7 @@ public class BreezingQueryViews {
         try {
             cursor.moveToPosition(-1);
             while (cursor.moveToNext() ) {
-            	String foodType = cursor.getString(FOOD_TYPE_INGESTION_INDEX);
+            	int foodType = cursor.getInt(FOOD_CLASSIFY_ID_INGESTION_INDEX);
                 String foodName = cursor.getString(FOOD_NAME_INGESTION_INDEX);
                 String nameExpress = cursor.getString(NAME_EXPRESS_INGESTION_INDEX);
                 int  priority = cursor.getInt(PRIORITY_INGESTION_INDEX);
@@ -329,7 +330,7 @@ public class BreezingQueryViews {
                    + " calorie = " + calorie);
                 
                 FoodEntity food = new FoodEntity();
-                food.setFoodType(foodType);
+                food.setFoodClassifyId(foodType);
                 food.setFoodName(foodName);
                 food.setNameExpress(nameExpress);
                 food.setPriority(priority);
@@ -639,18 +640,20 @@ public class BreezingQueryViews {
      /**
       * 我的体重变化查看每年，某一个帐户的年信息
       */
-     private static final String[] PROJECTION_FOOD_TYPE = new String[] {
-    	 HeatIngestion.FOOD_TYPE,               // 0
+     private static final String[] PROJECTION_FOOD_CLASSIFY = new String[] {
+         FoodClassify.FOOD_CLASSIFY_ID,               // 0
+         FoodClassify.FOOD_TYPE
      };
 
-     private static final int FOOD_TYPE_INDEX = 0;
+     private static final int FOOD_CLASSIFY_ID_INDEX = 0;
+     private static final int FOOD_TYPE_INDEX = 1;
      
      public ArrayList<CatagoryEntity> queryFoodTypes() {
     	 ArrayList<CatagoryEntity> catatories = new ArrayList<CatagoryEntity>();
 
          Cursor cursor  = mContentResolver.query(
-                 HeatIngestion.CONTENT_FOOD_TYPE,
-                 PROJECTION_FOOD_TYPE, null, null, null);
+                 FoodClassify.CONTENT_URI,
+                 PROJECTION_FOOD_CLASSIFY, null, null, null);
 
          if (cursor == null) {
              BLog.d(TAG, " queryFoodTypes cursor = " + cursor);
@@ -659,7 +662,7 @@ public class BreezingQueryViews {
          try {
              cursor.moveToPosition(-1);
              while (cursor.moveToNext() ) {
-                 CatagoryEntity catagory = new CatagoryEntity(cursor.getString(FOOD_TYPE_INDEX), 0);
+                 CatagoryEntity catagory = new CatagoryEntity(cursor.getInt(FOOD_CLASSIFY_ID_INDEX), cursor.getString(FOOD_TYPE_INDEX), R.drawable.all_catagory_selector);
                  catatories.add(catagory);
              }
          } finally {

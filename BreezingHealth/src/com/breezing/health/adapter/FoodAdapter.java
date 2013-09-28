@@ -1,5 +1,6 @@
 package com.breezing.health.adapter;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import android.content.Context;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 
 import com.breezing.health.R;
 import com.breezing.health.entity.FoodEntity;
+import com.breezing.health.ui.activity.CaloricIntakeActivity;
 import com.breezing.health.util.BreezingQueryViews;
 
 public class FoodAdapter extends BaseAdapter implements OnClickListener {
@@ -101,6 +103,17 @@ public class FoodAdapter extends BaseAdapter implements OnClickListener {
     	return -1;
     }
     
+    public String getTotalCaloric() {
+        float total = 0;
+        for (FoodEntity food : selectedFoods) {
+            final int intake = food.getSelectedNumber() * food.getFoodQuantity();
+            total =+ intake;
+        }
+        
+        DecimalFormat fnum = new DecimalFormat("##0.0"); 
+        return fnum.format(total);
+    }
+    
     public ArrayList<FoodEntity> getSelectedFoods() {
     	return selectedFoods;
     }
@@ -172,7 +185,6 @@ public class FoodAdapter extends BaseAdapter implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
 		if (v.getId() == R.id.increase) {
 			final FoodEntity food = (FoodEntity) v.getTag();
 			increaseFoodNumber(food);
@@ -184,6 +196,15 @@ public class FoodAdapter extends BaseAdapter implements OnClickListener {
 			notifyDataSetChanged();
 			return ;
 		}
+	}
+	
+	@Override
+	public void notifyDataSetChanged() {
+	    if (context instanceof CaloricIntakeActivity) {
+	        ((CaloricIntakeActivity) context).updateTotalCaloric();
+	    }
+	    
+	    super.notifyDataSetChanged();
 	}
 
 }

@@ -104,6 +104,8 @@ public class FoodCatagoryAdapter extends BaseAdapter {
         
         holder.icon.setImageResource(catagory.getIconRes());
         holder.name.setText(catagory.getName());
+        holder.icon.setSelected(catagory.isChecked());
+        holder.name.setSelected(catagory.isChecked());
         
         return contentView;
     }

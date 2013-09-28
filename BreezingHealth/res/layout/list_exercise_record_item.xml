@@ -1,40 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-    
+    android:layout_height="match_parent"
+    android:background="@drawable/record_form_center" >
+
     <TextView
         android:id="@+id/type"
         android:layout_width="@dimen/exercise_record_item_type_width"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:textColor="@color/black"
-        android:textSize="@dimen/normal_textsize"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:paddingTop="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/activity_horizontal_margin"
         android:gravity="center"
-        android:minHeight="@dimen/exercise_record_item_min_height"
-        android:text="@string/type" />
-    
+        android:text="@string/type"
+        android:textColor="@color/exercise_record_form_text_color"
+        android:textSize="@dimen/middle_textsize" />
+
     <TextView
         android:id="@+id/des"
         android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:paddingTop="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/activity_horizontal_margin"
         android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:textColor="@color/black"
-        android:textSize="@dimen/normal_textsize"
+        android:background="@color/exercise_record_form_grey_color"
         android:gravity="center"
-        android:minHeight="@dimen/exercise_record_item_min_height"
-        android:text="@string/detail" />
-    
+        android:text="@string/detail"
+        android:textColor="@color/black"
+        android:textSize="@dimen/middle_textsize" />
+
     <TextView
         android:id="@+id/caloric"
         android:layout_width="@dimen/exercise_record_item_caloric_width"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:textColor="@color/black"
-        android:textSize="@dimen/normal_textsize"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:paddingTop="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/activity_horizontal_margin"
         android:gravity="center"
-        android:minHeight="@dimen/exercise_record_item_min_height"
-        android:text="@string/consume" />
+        android:text="@string/consume"
+        android:textColor="@color/exercise_record_form_text_color"
+        android:textSize="@dimen/middle_textsize" />
 
 </LinearLayout>

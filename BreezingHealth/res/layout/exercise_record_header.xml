@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <Button
+        android:id="@+id/type"
+        style="@style/ButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/information_cell_height"
+        android:singleLine="true"
+        android:text="@string/exercise_type"
+        android:background="@drawable/btn_spinner_selector" />
+
+    <Button
+        android:id="@+id/intensity"
+        style="@style/ButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/information_cell_height"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:singleLine="true"
+        android:text="@string/exercise_intensity"
+        android:background="@drawable/btn_spinner_selector" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/information_cell_height"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/amount"
+            style="@style/ButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:hint="@string/edittext_hint_exercise_amount"
+            android:singleLine="true"
+            android:background="@drawable/bg_edittext_selector" />
+
+         <Button
+            android:id="@+id/equipment"
+            style="@style/ButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+             android:layout_weight="2"
+            android:text="@string/edittext_hint_exercise_amount"
+            android:singleLine="true"
+            android:background="@drawable/btn_spinner_selector" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/record"
+        style="@style/ButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:singleLine="true"
+        android:text="@string/record"
+        android:textColor="@color/white"
+        android:background="@drawable/btn_red_round_selector" />
+
+    <TextView
+        android:id="@+id/totalCaloric"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/information_cell_height"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:textColor="@color/black"
+        android:textSize="@dimen/normal_textsize" />
+
+</LinearLayout>

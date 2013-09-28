@@ -87,8 +87,8 @@
     <string name = "year_in_month">%1$d月</string>
     <string name = "intensity_unit">%1$s&#160;&#160;%2$s</string>
 
-    <string name = "exercise_calorie">共计%1$f千焦</string>
-    <string name = "exercise_description">%1$s&#160;%2$d%3$s，%4$s</string>
+    <string name = "exercise_calorie">%1$s千焦</string>
+    <string name = "exercise_description">%1$d%2$s\n%3$s</string>
 
     <string name="settings">设置</string>
     <string name="share">分享</string>
@@ -187,5 +187,9 @@
     <string name="helper_step_three_intro">只需三步，您的新陈代谢便可了如指掌！</string>
     <string name="helper_step_four_intro">随时记录您的饮食材料，让您的健康“有理有据”！</string>
     <string name="begin_breezing_life">开始体验</string>
+    <string name="base_exercise_caloric_burn">基本运动能量消耗</string>
+    <string name="digest_exercise_caloric_burn">消化能量消耗</string>
+    <string name="other_caloric_burn">其他能量消耗</string>
+    <string name="total_food_intake">摄入总量：%1$s千焦</string>
 
 </resources>

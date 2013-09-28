@@ -2,15 +2,15 @@ package com.breezing.health.ui.activity;
 
 
 
+import java.util.ArrayList;
+import java.util.HashSet;
+
 import android.content.AsyncQueryHandler;
 import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
-
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -24,21 +24,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-
-
-
-
 import com.breezing.health.R;
 import com.breezing.health.adapter.ExerciseRecordAdapter;
 import com.breezing.health.entity.ActionItem;
-import com.breezing.health.entity.ExerciseRecordEntity;
 import com.breezing.health.providers.Breezing;
 import com.breezing.health.providers.Breezing.EnergyCost;
 import com.breezing.health.providers.Breezing.HeatConsumption;
 import com.breezing.health.providers.Breezing.HeatConsumptionRecord;
-import com.breezing.health.tools.IntentAction;
 import com.breezing.health.ui.fragment.BaseDialogFragment;
 import com.breezing.health.ui.fragment.DialogFragmentInterface;
 import com.breezing.health.ui.fragment.SportIntensityPickerDialogFragment;
@@ -54,8 +46,6 @@ public class ExerciseRecordActivity extends ActionBarActivity
     private static final String TAG = "ExerciseRecordActivity";
 
     private ListView mRecordList;
-
-    private View mRecordHeader;
 
     private ExerciseRecordAdapter mRecordAdapter;
     private BackgroundQueryHandler mBackgroundQueryHandler;
@@ -137,16 +127,21 @@ public class ExerciseRecordActivity extends ActionBarActivity
 
         mRecordList = (ListView) findViewById(R.id.list);
       //
-        mButtonType = (Button) findViewById(R.id.type);
-        mButtonIntensity = (Button) findViewById(R.id.intensity);
-        mButtonEquipment = (Button) findViewById(R.id.equipment);
-        mButtonRecord = (Button) findViewById(R.id.record);
+        View recordHeader = getLayoutInflater().inflate(R.layout.exercise_record_header, null);
+        mButtonType = (Button) recordHeader.findViewById(R.id.type);
+        mButtonIntensity = (Button) recordHeader.findViewById(R.id.intensity);
+        mButtonEquipment = (Button) recordHeader.findViewById(R.id.equipment);
+        mButtonRecord = (Button) recordHeader.findViewById(R.id.record);
 
-        mEditAmount =  (EditText) findViewById(R.id.amount);
-        mTotalCaloric = (TextView) findViewById(R.id.totalCaloric);
+        mEditAmount =  (EditText) recordHeader.findViewById(R.id.amount);
+        mTotalCaloric = (TextView) recordHeader.findViewById(R.id.totalCaloric);
+        mRecordList.addHeaderView(recordHeader);
 
-        mRecordHeader = getLayoutInflater().inflate(R.layout.list_exercise_record_header, null);
-        mRecordList.addHeaderView(mRecordHeader);
+        View recordHeaderTitle = getLayoutInflater().inflate(R.layout.list_exercise_record_header_title, null);
+        mRecordList.addHeaderView(recordHeaderTitle);
+        
+        View recordFooter = getLayoutInflater().inflate(R.layout.list_exercise_record_footer, null);
+        mRecordList.addFooterView(recordFooter);
 
         mButtonType.setOnClickListener(this);
 

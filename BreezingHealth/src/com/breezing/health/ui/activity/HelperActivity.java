@@ -58,7 +58,8 @@ public class HelperActivity extends ActionBarActivity implements OnClickListener
 
     private void valueToView() {
     	mPagerAdapter = new HelperPagerAdapter(getSupportFragmentManager());
-    	mViewPager.setAdapter(mPagerAdapter);    	
+    	mViewPager.setAdapter(mPagerAdapter);
+    	
     	mIndicator.setViewPager(mViewPager);
     }
 

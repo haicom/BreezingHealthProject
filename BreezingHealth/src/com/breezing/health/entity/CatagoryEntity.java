@@ -2,15 +2,31 @@ package com.breezing.health.entity;
 
 public class CatagoryEntity {
 
+    private int id;
     private String name;
     private int iconRes;
     private boolean isChecked;
     
-    public CatagoryEntity(String name, int iconRes) {
+    public CatagoryEntity(int id, String name, int iconRes) {
+        this.id = id;
         this.name = name;
         this.iconRes = iconRes;
     }
     
+    
+    
+    public int getId() {
+        return id;
+    }
+
+
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+
+
     public String getName() {
         return name;
     }

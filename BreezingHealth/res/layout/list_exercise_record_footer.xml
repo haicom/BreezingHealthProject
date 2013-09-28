@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/record_form_bottom" >
+
+    <TextView
+        android:id="@+id/des"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:gravity="center"
+        android:textColor="@color/exercise_record_form_text_color"
+        android:textSize="@dimen/middle_textsize" />
+
+</LinearLayout>

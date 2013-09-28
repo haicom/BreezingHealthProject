@@ -1,6 +1,7 @@
 package com.breezing.health.adapter;
 
-import java.util.ArrayList;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -9,12 +10,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-
 import android.widget.TextView;
 
 import com.breezing.health.R;
-import com.breezing.health.entity.ExerciseRecordEntity;
 
 public class ExerciseRecordAdapter extends CursorAdapter {
 
@@ -126,9 +124,10 @@ public class ExerciseRecordAdapter extends CursorAdapter {
         
         holder.type.setText(sportType);
         holder.des.setText( context.getString(R.string.exercise_description, 
-                sportType, sportQuantity, sportUnit, sportIntensity) );
+                sportQuantity, sportUnit, sportIntensity) );
+        DecimalFormat fnum = new DecimalFormat("##0.0"); 
         holder.calorie.setText( context.getString(R.string.exercise_calorie, 
-                calorie) );
+                fnum.format(calorie)));
         
     }
 

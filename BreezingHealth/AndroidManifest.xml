@@ -191,8 +191,17 @@
                 <action android:name="action.intent.breezing.health.ACTIVITY_HELPER" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-        </activity>        
-      
+        </activity>
+        
+        <activity
+            android:name=".ui.activity.OtherCaloricBurnActivity"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="action.intent.breezing.health.ACTIVITY_OTHER_CALORIC_BURN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        
         <provider
             android:name=".providers.BreezingProvider"
             android:authorities="breezing"

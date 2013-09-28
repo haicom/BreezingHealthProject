@@ -324,7 +324,7 @@ public class Breezing {
         public static final String FOOD_PICTURE = "food_picture";                
                 
         public static final Uri CONTENT_FOOD_TYPE = Uri.withAppendedPath(AUTHORITY_URI,
-                "food_type");
+                "classify_id");
         
         public static final Uri CONTENT_FOOD_INGESTION = Uri.withAppendedPath(AUTHORITY_URI,
                 "food_ingestion");
@@ -332,7 +332,7 @@ public class Breezing {
         /**
          * The default sort order for this table
          */
-        public static final String DEFAULT_SORT_ORDER = "food_type DESC";
+        public static final String DEFAULT_SORT_ORDER = "classify_id DESC";
 
         /**
          * The MIME type of {@link #CONTENT_URI} providing a directory of
@@ -361,7 +361,7 @@ public class Breezing {
         /**
          * The default sort order for this table
          */
-        public static final String DEFAULT_SORT_ORDER = "food_type DESC";
+        public static final String DEFAULT_SORT_ORDER = "classify_id DESC";
         
         /**
          * The MIME type of {@link #CONTENT_URI} providing a directory of

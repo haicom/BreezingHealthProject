@@ -39,5 +39,10 @@
     
     <color name="background_color">#f2f2f2</color>
     <color name="left_menu_background_color">#282522</color>
+    <color name="exercise_record_form_grey_color">#ebebeb</color>
+    <color name="exercise_record_form_text_color">#5a5a5a</color>
+    <color name="food_catagory_normal_color">#d1d1d1</color>
+    <color name="food_catagory_selected_color">#d95860</color>
+    <color name="bg_food_catagory_color">#f6f6f6</color>
     
 </resources>
