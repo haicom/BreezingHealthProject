@@ -72,7 +72,7 @@ public class PieChart extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        Log.i(TAG, "onDraw");
+        //Log.i(TAG, "onDraw");
         for (int i = 0; i < iDataSize; i++) {
             
             // check whether the data size larger than color list size

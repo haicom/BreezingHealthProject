@@ -82,7 +82,7 @@ public class PieGraph extends View {
 			totalValue += slice.getValue();
 		}
         
-		Log.d(TAG, "onDraw mPadding  = " + mPadding + " totalValue = " + totalValue);
+	//	Log.d(TAG, "onDraw mPadding  = " + mPadding + " totalValue = " + totalValue);
 		
 		int count = 0;
 		for (PieSlice slice : slices){

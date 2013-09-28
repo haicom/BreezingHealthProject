@@ -151,8 +151,9 @@
 
     <string name="caloric_intake_history">我的能量摄入</string>
     <string name="caloric_burn_history">我的能量代谢</string>
-
-    <string name="caloric_balance_history">能量平衡历史</string>
+    <string name="caloric_balance_history">我的能量平衡</string>
+    <string name="caloric_weight_history">我的体重</string>
+    <string name="energy_cost_history">我的能量消耗</string>
 
     <string name="week_chart_model">周模式</string>
     <string name="month_chart_model">月模式</string>

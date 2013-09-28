@@ -74,11 +74,11 @@ public class MoreActivity extends ActionBarActivity {
     private void createList() {
         mTableView.addBasicItem( getString(R.string.user_instructions), 
                 getString(R.string.user_instructions_summary), 
-                null );
+                IntentAction.ACTIVITY_ABOUT );
         mTableView.addBasicItem( 
                 getString(R.string.related_links), 
                 getString(R.string.related_links_summary), 
-                null );
+                IntentAction.ACTIVITY_ABOUT );
         mTableView.addBasicItem(
                 getString(R.string.about_us), 
                 getString(R.string.about_us_summary), 

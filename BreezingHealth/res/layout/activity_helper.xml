@@ -9,14 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
     
-    <com.viewpagerindicator.CirclePageIndicator
-        android:id="@+id/indicator"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/activity_vertical_small_margin"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
-    
     <Button
         android:id="@+id/begin"
         style="@style/ButtonStyle"
@@ -28,5 +20,15 @@
         android:text="@string/begin_breezing_life"
         android:layout_above="@+id/indicator"
         android:textColor="@color/white" />
+    
+    <com.viewpagerindicator.CirclePageIndicator
+        android:id="@+id/indicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/activity_vertical_small_margin"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+    
+    
 
 </RelativeLayout>

@@ -108,7 +108,7 @@ public class LauncherActivity extends BaseActivity {
 
         };
 
-        mHandler.sendEmptyMessageDelayed(MSG_AUTO, 2 * 1000);
+        mHandler.sendEmptyMessageDelayed(MSG_AUTO, LAUNCHER_DELAY_MILLIS);
 
     }
 
@@ -324,4 +324,6 @@ public class LauncherActivity extends BaseActivity {
 //
 //        }
 //    };
+    
+    private static final int LAUNCHER_DELAY_MILLIS = 3000;
 }

@@ -9,41 +9,40 @@ import android.view.ViewGroup;
 
 public class BalanceHistoryPagerAdapter extends PagerAdapter {
 
-    private List<View> views;
+    private List<View> mViews;
     
     public BalanceHistoryPagerAdapter() {
-        views = new ArrayList<View>();
+        mViews = new ArrayList<View>();
     }
     
     @Override
     public int getCount() {
-        return views.size();
+        return mViews.size();
     }
     
-    public void addViewPage(View page) {
-        views.add(page);
+    public void addViewPage(View page) {        
+        mViews.add( page );
     }
 
     @Override
-    public boolean isViewFromObject(View arg0, Object arg1) {
-        return arg0 == arg1;
+    public boolean isViewFromObject (View view, Object object) {
+        return view == object;
     }
     
     @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
-        // TODO Auto-generated method stub
-        container.removeView(views.get(position));
+    public void destroyItem(ViewGroup container, int position, Object object) {      
+        container.removeView( mViews.get(position) );
     }
     
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
-        // TODO Auto-generated method stub
-        container.addView(views.get(position));
-        return views.get(position);
+    public Object instantiateItem(ViewGroup container, int position) {       
+        container.addView( mViews.get(position) );
+        
+        return mViews.get(position);
     }
     
     public List<View> getViews() {
-        return views;
+        return mViews;
     }
 
 }

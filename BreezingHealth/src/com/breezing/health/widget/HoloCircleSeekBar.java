@@ -513,7 +513,7 @@ public class HoloCircleSeekBar extends View {
         pointerPosition = calculatePointerPosition(mAngle);
         mArcColor.setColor(wheel_color);
         mPointerColor.setColor(wheel_color);
-        Log.d(TAG, " setCircleSeekBar arc_finish_radians = " + arc_finish_radians);
+       // Log.d(TAG, " setCircleSeekBar arc_finish_radians = " + arc_finish_radians);
         invalidate();
     }
 

@@ -816,7 +816,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
 
         Cursor cursor = null;
         try {
-            cursor = mContentResolver.query(EnergyCost.CONTENT_MONTHLY_URI,
+            cursor = mContentResolver.query(Ingestion.CONTENT_MONTHLY_URI,
                     PROJECTION_INGESTION_MONTHLY,
                     stringBuilder.toString(),
                     new String[] { String.valueOf(mAccountId),  String.valueOf(mYear) },

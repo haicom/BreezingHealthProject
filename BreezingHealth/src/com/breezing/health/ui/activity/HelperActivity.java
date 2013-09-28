@@ -24,8 +24,7 @@ public class HelperActivity extends ActionBarActivity implements OnClickListener
 	private Button mBegin;
 	
 	@Override
-	public boolean onKeyUp(int keyCode, KeyEvent event) {
-	    // TODO Auto-generated method stub
+	public boolean onKeyUp(int keyCode, KeyEvent event) {	   
 	    if (keyCode == KeyEvent.KEYCODE_BACK) {
 	        startToFillInActivity();
 	        return true;
@@ -59,18 +58,15 @@ public class HelperActivity extends ActionBarActivity implements OnClickListener
 
     private void valueToView() {
     	mPagerAdapter = new HelperPagerAdapter(getSupportFragmentManager());
-    	mViewPager.setAdapter(mPagerAdapter);
-    	
+    	mViewPager.setAdapter(mPagerAdapter);    	
     	mIndicator.setViewPager(mViewPager);
     }
 
     private void initListeners() {
         mBegin.setOnClickListener(this);
-        mIndicator.setOnPageChangeListener(new OnPageChangeListener() {
-            
+        mIndicator.setOnPageChangeListener(new OnPageChangeListener() {            
             @Override
-            public void onPageSelected(int arg0) {
-                // TODO Auto-generated method stub
+            public void onPageSelected(int arg0) {                
                 if (arg0 < HelperStep.values().length - 1) {
                     mBegin.setVisibility(View.INVISIBLE);
                 } else {
@@ -80,13 +76,13 @@ public class HelperActivity extends ActionBarActivity implements OnClickListener
             
             @Override
             public void onPageScrolled(int arg0, float arg1, int arg2) {
-                // TODO Auto-generated method stub
+              
                 
             }
             
             @Override
             public void onPageScrollStateChanged(int arg0) {
-                // TODO Auto-generated method stub
+              
                 
             }
         });
