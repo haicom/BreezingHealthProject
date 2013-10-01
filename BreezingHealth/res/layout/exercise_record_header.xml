@@ -37,6 +37,7 @@
             android:layout_weight="1"
             android:hint="@string/edittext_hint_exercise_amount"
             android:singleLine="true"
+            android:numeric="integer"
             android:background="@drawable/bg_edittext_selector" />
 
          <Button

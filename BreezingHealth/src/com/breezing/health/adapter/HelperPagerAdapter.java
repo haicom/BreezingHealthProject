@@ -10,19 +10,16 @@ import com.breezing.health.ui.fragment.HelperStepFragment;
 public class HelperPagerAdapter extends FragmentPagerAdapter {
 
 	public HelperPagerAdapter(FragmentManager fm) {
-		super(fm);
-		// TODO Auto-generated constructor stub
+		super(fm);		
 	}
 
 	@Override
-	public Fragment getItem(int arg0) {
-		// TODO Auto-generated method stub
+	public Fragment getItem(int arg0) {		
 		return HelperStepFragment.newInstance(HelperStep.values()[arg0]);
 	}
 
 	@Override
-	public int getCount() {
-		// TODO Auto-generated method stub
+	public int getCount() {		
 		return HelperStep.values().length;
 	}
 
