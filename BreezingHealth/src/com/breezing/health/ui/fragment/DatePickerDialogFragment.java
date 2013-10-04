@@ -18,24 +18,38 @@ import com.breezing.health.util.DateFormatUtil;
 public class DatePickerDialogFragment extends BaseDialogFragment implements OnClickListener {
 
     private View mFragmentView;
-    private NumberPicker mYear;
-    private NumberPicker mMonth;
-    private NumberPicker mDay;
+    
+    private NumberPicker mYearPicker;
+    private NumberPicker mMonthPicker;
+    private NumberPicker mDayPicker;
+    
     private TextView mTitle;
+    
     private Button mCancel;
     private Button mConfirm;
+    
     private DialogFragmentInterface.OnClickListener mPositiveClickListener;
     private DialogFragmentInterface.OnClickListener mNegativeClickListener;
+    
     private String mTitleString;
     
-    public static DatePickerDialogFragment newInstance() {
-        DatePickerDialogFragment fragment = new DatePickerDialogFragment();
+    private int mYear;
+    private int mMonth;
+    private int mDay;
+    
+    public static DatePickerDialogFragment newInstance(int year, int month, int day) {
+        DatePickerDialogFragment fragment = new DatePickerDialogFragment(year, month, day);
         return fragment;
     }
     
+    private DatePickerDialogFragment(int year, int month, int day) {
+        mYear = year;
+        mMonth = month;
+        mDay = day;
+    }
+    
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
+    public void onCreate(Bundle savedInstanceState) {       
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_TITLE, R.style.AppTheme_NoTitleBar);
     }
@@ -44,28 +58,38 @@ public class DatePickerDialogFragment extends BaseDialogFragment implements OnCl
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {        
         mFragmentView = inflater.inflate(R.layout.fragment_dialog_date_picker, null);
-        mYear = (NumberPicker) mFragmentView.findViewById(R.id.year);
-        mMonth = (NumberPicker) mFragmentView.findViewById(R.id.month);
-        mDay = (NumberPicker) mFragmentView.findViewById(R.id.day);
+        
+        mYearPicker = (NumberPicker) mFragmentView.findViewById(R.id.year);
+        mMonthPicker = (NumberPicker) mFragmentView.findViewById(R.id.month);
+        mDayPicker = (NumberPicker) mFragmentView.findViewById(R.id.day);
+        
         mTitle = (TextView) mFragmentView.findViewById(R.id.title);
-        mCancel = (Button) mFragmentView.findViewById(R.id.cancel);
+        
+        mCancel = (Button) mFragmentView.findViewById(R.id.cancel);        
         mConfirm = (Button) mFragmentView.findViewById(R.id.confirm);
         
-        mYear.setMaxValue(SHOW_YEAR_MAX);
-        mYear.setMinValue(SHOW_YEAR_MIN);
-        mYear.setValue(SHOW_CURRENT_YEAR);
-        mYear.setFocusable(false);
-        mYear.setFocusableInTouchMode(false);
+        mYearPicker.setMaxValue(SHOW_YEAR_MAX);
+        mYearPicker.setMinValue(SHOW_YEAR_MIN);
+        if ( mYear == 0 ) {
+            mYearPicker.setValue(SHOW_CURRENT_YEAR);
+        } else {
+            mYearPicker.setValue(mYear);
+        }
+       
+        mYearPicker.setFocusable(false);
+        mYearPicker.setFocusableInTouchMode(false);
         
-        mMonth.setMaxValue(SHOW_MONTH_MAX);
-        mMonth.setMinValue(SHOW_MONTH_MIN);
-        mMonth.setFocusable(false);
-        mMonth.setFocusableInTouchMode(false);
+        mMonthPicker.setMaxValue(SHOW_MONTH_MAX);
+        mMonthPicker.setMinValue(SHOW_MONTH_MIN);
+        mMonthPicker.setValue(mMonth);
+        mMonthPicker.setFocusable(false);
+        mMonthPicker.setFocusableInTouchMode(false);
         
-        mDay.setMaxValue(SHOW_DAY_MAX);
-        mDay.setMinValue(SHOW_DAT_MIN);
-        mDay.setFocusable(true);
-        mDay.setFocusableInTouchMode(true);
+        mDayPicker.setMaxValue(SHOW_DAY_MAX);
+        mDayPicker.setMinValue(SHOW_DAT_MIN);
+        mDayPicker.setValue(mDay);
+        mDayPicker.setFocusable(true);
+        mDayPicker.setFocusableInTouchMode(true);
         
         if (mTitleString != null) {
             mTitle.setText(mTitleString);
@@ -82,15 +106,15 @@ public class DatePickerDialogFragment extends BaseDialogFragment implements OnCl
     
     
     public int getYear() {
-        return  mYear.getValue();   
+        return  mYearPicker.getValue();   
     }
     
     public int getMonth() {
-        return mMonth.getValue();
+        return mMonthPicker.getValue();
     }
     
     public int getDay() {
-        return mDay.getValue();
+        return mDayPicker.getValue();
     }
     
     public void setTitle(String titleString) {
@@ -106,19 +130,27 @@ public class DatePickerDialogFragment extends BaseDialogFragment implements OnCl
     }
     
     @Override
-    public void onClick(View v) {
-        // TODO Auto-generated method stub
+    public void onClick(View v) {        
         if (v == mConfirm) {
+            
             if (mPositiveClickListener != null) {
-                mPositiveClickListener.onClick( this, mYear.getValue(), mMonth.getValue(), mDay.getValue() );
+                mPositiveClickListener.onClick( this, 
+                        mYearPicker.getValue(), 
+                        mMonthPicker.getValue(), 
+                        mDayPicker.getValue() );
             }
+            
             dismiss();
+            
             return ;
         } else if (v == mCancel) {
+            
             if (mNegativeClickListener != null) {
                 mNegativeClickListener.onClick(this);
             }
+            
             dismiss();
+            
             return ;
         }
     }

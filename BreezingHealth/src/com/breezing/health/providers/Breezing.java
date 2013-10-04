@@ -356,7 +356,8 @@ public class Breezing {
         
         public static final String FOOD_CLASSIFY_ID = "classify_id";
         public static final String FOOD_TYPE   = "food_type ";
-        public static final String CLASSIFY_PICTURE   = "classify_picture";   
+        public static final String UNSELECT_PICTURE   = "classify_picture";  
+        public static final String SELECT_PICTURE   = "select_picture"; 
         
         /**
          * The default sort order for this table

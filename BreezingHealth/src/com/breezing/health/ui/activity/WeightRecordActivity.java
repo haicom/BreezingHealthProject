@@ -99,8 +99,18 @@ public class WeightRecordActivity extends ActionBarActivity implements OnClickLi
             getSupportFragmentManager().beginTransaction().remove(weightPicker);
         }
         getSupportFragmentManager().beginTransaction().addToBackStack(null);
-
-        weightPicker = WeightPickerDialogFragment.newInstance();
+        
+        
+        float weight = 0;        
+        String weightString = mWeight.getText().toString();
+        if ( weightString.isEmpty() ) {
+            weight = 0;
+        } else {
+            weight = Float.valueOf(weightString);
+        }        
+        
+        
+        weightPicker = WeightPickerDialogFragment.newInstance( weight, mWeightUnit.getText().toString() );
         weightPicker.setTitle(getString(R.string.title_select_weight));
         weightPicker.setPositiveClickListener(new DialogFragmentInterface.OnClickListener() {
             @Override

@@ -1,5 +1,6 @@
 package com.breezing.health.ui.fragment;
 
+import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,22 +25,36 @@ import com.breezing.health.providers.Breezing.Account;
 public class HeightPickerDialogFragment extends BaseDialogFragment implements OnClickListener {
 
     private View mFragmentView;
-    private NumberPicker mInteger;
-    private NumberPicker mDecimals;
-    private NumberPicker mUnit;
+    
+    private NumberPicker mIntegerPicker;
+    private NumberPicker mDecimalsPicker;
+    private NumberPicker mUnitPicker;
+    
     private TextView mTitle;
+    
     private Button mCancel;
     private Button mConfirm;
+    
     private DialogFragmentInterface.OnClickListener mPositiveClickListener;
     private DialogFragmentInterface.OnClickListener mNegativeClickListener;
+    
     private String mTitleString;
+    
+    private float mHeight;
+    private String mUnit;
 
     private final Set<String> mUnits = new HashSet();
     private final StringBuilder  mStringBuilder = new StringBuilder();
 
-    public static HeightPickerDialogFragment newInstance() {
-        HeightPickerDialogFragment fragment = new HeightPickerDialogFragment();
+    public static HeightPickerDialogFragment newInstance(float height, String unit) {
+        
+        HeightPickerDialogFragment fragment = new HeightPickerDialogFragment(height, unit);
         return fragment;
+    }
+    
+    public HeightPickerDialogFragment(float height, String unit) {
+        mHeight = height;
+        mUnit = unit;
     }
 
     @Override
@@ -51,61 +66,93 @@ public class HeightPickerDialogFragment extends BaseDialogFragment implements On
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
+        
         mFragmentView = inflater.inflate(R.layout.fragment_dialog_height_picker, null);
-        mInteger = (NumberPicker) mFragmentView.findViewById(R.id.integer);
-        mDecimals = (NumberPicker) mFragmentView.findViewById(R.id.decimals);
-        mUnit = (NumberPicker) mFragmentView.findViewById(R.id.unit);
+        mIntegerPicker = (NumberPicker) mFragmentView.findViewById(R.id.integer);
+        mDecimalsPicker = (NumberPicker) mFragmentView.findViewById(R.id.decimals);
+        
+        mUnitPicker = (NumberPicker) mFragmentView.findViewById(R.id.unit);
         mTitle = (TextView) mFragmentView.findViewById(R.id.title);
         mCancel = (Button) mFragmentView.findViewById(R.id.cancel);
         mConfirm = (Button) mFragmentView.findViewById(R.id.confirm);
 
-        mInteger.setMaxValue(SHOW_INTEGER_CENTIMETRE_MAX);
-        mInteger.setMinValue(SHOW_INTEGER_CENTIMETRE_MIN);
-        mInteger.setValue(SHOW_INTEGER_CURRENT_CENTIMETRE);
-        mInteger.setFocusable(false);
-        mInteger.setFocusableInTouchMode(false);
+        mIntegerPicker.setMaxValue(SHOW_INTEGER_CENTIMETRE_MAX);
+        mIntegerPicker.setMinValue(SHOW_INTEGER_CENTIMETRE_MIN);
+        
+        if (mHeight == 0 ) {
+            mIntegerPicker.setValue(SHOW_INTEGER_CURRENT_CENTIMETRE);
+        } else {
+            mIntegerPicker.setValue( (int) Math.floor(mHeight) );
+        }
+        
+        mIntegerPicker.setFocusable(false);
+        mIntegerPicker.setFocusableInTouchMode(false);
 
-        mDecimals.setMaxValue(SHOW_DECIMALS_CENTIMETRE_MAX);
-        mDecimals.setMinValue(SHOW_DECIMALS_CENTIMETRE_MIN);
-        mDecimals.setFocusable(false);
-        mDecimals.setFocusableInTouchMode(false);
+        mDecimalsPicker.setMaxValue(SHOW_DECIMALS_CENTIMETRE_MAX);
+        mDecimalsPicker.setMinValue(SHOW_DECIMALS_CENTIMETRE_MIN);
+        
+        if (mHeight != 0) {
+            if (mUnit.equals(getString(R.string.height_meter) ) ) {
+                mDecimalsPicker.setValue( ( (int) ( mHeight*100 ) ) % 100);
+            } else {
+                mDecimalsPicker.setValue( ( (int) ( mHeight*10 ) ) % 10);
+            }           
+        }
+        
+        
+        mDecimalsPicker.setFocusable(false);
+        mDecimalsPicker.setFocusableInTouchMode(false);
 
         final String[] units = getActivity().getResources().getStringArray(R.array.heightUnits);
-        mUnit.setDisplayedValues(units);
-        mUnit.setMaxValue(units.length - 1);
-        mUnit.setMinValue(0);
-        mUnit.setFocusable(false);
-        mUnit.setFocusableInTouchMode(false);
-        mUnit.setOnValueChangedListener(new OnValueChangeListener() {
+        mUnitPicker.setDisplayedValues(units);
+        mUnitPicker.setMaxValue(units.length - 1);
+        mUnitPicker.setMinValue(0);
+        
+        int value = 0;
+        
+        if ( !mUnit.isEmpty() ) {            
+            for (value = 0; value < units.length; value++) {
+                if ( mUnit.equals(units[value]) ) {
+                    break;
+                }
+            }            
+            mUnitPicker.setValue(value);
+        }
+        
+        
+       
+        mUnitPicker.setFocusable(false);
+        mUnitPicker.setFocusableInTouchMode(false);
+        mUnitPicker.setOnValueChangedListener(new OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
 
                 switch(newVal) {
                 case HEIGHT_CENTIMETRE:
-                    mInteger.setMaxValue(SHOW_INTEGER_CENTIMETRE_MAX);
-                    mInteger.setMinValue(SHOW_INTEGER_CENTIMETRE_MIN);
-                    mInteger.setValue(SHOW_INTEGER_CURRENT_CENTIMETRE);
-                    mDecimals.setMaxValue(SHOW_INTEGER_CENTIMETRE_MAX);
-                    mDecimals.setMinValue(SHOW_DECIMALS_CENTIMETRE_MIN);
+                    mIntegerPicker.setMaxValue(SHOW_INTEGER_CENTIMETRE_MAX);
+                    mIntegerPicker.setMinValue(SHOW_INTEGER_CENTIMETRE_MIN);
+                    mIntegerPicker.setValue(SHOW_INTEGER_CURRENT_CENTIMETRE);
+                    mIntegerPicker.setMaxValue(SHOW_INTEGER_CENTIMETRE_MAX);
+                    mIntegerPicker.setMinValue(SHOW_DECIMALS_CENTIMETRE_MIN);
                     return ;
                 case HEIGHT_METRE:
-                    mInteger.setMaxValue(SHOW_INTEGER_METRE_MAX);
-                    mInteger.setMinValue(SHOW_INTEGER_METRE_MIN);
-                    mDecimals.setMaxValue(SHOW_DECIMALS_METRE_MAX);
-                    mDecimals.setMinValue(SHOW_DECIMALS_METRE_MIN);
+                    mIntegerPicker.setMaxValue(SHOW_INTEGER_METRE_MAX);
+                    mIntegerPicker.setMinValue(SHOW_INTEGER_METRE_MIN);
+                    mIntegerPicker.setMaxValue(SHOW_DECIMALS_METRE_MAX);
+                    mIntegerPicker.setMinValue(SHOW_DECIMALS_METRE_MIN);
                     return ;
                 case HEIGHT_FEET:
-                    mInteger.setMaxValue(SHOW_INTEGER_FEET_MAX);
-                    mInteger.setMinValue(SHOW_INTEGER_FEET_MIN);
-                    mDecimals.setMaxValue(SHOW_DECIMALS_FEET_MAX);
-                    mDecimals.setMinValue(SHOW_DECIMALS_FEET_MIN);
+                    mIntegerPicker.setMaxValue(SHOW_INTEGER_FEET_MAX);
+                    mIntegerPicker.setMinValue(SHOW_INTEGER_FEET_MIN);
+                    mIntegerPicker.setMaxValue(SHOW_DECIMALS_FEET_MAX);
+                    mIntegerPicker.setMinValue(SHOW_DECIMALS_FEET_MIN);
                     return ;
                 case HEIGHT_INCH:
-                    mInteger.setMaxValue(SHOW_INTEGER_INCH_MAX);
-                    mInteger.setMinValue(SHOW_INTEGER_INCH_MIN);
-                    mInteger.setValue(SHOW_INTEGER_CURRENT_INCHE);
-                    mDecimals.setMaxValue(SHOW_DECIMALS_INCH_MAX);
-                    mDecimals.setMinValue(SHOW_DECIMALS_INCH_MIN);
+                    mIntegerPicker.setMaxValue(SHOW_INTEGER_INCH_MAX);
+                    mIntegerPicker.setMinValue(SHOW_INTEGER_INCH_MIN);
+                    mIntegerPicker.setValue(SHOW_INTEGER_CURRENT_INCHE);
+                    mIntegerPicker.setMaxValue(SHOW_DECIMALS_INCH_MAX);
+                    mIntegerPicker.setMinValue(SHOW_DECIMALS_INCH_MIN);
                     return ;
                 }
             }
@@ -140,9 +187,9 @@ public class HeightPickerDialogFragment extends BaseDialogFragment implements On
     public void onClick(View v) {
         if (v == mConfirm) {
             if (mPositiveClickListener != null) {
-                String[] units = mUnit.getDisplayedValues();
-                String unit = units[mUnit.getValue()];
-                float height = mInteger.getValue() + (float) mDecimals.getValue()/(mDecimals.getMaxValue() + 1);
+                String[] units = mUnitPicker.getDisplayedValues();
+                String unit = units[mUnitPicker.getValue()];
+                float height = mIntegerPicker.getValue() + (float) mDecimalsPicker.getValue()/(mDecimalsPicker.getMaxValue() + 1);
                 mPositiveClickListener.onClick(this, height, unit);
             }
             dismiss();

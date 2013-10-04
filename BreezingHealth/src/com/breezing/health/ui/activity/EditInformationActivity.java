@@ -13,9 +13,12 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import com.breezing.health.R;
+import com.breezing.health.bean.BaseInformationOutput;
+import com.breezing.health.entity.ActionItem;
 import com.breezing.health.providers.Breezing;
 import com.breezing.health.providers.Breezing.Account;
 import com.breezing.health.providers.Breezing.Information;
@@ -28,6 +31,7 @@ import com.breezing.health.ui.fragment.ExceptedWeightPickerDialogFragment;
 import com.breezing.health.ui.fragment.HeightPickerDialogFragment;
 import com.breezing.health.ui.fragment.JobTypePickerDialogFragment;
 import com.breezing.health.ui.fragment.WeightPickerDialogFragment;
+import com.breezing.health.util.BLog;
 import com.breezing.health.util.ChangeUnitUtil;
 import com.breezing.health.util.DateFormatUtil;
 import com.breezing.health.util.LocalSharedPrefsUtil;
@@ -35,15 +39,13 @@ import com.breezing.health.providers.Breezing.WeightChange;
 
 
 
-public class FillInInformationActivity extends ActionBarActivity implements OnClickListener {
-    private final String TAG = "FillInInformationActivity";
+public class EditInformationActivity extends ActionBarActivity implements OnClickListener {
+    private final String TAG = "EditInformationActivity";
     private String mErrorInfo;
     private String mYear;
     private String mMonth;
     private String mDay;
-
-    private Button mNext;
-
+   
     private EditText mUserName;
     private EditText mBornDate;
     private EditText mJobType;
@@ -57,15 +59,18 @@ public class FillInInformationActivity extends ActionBarActivity implements OnCl
     private TextView mHeightUnit;
     private TextView mWeightUnit;
     private TextView mHopeWeightUnit;
-
-    private ArrayList<ContentProviderOperation> mOps;
     
-    private TextView mStepOne;
+    private Intent mIntent;
+    
+    private BaseInformationOutput mBaseInformationOutput;
+    
+    private ArrayList<ContentProviderOperation> mOps;    
+   
 
     @Override
     public void onCreate(Bundle savedInstanceState) {       
         super.onCreate(savedInstanceState);
-        setContentFrame(R.layout.activity_fillin_information);
+        setContentFrame(R.layout.activity_edit_information);
         initViews();
         initValues();
         valueToView();
@@ -87,29 +92,89 @@ public class FillInInformationActivity extends ActionBarActivity implements OnCl
     }
 
     private void initViews() {
-        setActionBarTitle(R.string.title_fillin_personal_information);
+        Bundle bundle = getIntent().getExtras();
+        
+        mBaseInformationOutput = bundle.getParcelable(AccountDetailActivity.BASE_INFO_PARCELABLE);
+        
+        setActionBarTitle(R.string.title_edit_personal_information);
+        
+        addRightActionItem(new ActionItem(ActionItem.ACTION_DONE) );    
 
         mRadioMale = (RadioButton) findViewById(R.id.male);
         mRadioFemale = (RadioButton) findViewById(R.id.female);
-
+        
+        if ( mBaseInformationOutput.getGender() == ChangeUnitUtil.GENDER_MALE ) {
+            mRadioMale.isChecked();
+        } else if (mBaseInformationOutput.getGender() == ChangeUnitUtil.GENDER_FEMALE ) {
+            mRadioFemale.isChecked();
+        }
+        
         mUserName = (EditText)findViewById(R.id.user_name);
+        mUserName.setText( mBaseInformationOutput.getName() );
+        
         mBornDate = (EditText) findViewById(R.id.date);
+        getDateByBirthday( mBaseInformationOutput.getAge() );
+        
         mBornDate.setFocusable(false);
+        mBornDate.setText( getString(R.string.birthday, mYear, mMonth, mDay) );                        
+               
         mJobType = (EditText) findViewById(R.id.jobType);
         mJobType.setFocusable(false);
-        mHeight = (EditText) findViewById(R.id.height);
-        mHeightUnit =(TextView) findViewById(R.id.height_unit);
-        mHeight.setFocusable(false);
-        mWeight = (EditText) findViewById(R.id.weight);
-        mWeightUnit = (TextView) findViewById(R.id.weight_unit);
-        mWeight.setFocusable(false);
-        mHopeWeight = (EditText) findViewById(R.id.hopeWeight);
-        mHopeWeightUnit = (TextView) findViewById(R.id.hope_weight_unit);
-        mHopeWeight.setFocusable(false);
-        mNext = (Button) findViewById(R.id.next);
+        mJobType.setText( ChangeUnitUtil.changeCustomUtilToId( mBaseInformationOutput.getCustom() ) );
         
-        mStepOne = (TextView) findViewById(R.id.step_one);
-        mStepOne.setSelected(true);
+        mHeight = (EditText) findViewById(R.id.height);
+        
+        float  height = queryUnitObtainData(mBaseInformationOutput.getHeight(), 
+                getString(R.string.height_type),
+                mBaseInformationOutput.getHeightUnit() );
+        
+            
+        DecimalFormat heightFormat;
+        
+        if (mBaseInformationOutput.getHeightUnit().equals(getString(R.string.height_meter) ) ) {
+            heightFormat = new DecimalFormat("#.00");
+        } else {
+            heightFormat = new DecimalFormat("#.0");
+        }
+        
+        String heightString = heightFormat.format(height);
+                
+        mHeight.setText( heightString );
+        
+        mHeightUnit = (TextView) findViewById(R.id.height_unit);
+        mHeightUnit.setText( mBaseInformationOutput.getHeightUnit() );        
+        mHeight.setFocusable(false);
+        
+        mWeight = (EditText) findViewById(R.id.weight);
+        
+        float  weight = queryUnitObtainData(mBaseInformationOutput.getWeight(), 
+                getString(R.string.weight_type),
+                mBaseInformationOutput.getWeightUnit() );
+        
+        DecimalFormat weightFormat = new DecimalFormat("#.0");
+        String weightString = weightFormat.format(weight);
+        
+        mWeight.setText( weightString ); 
+        
+        mWeightUnit = (TextView) findViewById(R.id.weight_unit);
+        mWeightUnit.setText( mBaseInformationOutput.getHeightUnit() );        
+        mWeight.setFocusable(false);
+        
+        float  hopeWeight = queryUnitObtainData( mBaseInformationOutput.getExpectedWeight(), 
+                getString(R.string.weight_type),
+                mBaseInformationOutput.getWeightUnit() );      
+        
+        DecimalFormat hopeWeightFormat = new DecimalFormat("#.0");
+        String hopeWeightString = hopeWeightFormat.format(hopeWeight);
+        
+        mHopeWeight = (EditText) findViewById(R.id.hopeWeight);
+        mHopeWeight.setText( hopeWeightString ); 
+        
+        mHopeWeightUnit = (TextView) findViewById(R.id.hope_weight_unit);
+        mHopeWeightUnit.setText( mBaseInformationOutput.getHeightUnit() );      
+        mHopeWeight.setFocusable(false);
+        
+          
     }
 
     private void valueToView() {
@@ -118,7 +183,7 @@ public class FillInInformationActivity extends ActionBarActivity implements OnCl
     }
 
     private void initListeners() {
-        mNext.setOnClickListener(this);
+       
         mBornDate.setOnClickListener(this);
         mJobType.setOnClickListener(this);
         mWeight.setOnClickListener(this);
@@ -128,16 +193,8 @@ public class FillInInformationActivity extends ActionBarActivity implements OnCl
 
     @Override
     public void onClick(View v) {
-        if (v == mNext) {
-            if ( createAccountInfo() ) {
-                Intent intent = new Intent(IntentAction.ACTIVITY_BREEZING_TEST);
-                startActivity(intent);
-                finish();
-            } else {
-                Toast.makeText(this, mErrorInfo, Toast.LENGTH_SHORT).show();
-            }
-            return ;
-        } else if (v == mBornDate) {
+        
+        if (v == mBornDate) {
             showDatePicker();
             return ;
         } else if (v == mWeight) {
@@ -156,10 +213,14 @@ public class FillInInformationActivity extends ActionBarActivity implements OnCl
     }
 
     private void showJobTypePicker() {
-        JobTypePickerDialogFragment datePicker = (JobTypePickerDialogFragment) getSupportFragmentManager().findFragmentByTag("jobTypePicker");
+        
+        JobTypePickerDialogFragment datePicker = (JobTypePickerDialogFragment) 
+                getSupportFragmentManager().findFragmentByTag("jobTypePicker");
+        
         if (datePicker != null) {
             getSupportFragmentManager().beginTransaction().remove(datePicker);
         }
+        
         getSupportFragmentManager().beginTransaction().addToBackStack(null);
         
         int custom;
@@ -170,9 +231,8 @@ public class FillInInformationActivity extends ActionBarActivity implements OnCl
         } else {
             custom = ChangeUnitUtil.changeCustomUtil(this, mJobType.getText().toString() );
         }
-        
-        
-        datePicker = JobTypePickerDialogFragment.newInstance(custom);
+       
+        datePicker = JobTypePickerDialogFragment.newInstance( custom );
         datePicker.setTitle(getString(R.string.title_select_job_type));
         datePicker.setPositiveClickListener(new DialogFragmentInterface.OnClickListener() {
             @Override
@@ -186,15 +246,18 @@ public class FillInInformationActivity extends ActionBarActivity implements OnCl
     }
 
     private void showDatePicker() {
-        DatePickerDialogFragment datePicker = (DatePickerDialogFragment) getSupportFragmentManager().findFragmentByTag("datePicker");
+        DatePickerDialogFragment datePicker = (DatePickerDialogFragment) 
+                getSupportFragmentManager().findFragmentByTag("datePicker");
+        
         if (datePicker != null) {
             getSupportFragmentManager().beginTransaction().remove(datePicker);
         }
+        
         getSupportFragmentManager().beginTransaction().addToBackStack(null);
 
         datePicker = DatePickerDialogFragment.newInstance( Integer.valueOf(mYear),
-                Integer.valueOf(mMonth), 
-                Integer.valueOf(mDay) );
+                     Integer.valueOf(mMonth), 
+                     Integer.valueOf(mDay) );
         datePicker.setTitle(getString(R.string.title_select_born_date));
         datePicker.setPositiveClickListener(new DialogFragmentInterface.OnClickListener() {
             @Override
@@ -203,9 +266,7 @@ public class FillInInformationActivity extends ActionBarActivity implements OnCl
                 mYear = String.valueOf(params[0]);
                 mMonth = String.valueOf(params[1]);
                 mDay = String.valueOf(params[2]);
-                mBornDate.setText(mYear + dialog.getString(R.string.year)
-                                + mMonth + dialog.getString(R.string.month)
-                                + mDay  + dialog.getString(R.string.day));
+                mBornDate.setText( getString(R.string.birthday, mYear, mMonth, mDay) );
             }
         });
 
@@ -213,10 +274,14 @@ public class FillInInformationActivity extends ActionBarActivity implements OnCl
     }
 
     private void showWeightPicker() {
-        WeightPickerDialogFragment weightPicker = (WeightPickerDialogFragment) getSupportFragmentManager().findFragmentByTag("weightPicker");
+        
+        WeightPickerDialogFragment weightPicker = (WeightPickerDialogFragment) 
+                getSupportFragmentManager().findFragmentByTag("weightPicker");
+        
         if (weightPicker != null) {
             getSupportFragmentManager().beginTransaction().remove(weightPicker);
         }
+        
         getSupportFragmentManager().beginTransaction().addToBackStack(null);
         
         float weight = 0;        
@@ -227,7 +292,8 @@ public class FillInInformationActivity extends ActionBarActivity implements OnCl
             weight = Float.valueOf(weightString);
         }        
         
-        weightPicker = WeightPickerDialogFragment.newInstance( weight, mWeightUnit.getText().toString() );
+        
+        weightPicker = WeightPickerDialogFragment.newInstance(weight, mWeightUnit.getText().toString() );
         weightPicker.setTitle(getString(R.string.title_select_weight));
         weightPicker.setPositiveClickListener(new DialogFragmentInterface.OnClickListener() {
             @Override
@@ -244,12 +310,14 @@ public class FillInInformationActivity extends ActionBarActivity implements OnCl
     }
 
     private void showHopeWeightPicker() {
-        ExceptedWeightPickerDialogFragment weightPicker = (ExceptedWeightPickerDialogFragment) getSupportFragmentManager().findFragmentByTag("hopeWeightPicker");
+        ExceptedWeightPickerDialogFragment weightPicker = (ExceptedWeightPickerDialogFragment) 
+                getSupportFragmentManager().findFragmentByTag("hopeWeightPicker");
+        
         if (weightPicker != null) {
             getSupportFragmentManager().beginTransaction().remove(weightPicker);
         }
         getSupportFragmentManager().beginTransaction().addToBackStack(null);
-        
+       
         float hopeWeight = 0;
         String hopeWeightString = mHopeWeight.getText().toString();
         
@@ -275,7 +343,8 @@ public class FillInInformationActivity extends ActionBarActivity implements OnCl
     }
 
     private void showHeightPicker() {
-        HeightPickerDialogFragment heightPicker = (HeightPickerDialogFragment) getSupportFragmentManager().findFragmentByTag("heightPicker");
+        HeightPickerDialogFragment heightPicker = (HeightPickerDialogFragment) 
+                getSupportFragmentManager().findFragmentByTag("heightPicker");
         if (heightPicker != null) {
             getSupportFragmentManager().beginTransaction().remove(heightPicker);
         }
@@ -291,8 +360,9 @@ public class FillInInformationActivity extends ActionBarActivity implements OnCl
             height = Float.valueOf(heightString);
         }
         
-        heightPicker = HeightPickerDialogFragment.newInstance( height, 
-                mHeightUnit.getText().toString());
+        heightPicker = HeightPickerDialogFragment.
+                newInstance( height, 
+                mHeightUnit.getText().toString() );
         heightPicker.setTitle( getString(R.string.title_select_height) );
         heightPicker.setPositiveClickListener(new DialogFragmentInterface.OnClickListener() {
             @Override
@@ -306,11 +376,25 @@ public class FillInInformationActivity extends ActionBarActivity implements OnCl
 
         heightPicker.show(getSupportFragmentManager(), "heightPicker");
     }
+    
+    
+    @Override
+    public void onClickActionBarItems(ActionItem item, View v) {
+        switch( item.getActionId() ) {
+            case ActionItem.ACTION_DONE: {
+                updateAccountInfo();             
+                this.finish();                
+                return;
+            }
+        }
+        
+        super.onClickActionBarItems(item, v);
+    }
 
     /***
      * 验证输入信息，并生成帐户信息,插入相应的数据
      */
-    private boolean createAccountInfo() {
+    private boolean updateAccountInfo() {
         boolean result = false;
 
         if ( !checkFillInputInfo() ) {
@@ -320,13 +404,13 @@ public class FillInInformationActivity extends ActionBarActivity implements OnCl
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.setLength(0);
         stringBuilder.append(mYear);
-        if ( Integer.parseInt(mMonth) < 10 ) {
+        if ( (Integer.parseInt(mMonth) < 10) && (mMonth.length() == 1) ) {            
             stringBuilder.append("0").append(mMonth);
         } else {
             stringBuilder.append(mMonth);
         }
 
-        if ( Integer.parseInt(mDay) < 10 ) {
+        if ( (Integer.parseInt(mDay) < 10) && (mDay.length() == 1) ) {
             stringBuilder.append("0").append(mDay);
         } else {
             stringBuilder.append(mDay);
@@ -335,26 +419,29 @@ public class FillInInformationActivity extends ActionBarActivity implements OnCl
 
 
         int date = DateFormatUtil.simpleDateFormat("yyyyMMdd", stringBuilder.toString());
-        int accountId = createAccountId();
+        int accountId = mBaseInformationOutput.getAccount();
 
-        appendAccount(mOps, mUserName.getText().toString(), accountId,
+        updateAccount(mOps, mUserName.getText().toString(), accountId,
                       DEFAULT_PASSWORD);
 
         float height =  queryUnitUnifyData(
                            Float.parseFloat(mHeight.getText().toString()) ,
                            getResources().getString(R.string.height_type),
                            mHeightUnit.getText().toString());
-       
+
+        float exceptedWeight = queryUnitUnifyData(
+                                Float.parseFloat(mHopeWeight.getText().toString()) ,
+                                getResources().getString(R.string.weight_type),
+                                mWeightUnit.getText().toString());
+
         float weight = queryUnitUnifyData(
                        Float.parseFloat(mWeight.getText().toString()) ,
                        getResources().getString(R.string.weight_type),
                        mWeightUnit.getText().toString());
         
-        float exceptedWeight = queryUnitUnifyData(
-                Float.parseFloat(mHopeWeight.getText().toString()) ,
-                getResources().getString(R.string.weight_type),
-                mWeightUnit.getText().toString());
-
+        
+        Log.d(TAG, "updateAccountInfo height = " + height + " exceptedWeight = " + exceptedWeight
+                + " weight = " + weight);
 
         int gender = 0;
 
@@ -365,17 +452,20 @@ public class FillInInformationActivity extends ActionBarActivity implements OnCl
         }
 
         int custom = ChangeUnitUtil.changeCustomUtil(this, mJobType.getText().toString());
+        
         String[] distanceUnits = getResources().getStringArray(R.array.distance_units);
-        appendInformation(mOps, accountId, gender,
+        
+        
+        updateInformation(mOps, accountId, gender,
                           height, date, custom,
-                          mHeightUnit.getText().toString(), mWeightUnit.getText().toString(),
+                          mHeightUnit.getText().toString(),
+                          mWeightUnit.getText().toString(),
                           distanceUnits[0]);
 
-        appendWeightChange(mOps, accountId, weight, exceptedWeight);
+        updateWeightChange(mOps, accountId, weight, exceptedWeight);
 
         try {
-            getContentResolver().applyBatch(Breezing.AUTHORITY, mOps);
-            LocalSharedPrefsUtil.saveSharedPrefsAccount(this, accountId, DEFAULT_PASSWORD);
+            getContentResolver().applyBatch(Breezing.AUTHORITY, mOps);            
             result = true;
         } catch (Exception e) {
             result = false;
@@ -416,40 +506,6 @@ public class FillInInformationActivity extends ActionBarActivity implements OnCl
     }
 
 
-    private final static int ACCOUNT_ID_INDEX = 0;
-
-    /***
-     * 生成帐户id
-     * @return
-     */
-    private int createAccountId() {
-        Cursor cursor = null;
-        int accountId = 0;
-        String sortOrder = Account.ACCOUNT_ID + " DESC";
-        try {
-            cursor = getContentResolver().query(Account.CONTENT_URI,
-                    new String[] {Account.ACCOUNT_ID},
-                    null,
-                    null,
-                    sortOrder);
-
-            if (cursor != null) {
-                if ( cursor.getCount() > 0 ) {
-                    cursor.moveToPosition(0);
-                    accountId = cursor.getInt(ACCOUNT_ID_INDEX);
-                }
-
-            }
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-
-        return accountId + 1;
-    }
-
-
 
     /***
      * 添加信息到 TABLE_ACCOUNT 表中
@@ -457,9 +513,17 @@ public class FillInInformationActivity extends ActionBarActivity implements OnCl
      * @param accountId
      * @param accountPass
      */
-    private void appendAccount( ArrayList<ContentProviderOperation> ops, String accountName, int accountId, String accountPass) {
+    private void updateAccount( ArrayList<ContentProviderOperation> ops, String accountName, int accountId, String accountPass) {
         Log.d(TAG, " appendAccount accountName = " + accountName + " accountPass = " + accountPass);
-        ops.add(ContentProviderOperation.newInsert(Account.CONTENT_URI)
+        
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.setLength(0);
+        stringBuilder.append(Account.ACCOUNT_ID + " = ? ");
+     
+
+        ops.add(ContentProviderOperation.newUpdate(Account.CONTENT_URI)
+                .withSelection(stringBuilder.toString(),  
+                        new String[] { String.valueOf(accountId) } )
                 .withValue(Account.ACCOUNT_NAME, accountName)
                 .withValue(Account.ACCOUNT_ID, accountId)
                 .withValue(Account.ACCOUNT_PASSWORD, accountPass)
@@ -477,19 +541,23 @@ public class FillInInformationActivity extends ActionBarActivity implements OnCl
      * @param weightUnit
      * @param distanceUnit
      */
-    private void appendInformation( ArrayList<ContentProviderOperation> ops, int accountId,
+    private void updateInformation( ArrayList<ContentProviderOperation> ops, int accountId,
                                     int gender, float height, int birthday,
                                     int custom, String heightUnit, String weightUnit ,
                                     String distanceUnit) {
-        ops.add(ContentProviderOperation.newInsert(Information.CONTENT_URI)
-                .withValue(Information.ACCOUNT_ID, accountId)
+        
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.setLength(0);
+        stringBuilder.append(Information.ACCOUNT_ID + " = ? ");
+        
+        ops.add(ContentProviderOperation.newUpdate(Information.CONTENT_URI)
+                .withSelection(stringBuilder.toString(),  new String[] { String.valueOf(accountId) } )                
                 .withValue(Information.GENDER, gender)
                 .withValue(Information.HEIGHT, height)
                 .withValue(Information.BIRTHDAY, birthday)
                 .withValue(Information.CUSTOM, custom)
                 .withValue(Information.HEIGHT_UNIT, heightUnit)
-                .withValue(Information.WEIGHT_UNIT, weightUnit)
-                .withValue(Information.DISTANCE_UNIT, distanceUnit)
+                .withValue(Information.WEIGHT_UNIT, weightUnit)                
                 .build());
     }
 
@@ -499,12 +567,23 @@ public class FillInInformationActivity extends ActionBarActivity implements OnCl
      * @param weight
      * @param expectedWeight
      */
-    private void appendWeightChange(ArrayList<ContentProviderOperation> ops, int accountId,
+    private void updateWeightChange(ArrayList<ContentProviderOperation> ops, int accountId,
                                     float weight, float expectedWeight) {
-        ops.add(ContentProviderOperation.newInsert(WeightChange.CONTENT_URI)
-                .withValue(WeightChange.ACCOUNT_ID, accountId)
+        
+        
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.setLength(0);
+        stringBuilder.append(WeightChange.ACCOUNT_ID + " = ? AND ");
+        stringBuilder.append(WeightChange.DATE + " = ? ");
+        Log.d(TAG, " updateWeightChange accountId = " + accountId + " mBaseInformationOutput.getDate() = " + mBaseInformationOutput.getDate()
+                + " weight = " + weight + " expectedWeight = " + expectedWeight ) ;
+        ops.add(ContentProviderOperation.newUpdate(WeightChange.CONTENT_URI)
+                .withSelection(stringBuilder.toString(),  
+                        new String[] { 
+                        String.valueOf(accountId) , 
+                        String.valueOf( mBaseInformationOutput.getDate() ) } )               
                 .withValue(WeightChange.WEIGHT, weight)
-                .withValue(WeightChange.EXPECTED_WEIGHT, expectedWeight)
+                .withValue(WeightChange.EXPECTED_WEIGHT, expectedWeight)               
                 .build());
     }
 
@@ -549,11 +628,71 @@ public class FillInInformationActivity extends ActionBarActivity implements OnCl
 
         return data * unifyUnit;
     }
+    
+    /***
+     * 查询统计信息换算单位，把单位改为统计信息存储，比如 重量 输入 磅 换算成斤存储
+     * @param data
+     * @param unitType
+     * @param unitName
+     * @return
+     */
+    public float queryUnitObtainData(float data, String unitType, String unitName) {
+        
+        float unifyUnit = 0;
+        
+        BLog.d(TAG, " queryUnitObtainData unitType = " + unitType + " unitName = " + unitName);
+        
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.setLength(0);
+        stringBuilder.append(UnitSettings.UNIT_TYPE + " = ? AND ");
+        stringBuilder.append(UnitSettings.UNIT_NAME + "= ?");
+        
+        Cursor cursor = null;
+        try {
+            cursor = getContentResolver().query( UnitSettings.CONTENT_URI,
+                    new String[] { UnitSettings.UNIT_OBTAIN_DATA },
+                    stringBuilder.toString(),
+                    new String[] { unitType, unitName },
+                    null);
+
+            if (cursor != null) {
+                if ( cursor.getCount() > 0 ) {
+                    cursor.moveToPosition(0);
+                    unifyUnit = cursor.getFloat(0);
+                }
+                
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        BLog.d(TAG, " queryUnitObtainData  unitType = " + unitType + " unitName = " + unitName);
+
+        return data * unifyUnit;
+    }
 
     public String getWeightUnit() {
         return mWeightUnit.getText().toString();
     }
+    
+    private void getDateByBirthday(int date) {        
+        String dateString = String.valueOf(date);        
+        mYear = dateString.subSequence(0, WEEK_PICKER_YEAR).toString();
+        mMonth = dateString.subSequence(WEEK_PICKER_YEAR, WEEK_PICKER_YEAR + WEEK_PICKER_MONTH).toString();
+        mDay = dateString.subSequence(WEEK_PICKER_YEAR + WEEK_PICKER_MONTH, dateString.length() ).toString();       
+       
+    }
 
     private static final String DEFAULT_PASSWORD = "888888";
+    
+    private static final int WEEK_PICKER_DATE_LEN           = 8;
+    private static final int WEEK_PICKER_YEAR               = 4;
+    private static final int WEEK_PICKER_MONTH              = 2;
+
 
 }
+
+
+

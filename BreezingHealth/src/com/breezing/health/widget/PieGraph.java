@@ -93,7 +93,7 @@ public class PieGraph extends View {
 			p.arcTo(new RectF(midX-innerRadius, midY-innerRadius, midX+innerRadius, midY+innerRadius ), ( currentAngle + mPadding ) + ( currentSweep - mPadding ), -( currentSweep - mPadding ) );
 			p.close();
             
-			Log.d(TAG, " onDraw currentAngle = " + currentAngle + " mPadding = " + mPadding + " midX = " + midX + " midY = " + midY);
+			//Log.d(TAG, " onDraw currentAngle = " + currentAngle + " mPadding = " + mPadding + " midX = " + midX + " midY = " + midY);
 			slice.setPath(p);
 			slice.setRegion(new Region((int)(midX-radius), (int)(midY-radius), (int)(midX+radius), (int)(midY+radius)));
 			canvas.drawPath(p, paint);

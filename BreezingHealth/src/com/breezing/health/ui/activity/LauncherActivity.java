@@ -8,29 +8,22 @@ import com.breezing.health.providers.Breezing.EnergyCost;
 import com.breezing.health.tools.IntentAction;
 import com.breezing.health.transation.DataReceiver;
 import com.breezing.health.transation.DataTaskService;
-import com.breezing.health.util.BLog;
-import com.breezing.health.util.BreezingQueryViews;
-import com.breezing.health.util.CalendarUtil;
 import com.breezing.health.util.DateFormatUtil;
 import com.breezing.health.util.LocalSharedPrefsUtil;
 
-import android.content.BroadcastReceiver;
+
 import android.content.ContentProviderOperation;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
-import android.hardware.usb.UsbManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.KeyEvent;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+
 
 
 public class LauncherActivity extends BaseActivity {

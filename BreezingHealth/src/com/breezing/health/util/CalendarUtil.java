@@ -221,6 +221,23 @@ public class CalendarUtil {
 
         return years;
     }
+    
+    /***
+     * obtain age by date of birth 
+     * @param date
+     * @return
+     */
+    public static int getAgeByDate(int date) {
+        Calendar calendar = new GregorianCalendar();
+
+        int currentYear = calendar.get(GregorianCalendar.YEAR);
+        
+        String dateString = String.valueOf(date);
+        int dateYear = Integer.valueOf( dateString.subSequence(0, WEEK_PICKER_YEAR).toString() );
+        
+        return currentYear - dateYear;
+        
+    }
 
     /****
      * 获得某一个月的周数

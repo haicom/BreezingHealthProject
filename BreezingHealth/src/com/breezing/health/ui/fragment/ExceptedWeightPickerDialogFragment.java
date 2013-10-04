@@ -18,22 +18,37 @@ import android.widget.TextView;
 import com.breezing.health.ui.activity.FillInInformationActivity;
 
 public class ExceptedWeightPickerDialogFragment extends BaseDialogFragment implements OnClickListener {
+    
     private final String TAG = "ExceptedWeightPickerDialogFragment";
+    
     private View mFragmentView;
+    
     private NumberPicker mInteger;
     private NumberPicker mDecimals;
+    
     private TextView mTitle;
+    
     private Button mCancel;
     private Button mConfirm;
+    
     private DialogFragmentInterface.OnClickListener mPositiveClickListener;
     private DialogFragmentInterface.OnClickListener mNegativeClickListener;
+    
     private String mTitleString;
+    
+    private float mHopeWeight;
+    private String mUnit;
 
-    public static ExceptedWeightPickerDialogFragment newInstance() {
-        ExceptedWeightPickerDialogFragment fragment = new ExceptedWeightPickerDialogFragment();
+    public static ExceptedWeightPickerDialogFragment newInstance(float hopeWeight, String unit) {
+        ExceptedWeightPickerDialogFragment fragment = new ExceptedWeightPickerDialogFragment(hopeWeight, unit);
         return fragment;
     }
-
+    
+    private ExceptedWeightPickerDialogFragment(float hopeWeight, String unit) {
+        mHopeWeight = hopeWeight;
+        mUnit = unit;
+    }
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,36 +58,77 @@ public class ExceptedWeightPickerDialogFragment extends BaseDialogFragment imple
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
+        
         Log.d(TAG, "onCreateView");
+        
         mFragmentView = inflater.inflate(R.layout.fragment_dialog_excepted_weight_picker, null);
+        
         mInteger = (NumberPicker) mFragmentView.findViewById(R.id.integer);
         mDecimals = (NumberPicker) mFragmentView.findViewById(R.id.decimals);
         mTitle = (TextView) mFragmentView.findViewById(R.id.title);
         mCancel = (Button) mFragmentView.findViewById(R.id.cancel);
         mConfirm = (Button) mFragmentView.findViewById(R.id.confirm);
 
-        String weightUnit = ((FillInInformationActivity)getActivity()).getWeightUnit();
-        Log.d(TAG, " onCreateView weightUnit = " + weightUnit);
-        if ( weightUnit.equals( getString(R.string.weight_jin) ) ) {
+       
+        if ( mUnit.isEmpty() ) {
+            
             mInteger.setMaxValue(SHOW_INTEGER_JIN_MAX);
             mInteger.setMinValue(SHOW_INTEGER_JIN_MIN);
-            mInteger.setValue(SHOW_INTEGER_CURRENT_JIN);
-            mDecimals.setMaxValue(SHOW_DECIMALS_MAX);
-            mDecimals.setMinValue(SHOW_DECIMALS_MIN);
-        } else if ( weightUnit.equals( getString(R.string.weight_kilo) ) ) {
-            mInteger.setMaxValue(SHOW_INTEGER_KILO_MAX);
-            mInteger.setMinValue(SHOW_INTEGER_KILO_MIN);
-            mInteger.setValue(SHOW_INTEGER_CURRENT_KILO);
-            mDecimals.setMaxValue(SHOW_DECIMALS_MAX);
-            mDecimals.setMinValue(SHOW_DECIMALS_MIN);
-        } else if ( weightUnit.equals( getString(R.string.weight_pound) ) ) {
-            mInteger.setMaxValue(SHOW_INTEGER_POUND_MAX);
-            mInteger.setMinValue(SHOW_INTEGER_POUND_MIN);
-            mInteger.setValue(SHOW_INTEGER_CURRENT_POUND);
+            mInteger.setValue(SHOW_INTEGER_CURRENT_JIN);           
             mDecimals.setMaxValue(SHOW_DECIMALS_MAX);
             mDecimals.setMinValue(SHOW_DECIMALS_MIN);
         }
+        else if ( mUnit.equals( getString(R.string.weight_jin) ) ) {
+            
+            mInteger.setMaxValue(SHOW_INTEGER_JIN_MAX);
+            mInteger.setMinValue(SHOW_INTEGER_JIN_MIN);
 
+            if (mHopeWeight == 0 ) {
+                mInteger.setValue(SHOW_INTEGER_CURRENT_JIN);
+            } else {
+                mInteger.setValue( (int) Math.floor(mHopeWeight) );
+            }
+            
+           
+            mDecimals.setMaxValue(SHOW_DECIMALS_MAX);
+            mDecimals.setMinValue(SHOW_DECIMALS_MIN);
+            
+            
+        } else if ( mUnit.equals( getString(R.string.weight_kilo) ) ) {
+            
+            mInteger.setMaxValue(SHOW_INTEGER_KILO_MAX);
+            mInteger.setMinValue(SHOW_INTEGER_KILO_MIN);
+            
+            if (mHopeWeight == 0 ) {
+                mInteger.setValue(SHOW_INTEGER_CURRENT_KILO);
+            } else {
+                mInteger.setValue( (int) Math.floor(mHopeWeight) );
+            }
+          
+            mDecimals.setMaxValue(SHOW_DECIMALS_MAX);
+            mDecimals.setMinValue(SHOW_DECIMALS_MIN);
+            
+           
+            
+        } else if ( mUnit.equals( getString(R.string.weight_pound) ) ) {
+            
+            mInteger.setMaxValue(SHOW_INTEGER_POUND_MAX);
+            mInteger.setMinValue(SHOW_INTEGER_POUND_MIN);
+           
+            if (mHopeWeight == 0 ) {
+                mInteger.setValue(SHOW_INTEGER_CURRENT_POUND);
+            } else {
+                mInteger.setValue( (int) Math.floor(mHopeWeight) );
+            }
+            mDecimals.setMaxValue(SHOW_DECIMALS_MAX);
+            mDecimals.setMinValue(SHOW_DECIMALS_MIN);
+            
+        }
+        
+        if (mHopeWeight != 0) {
+            mDecimals.setValue( ( (int)( mHopeWeight * 10 ) ) % 10);
+        }
+        
         mInteger.setFocusable(false);
         mInteger.setFocusableInTouchMode(false);
         mDecimals.setFocusable(false);

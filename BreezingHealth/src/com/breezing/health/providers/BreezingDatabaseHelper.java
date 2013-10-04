@@ -21,7 +21,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
     private final static String TAG = "BreezingDatabaseHelper";
     private static BreezingDatabaseHelper sInstance = null;
     static final String DATABASE_NAME = "breezing.db";
-    static final int DATABASE_VERSION = 2;
+    static final int DATABASE_VERSION = 3;
     private final Context mContext;
 
     public interface Views {
@@ -381,7 +381,8 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
                    +  FoodClassify._ID + " INTEGER PRIMARY KEY , "
                    +  FoodClassify.FOOD_CLASSIFY_ID + " INTEGER NOT NULL , "
                    +  FoodClassify.FOOD_TYPE + " TEXT NOT NULL , "
-                   +  FoodClassify.CLASSIFY_PICTURE + " TEXT  " +                 
+                   +  FoodClassify.UNSELECT_PICTURE + " TEXT , "  
+                   +  FoodClassify.SELECT_PICTURE + " TEXT  " +                   
                    ");");
     }
     
@@ -394,7 +395,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
         
         String foodIngestionSelect =  " SELECT "
                 + FoodClassify.FOOD_TYPE + " , "
-                + FoodClassify.CLASSIFY_PICTURE + " , "
+                + FoodClassify.UNSELECT_PICTURE + " , "
                 + HeatIngestion.FOOD_NAME + " , "
                 + HeatIngestion.NAME_EXPRESS + " , "
                 + HeatIngestion.PRIORITY + " , "
@@ -501,6 +502,8 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
 
         if (oldVersion == 1) {
             upgradeToVersion202(db);
+        } else if (oldVersion == 2) {
+            upgradeToVersion3(db);
         }
     }
 
@@ -508,6 +511,12 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(
                 "ALTER TABLE " + BreezingProvider.TABLE_COST +
                 " ADD " + EnergyCost.ENERGY_COST_DATE + " INTEGER;");
+    }
+    
+    private void upgradeToVersion3(SQLiteDatabase db) {
+        db.execSQL(
+                "ALTER TABLE " + BreezingProvider.TABLE_FOOD_CLASSIFY +
+                " ADD " + FoodClassify.SELECT_PICTURE + " TEXT ");
     }
 
 }

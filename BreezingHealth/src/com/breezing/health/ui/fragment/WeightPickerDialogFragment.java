@@ -19,25 +19,37 @@ import android.widget.TextView;
 
 public class WeightPickerDialogFragment extends BaseDialogFragment implements OnClickListener {
     private final String TAG = "WeightPickerDialogFragment";
+    
     private View mFragmentView;
+    
     private NumberPicker mInteger;
     private NumberPicker mDecimals;
     private NumberPicker mUnit;
+    
     private TextView mTitle;
+    
     private Button mCancel;
     private Button mConfirm;
+    
     private DialogFragmentInterface.OnClickListener mPositiveClickListener;
     private DialogFragmentInterface.OnClickListener mNegativeClickListener;
+    
     private String mTitleString;
+    
+    private float mWeight;
+    private String mUnitString;
 
-    public static WeightPickerDialogFragment newInstance() {
-        WeightPickerDialogFragment fragment = new WeightPickerDialogFragment();
+    public static WeightPickerDialogFragment newInstance(float weight, String unit) {
+        WeightPickerDialogFragment fragment = new WeightPickerDialogFragment(weight, unit);
         return fragment;
     }
-
+    
+    private WeightPickerDialogFragment(float weight, String unit) {
+        mWeight = weight;
+        mUnitString = unit;
+    }
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
+    public void onCreate(Bundle savedInstanceState) {       
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_TITLE, R.style.AppTheme_NoTitleBar);
     }
@@ -45,8 +57,7 @@ public class WeightPickerDialogFragment extends BaseDialogFragment implements On
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-
+    
         mFragmentView = inflater.inflate(R.layout.fragment_dialog_weight_picker, null);
         mInteger = (NumberPicker) mFragmentView.findViewById(R.id.integer);
         mDecimals = (NumberPicker) mFragmentView.findViewById(R.id.decimals);
@@ -57,12 +68,23 @@ public class WeightPickerDialogFragment extends BaseDialogFragment implements On
 
         mInteger.setMaxValue(SHOW_INTEGER_JIN_MAX);
         mInteger.setMinValue(SHOW_INTEGER_JIN_MIN);
-        mInteger.setValue(SHOW_INTEGER_CURRENT_JIN);
+       
+        if (mWeight == 0 ) {
+            mInteger.setValue(SHOW_INTEGER_CURRENT_JIN);
+        } else {
+            mInteger.setValue( (int) Math.floor(mWeight) );
+        }
+        
         mInteger.setFocusable(false);
         mInteger.setFocusableInTouchMode(false);
 
         mDecimals.setMaxValue(SHOW_DECIMALS_MAX);
         mDecimals.setMinValue(SHOW_DECIMALS_MIN);
+        
+        if (mWeight != 0) {
+            mDecimals.setValue( ( (int)( mWeight * 10 ) ) % 10);
+        }
+       
         mDecimals.setFocusable(false);
         mDecimals.setFocusableInTouchMode(false);
 
@@ -70,6 +92,20 @@ public class WeightPickerDialogFragment extends BaseDialogFragment implements On
         mUnit.setDisplayedValues(units);
         mUnit.setMaxValue(units.length - 1);
         mUnit.setMinValue(0);
+        
+        int value = 0;
+        
+        if ( !mUnitString.isEmpty() ) {            
+            for (value = 0; value < units.length; value++) {
+                if ( mUnitString.equals(units[value]) ) {
+                    break;
+                }
+            }
+            mUnit.setValue(value);
+        }
+        
+       
+        
         mUnit.setFocusable(false);
         mUnit.setFocusableInTouchMode(false);
         mUnit.setOnValueChangedListener(new OnValueChangeListener() {

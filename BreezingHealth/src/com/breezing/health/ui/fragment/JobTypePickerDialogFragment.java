@@ -25,9 +25,15 @@ public class JobTypePickerDialogFragment extends BaseDialogFragment implements O
     private DialogFragmentInterface.OnClickListener mNegativeClickListener;
     private String mTitleString;
     
-    public static JobTypePickerDialogFragment newInstance() {
-        JobTypePickerDialogFragment fragment = new JobTypePickerDialogFragment();
+    private int mCustom;
+    
+    public static JobTypePickerDialogFragment newInstance(int custom) {
+        JobTypePickerDialogFragment fragment = new JobTypePickerDialogFragment(custom);
         return fragment;
+    }
+    
+    private JobTypePickerDialogFragment(int custom) {
+        mCustom = custom;
     }
     
     @Override
@@ -49,6 +55,7 @@ public class JobTypePickerDialogFragment extends BaseDialogFragment implements O
         mType.setDisplayedValues(types);
         mType.setMaxValue(types.length - 1);
         mType.setMinValue(0);
+        mType.setValue(mCustom);
         mType.setFocusable(false);
         mType.setFocusableInTouchMode(false);
         

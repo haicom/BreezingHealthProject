@@ -39,6 +39,16 @@
             </intent-filter>
         </activity>
         
+         <activity
+            android:name=".ui.activity.EditInformationActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+            <intent-filter>
+                <action android:name="action.intent.breezing.health.ACTIVITY_EDIT_INFORMATION" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        
         <activity
             android:name=".ui.activity.BreezingTestActivity"
             android:screenOrientation="portrait" >

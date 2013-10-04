@@ -1,6 +1,7 @@
 package com.breezing.health.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,8 @@ import com.breezing.health.R;
 import com.breezing.health.entity.LeftMenuFunction;
 
 public class LeftMenuAdapter extends BaseAdapter {
-    
+    private static final String TAG = "LeftMenuAdapter";
+            
     private LeftMenuFunction[] menuItems;
     private Context context;
     
@@ -49,7 +51,10 @@ public class LeftMenuAdapter extends BaseAdapter {
             holder = (ViewHolder) contentView.getTag();
         }
         
+       
         LeftMenuFunction item = (LeftMenuFunction) getItem(position);
+        Log.d(TAG, "LeftMenuAdapter getView position = " + position + " item.titleRes = " +  item.titleRes
+                + " item.iconRes = " + item.iconRes);
         holder.name.setText(item.titleRes);
         holder.icon.setImageResource(item.iconRes);
         

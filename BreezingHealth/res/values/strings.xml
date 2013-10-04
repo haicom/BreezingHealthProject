@@ -15,6 +15,7 @@
     <string name="edittext_hint_exercise_amount">输入运动量</string>
 
     <string name="title_fillin_personal_information">填写个人资料</string>
+    <string name="title_edit_personal_information">编写个人资料</string>
     <string name="title_select_born_date">选择出生日期</string>
     <string name="title_select_weight">选择体重</string>
     <string name="title_select_hope_weight">选择目标体重</string>
@@ -127,10 +128,13 @@
     <string name="height_unit">身高单位</string>
     <string name="weight_unit">体重单位</string>
     <string name="distance_unit">距离单位</string>
-
+    <string name = "height_meter" >米</string>
+    
     <string name = "unit" >单位</string>
     <string name = "sport_type_runing">跑步</string>
     <string name = "sport_type_gengeral">次</string>
+    
+   
 
     <string name="my_breezing">Breezing</string>
     <string name="my_pedometer">计步器</string>
@@ -173,6 +177,7 @@
 
     <string name="update_weight">更新体重</string>
     <string name="weight_update_notice">%1$d年%2$d月%3$d日测试的体重为：%4$d斤</string>
+    <string name="birthday">%1$s年%2$s月%3$s日</string>
     <string name="hope_weight_notice">◀%1$d斤</string>
     <string name="different_weight_value_notice">距离目标体重：%1$d斤</string>
     <string name="click_to_select_weight">点击选择体重</string>
