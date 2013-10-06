@@ -157,7 +157,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        
+          
         <activity
             android:name=".ui.activity.ExerciseRecordActivity"
             android:screenOrientation="portrait" >
@@ -208,6 +208,15 @@
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="action.intent.breezing.health.ACTIVITY_OTHER_CALORIC_BURN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        
+        <activity
+            android:name=".ui.activity.LoginActivity"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="action.intent.breezing.health.ACTIVITY_LOGIN" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

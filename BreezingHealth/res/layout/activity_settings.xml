@@ -1,11 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:layout_height="match_parent" >
+    <LinearLayout
+        android:layout_width = "match_parent"
+        android:layout_height = "wrap_content"
+        android:orientation = "vertical" >
+        
+        <br.com.dina.ui.widget.UITableView
+            android:layout_width = "match_parent"
+            android:layout_height = "wrap_content"
+            android:id="@+id/tableView" />
+        
+        <Button   
+            android:id="@+id/button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:singleLine="true"   
+            android:background="@drawable/btn_red_round_selector"
+            android:textColor="@color/white"
+            android:textSize ="@dimen/normal_textsize" />       
+    </LinearLayout>
+</ScrollView>
 
-    <br.com.dina.ui.widget.UITableView
-        android:id="@+id/tableView"
-        style="@style/UITableView" />
-
-</LinearLayout>

@@ -109,7 +109,6 @@ public class LauncherActivity extends BaseActivity {
     protected void onDestroy () {
         super.onDestroy();
        // unregisterReceiver(mBroadcastReceiver);
-
     }
 
     private String verifyLocalAccountInfo() {

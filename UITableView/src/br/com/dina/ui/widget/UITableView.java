@@ -262,6 +262,24 @@ public class UITableView extends LinearLayout {
 	
 	/**
 	 * 
+	 * @return
+	 */
+	public int getCount() {
+		return mItemList.size();
+	}
+	
+	/**
+	 * 
+	 */
+	public void clear() {
+		mItemList.clear();
+		mHeaderItems.clear();
+		mGroupItems.clear();
+		mListContainer.removeAllViews();
+	}
+
+	/**
+	 *  
 	 * @param listener
 	 */
 	public void setOnItemClickListener(OnItemClickListener listener) {

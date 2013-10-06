@@ -186,15 +186,33 @@ public class FillInInformationActivity extends ActionBarActivity implements OnCl
     }
 
     private void showDatePicker() {
+        int year = 0;
+        int month = 0;
+        int day = 0;
+        
         DatePickerDialogFragment datePicker = (DatePickerDialogFragment) getSupportFragmentManager().findFragmentByTag("datePicker");
         if (datePicker != null) {
             getSupportFragmentManager().beginTransaction().remove(datePicker);
         }
         getSupportFragmentManager().beginTransaction().addToBackStack(null);
-
-        datePicker = DatePickerDialogFragment.newInstance( Integer.valueOf(mYear),
-                Integer.valueOf(mMonth), 
-                Integer.valueOf(mDay) );
+        
+        
+        if ( mYear != null ) {
+            year = Integer.valueOf(mYear);
+        }
+        
+        if ( mMonth != null ) {
+            month = Integer.valueOf(mMonth);
+        }
+        
+        if ( mDay != null ) {
+            day = Integer.valueOf(mDay);
+        }
+        
+        
+        datePicker = DatePickerDialogFragment.newInstance( year,
+                 month, 
+                 day );
         datePicker.setTitle(getString(R.string.title_select_born_date));
         datePicker.setPositiveClickListener(new DialogFragmentInterface.OnClickListener() {
             @Override

@@ -38,61 +38,7 @@ public class ExerciseRecordAdapter extends CursorAdapter {
        // initRecords();
     }
     
-//    private void initRecords() {
-//        records = new ArrayList<ExerciseRecordEntity>();
-//        records.add(new ExerciseRecordEntity());
-//        records.add(new ExerciseRecordEntity());
-//        records.add(new ExerciseRecordEntity());
-//        records.add(new ExerciseRecordEntity());
-//        records.add(new ExerciseRecordEntity());
-//        records.add(new ExerciseRecordEntity());
-//        records.add(new ExerciseRecordEntity());
-//        records.add(new ExerciseRecordEntity());
-//        records.add(new ExerciseRecordEntity());
-//    }
-
-//    @Override
-//    public int getCount() {
-//        return super.getCount() + 1;
-//    }
-//
-//    @Override
-//    public ExerciseRecordEntity getItem(int position) {
-//        return records.get(position);
-//    }
-//
-//    @Override
-//    public long getItemId(int position) {
-//        return position;
-//    }
-
-//    @Override
-//    public View getView(int position, View convertView, ViewGroup parent) {
-//        ViewHolder holder = null;
-//        
-//        if (convertView == null) {
-//            return super.getView(position, convertView, parent);            
-//        } else {
-//            holder = (ViewHolder) convertView.getTag();
-//        }
-//        
-//        if (position == 0) {
-//            if (holder != null) {
-//                holder.type.setTextColor(titleColor);
-//                holder.des.setTextColor(titleColor);
-//                holder.calorie.setTextColor(titleColor);
-//                
-//                holder.type.setText(R.string.type);
-//                holder.des.setText(R.string.detail);
-//                holder.calorie.setText(R.string.consume);
-//            }            
-//        } else {            
-//            return super.getView(position, convertView, parent);
-//        }
-//        
-//        return convertView;
-//    }
-//    
+   
     class ViewHolder {
         TextView type;
         TextView des;

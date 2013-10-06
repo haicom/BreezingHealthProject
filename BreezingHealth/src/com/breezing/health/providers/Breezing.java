@@ -2,6 +2,7 @@ package com.breezing.health.providers;
 
 import android.net.Uri;
 import android.provider.BaseColumns;
+import android.provider.ContactsContract;
 
 public class Breezing {
     private final static String TAG = "Breezing";
@@ -24,7 +25,13 @@ public class Breezing {
         public static final String ACCOUNT_NAME = "account_name";
         public static final String ACCOUNT_ID   = "account_id";
         public static final String ACCOUNT_PASSWORD = "account_password";
-
+        /**
+         * The "deleted" flag: "0" by default, "1" if the row has been marked
+         * for deletion.
+         * <P>Type: INTEGER</P>
+         */
+        public static final String ACCOUNT_DELETED = "deleted";
+        
         public static final String INFO_ACCOUNT_ID = BreezingProvider.TABLE_ACCOUNT + "." + ACCOUNT_ID;
         public static final String INFO_ACCOUNT_NAME = BreezingProvider.TABLE_ACCOUNT + "." + ACCOUNT_NAME;
         public static final String INFO_ACCOUNT_PASSWORD = BreezingProvider.TABLE_ACCOUNT + "." + ACCOUNT_PASSWORD;

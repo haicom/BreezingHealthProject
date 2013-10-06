@@ -21,7 +21,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
     private final static String TAG = "BreezingDatabaseHelper";
     private static BreezingDatabaseHelper sInstance = null;
     static final String DATABASE_NAME = "breezing.db";
-    static final int DATABASE_VERSION = 3;
+    static final int DATABASE_VERSION = 4;
     private final Context mContext;
 
     public interface Views {
@@ -88,7 +88,8 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
               +  Account._ID +  " INTEGER PRIMARY KEY, "
               +  Account.ACCOUNT_NAME + " TEXT NOT NULL , "
               +  Account.ACCOUNT_ID +  " INTEGER NOT NULL DEFAULT 0 , "
-              +  Account.ACCOUNT_PASSWORD +  " TEXT NOT NULL " +
+              +  Account.ACCOUNT_PASSWORD +  " TEXT NOT NULL , " 
+              +  Account.ACCOUNT_DELETED +  " INTEGER NOT NULL DEFAULT 0 " +
                    ");");
     }
 
@@ -504,6 +505,9 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
             upgradeToVersion202(db);
         } else if (oldVersion == 2) {
             upgradeToVersion3(db);
+            upgradeToVersion4(db);
+        } else {
+            upgradeToVersion4(db);
         }
     }
 
@@ -517,6 +521,12 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(
                 "ALTER TABLE " + BreezingProvider.TABLE_FOOD_CLASSIFY +
                 " ADD " + FoodClassify.SELECT_PICTURE + " TEXT ");
+    }
+    
+    private void upgradeToVersion4(SQLiteDatabase db) {
+        db.execSQL(
+                "ALTER TABLE " + BreezingProvider.TABLE_ACCOUNT  +
+                " ADD " +  Account.ACCOUNT_DELETED +  " INTEGER NOT NULL DEFAULT 0 " );
     }
 
 }

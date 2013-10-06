@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 
 import com.breezing.health.R;
+import com.breezing.health.application.SysApplication;
 import com.breezing.health.ui.fragment.LeftMenuFragment;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
@@ -13,10 +14,10 @@ public class BaseActivity extends SlidingFragmentActivity {
     private LeftMenuFragment mLeftMenuFragment;
     
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
+    public void onCreate(Bundle savedInstanceState) {       
+        
         super.onCreate(savedInstanceState);
-        if (isSlidingMenuEnable()) {
+        if ( isSlidingMenuEnable() ) {
             setBehindContentView(R.layout.menu_frame);
             if (savedInstanceState == null) {
                 FragmentTransaction t = this.getSupportFragmentManager().beginTransaction();
@@ -35,6 +36,14 @@ public class BaseActivity extends SlidingFragmentActivity {
             sm.setFadeDegree(0.35f);
             sm.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
         }
+        
+        SysApplication.getInstance().addActivity(this); 
+    }
+    
+    @Override
+    protected void onDestroy() {        
+        super.onDestroy();
+        SysApplication.getInstance().removeActitivy(this);
     }
     
     public void exitApplication() {

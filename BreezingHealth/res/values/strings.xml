@@ -102,7 +102,8 @@
     <string name="height">身高</string>
     <string name="weight">体重</string>
     <string name="hope_weight">目标体重</string>
-
+    <string name ="account_login" >帐户登陆</string>
+    <string name = "login">登陆</string>
     <string name="modify_password">修改密码</string>
     <string name="modify_password_summary">修改您当前账户的密码，保护您的隐私</string>
     <string name="account_management">账户管理</string>
@@ -124,11 +125,15 @@
     <string name="related_links">相关链接</string>
     <string name="related_links_summary">教你如何使用微风健康客户端</string>
     <string name="account_detail">账户详情</string>
+    <string name = "delete_account" > 删除该账号 </string>
+    <string name = "logout_account" >退出当前帐号</string>
+  
 
     <string name="height_unit">身高单位</string>
     <string name="weight_unit">体重单位</string>
     <string name="distance_unit">距离单位</string>
     <string name = "height_meter" >米</string>
+  
     
     <string name = "unit" >单位</string>
     <string name = "sport_type_runing">跑步</string>
@@ -196,5 +201,10 @@
     <string name="digest_exercise_caloric_burn">消化能量消耗</string>
     <string name="other_caloric_burn">其他能量消耗</string>
     <string name="total_food_intake">摄入总量：%1$s千焦</string>
-
+    
+    <string name = "alert_dialog_ok" >确定</string>
+    <string name = "alert_dialog_cancel" >取消</string>
+    <string name = "account_delete_confirm" >请问，您是否确认要删除此帐户 ？</string>
+    <string name = "account_quit_confirm">请问，您是否确认要退出此帐户 ？</string>
+    <string name = "quit_current_account" >退出当前帐号</string>
 </resources>

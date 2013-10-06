@@ -26,8 +26,7 @@ public class ActionBarActivity extends BaseActivity {
     private TextView mTitle;
     
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
+    public void onCreate(Bundle savedInstanceState) {      
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_actionbar);
         
@@ -39,19 +38,16 @@ public class ActionBarActivity extends BaseActivity {
      * use setContentFrame() replace setContentView() if your class extends ActionBarActivity
      * @param layoutResID
      */
-    public void setContentFrame(int layoutResID) {
-        // TODO Auto-generated method stub
+    public void setContentFrame(int layoutResID) {        
         View contentView = getLayoutInflater().inflate(layoutResID, null);
         mViewContainer.addView(contentView);
     }
     
-    public void setContentFrame(View view) {
-        // TODO Auto-generated method stub
+    public void setContentFrame(View view) {        
         mViewContainer.addView(view);
     }
     
-    public void setContentFrame(View view, LayoutParams params) {
-        // TODO Auto-generated method stub
+    public void setContentFrame(View view, LayoutParams params) {      
         mViewContainer.addView(view, params);
     }
     
