@@ -113,7 +113,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
 
     private void refreshFragment() {
         mSelectModelButton.setText(mCaloricHistoryChartModel.nameRes);
-        ChartData data = new ChartData(ChartData.LINE_COLOR_BLUE);
+        ChartData data = new ChartData(ChartData.LINE_COLOR_RED);
 
         switch ( mCaloricHistoryChartModel ) {
 

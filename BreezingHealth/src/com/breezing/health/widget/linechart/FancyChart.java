@@ -157,14 +157,14 @@ public class FancyChart extends View {
 		int maxTextRowLength = Math.max(title.length(), subtitle.length());
 		
 		// TODO: Crashes on smaller text lengths
-		int rWidth = (int) (maxTextRowLength*(chartStyle.getBoxTextSize()/1.75));
+		int rWidth = (int) (maxTextRowLength*(chartStyle.getBoxTextSize()));
 		int rHeight = (int) (chartStyle.getBoxTextSize()*1.78*2);
 		
 		RectF borderRectangle = new RectF(point.canvasX-(rWidth/2), point.canvasY-(rHeight/2)-chartStyle.getPointRadius()*6, point.canvasX+(rWidth/2), point.canvasY+(rHeight/2)-chartStyle.getPointRadius()*6);
 		canvas.drawRoundRect(borderRectangle, 5, 5, paintSelectedBorder);
 		
 		Paint rectangle = new Paint();
-		rectangle.setColor(data.getBelowLineColor());
+		rectangle.setColor(data.getPopupBackgroundColor());
 		rectangle.setStyle(Paint.Style.FILL);
 		rectangle.setAntiAlias(true);
 		

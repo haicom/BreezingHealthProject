@@ -72,7 +72,7 @@ public class IntakeFoodAdapter extends BaseAdapter {
         holder.name.setText(food.getFoodName());
         holder.unit.setText(food.getCalorie() + context.getString(R.string.kilojoule) 
         		+ "/" + food.getFoodQuantity() + food.getNameExpress());
-        final int total = food.getSelectedNumber() * food.getFoodQuantity();
+        final int total = food.getSelectedNumber() * food.getCalorie();
         holder.total.setText(total + context.getString(R.string.kilo_metabolism));
         
         return convertView;

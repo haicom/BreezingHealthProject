@@ -106,8 +106,8 @@ public class FoodAdapter extends BaseAdapter implements OnClickListener {
     public String getTotalCaloric() {
         float total = 0;
         for (FoodEntity food : selectedFoods) {
-            final int intake = food.getSelectedNumber() * food.getFoodQuantity();
-            total =+ intake;
+            final int intake = food.getSelectedNumber() * food.getCalorie();
+            total = total + intake;
         }
         
         DecimalFormat fnum = new DecimalFormat("##0.0"); 
@@ -154,8 +154,7 @@ public class FoodAdapter extends BaseAdapter implements OnClickListener {
         
         final FoodEntity food = getItem(position);
         holder.name.setText(food.getFoodName());
-        holder.unit.setText(food.getCalorie() + context.getString(R.string.kilojoule) 
-        		+ "/" + food.getFoodQuantity() + food.getNameExpress());
+        holder.unit.setText(food.getNameExpress());
         
         holder.increase.setTag(food);
         holder.increase.setOnClickListener(this);

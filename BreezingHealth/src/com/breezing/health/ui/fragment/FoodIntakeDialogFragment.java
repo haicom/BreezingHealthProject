@@ -2,6 +2,8 @@ package com.breezing.health.ui.fragment;
 
 import java.util.ArrayList;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -11,6 +13,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -28,6 +32,7 @@ public class FoodIntakeDialogFragment extends BaseDialogFragment implements OnCl
 	private Button mConfirm;
 	private OnDismissCallback mOnDismissCallback;
 	private ArrayList<FoodEntity> mFoods;
+	private int mWillDeleteItem = -1;
     
     public static FoodIntakeDialogFragment newInstance() {
     	FoodIntakeDialogFragment fragment = new FoodIntakeDialogFragment();
@@ -54,11 +59,46 @@ public class FoodIntakeDialogFragment extends BaseDialogFragment implements OnCl
         SwipeDismissAdapter adapter = new SwipeDismissAdapter(mAdapter, this);
 		adapter.setAbsListView(mListView);
         mListView.setAdapter(adapter);
+        mListView.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view,
+                    int position, long id) {
+                showConfirmDialog(position);
+                return false;
+            }
+        });
         
         getDialog().getWindow().setBackgroundDrawable(new
                 ColorDrawable(Color.TRANSPARENT));
         
         return mFragmentView;
+    }
+    
+    private void showConfirmDialog(int position) {
+        
+        mWillDeleteItem = position;
+        
+        new AlertDialog.Builder(getActivity())
+        .setTitle(R.string.notice)
+        .setMessage(R.string.are_you_sure_to_delete_intake_food_item)
+        .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+            
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                mAdapter.removeItem(mWillDeleteItem);
+                mAdapter.notifyDataSetChanged();
+                mOnDismissCallback.onDismiss(mListView, new int[]{mWillDeleteItem});
+            }
+        })
+        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        }).create().show();
     }
 
 	@Override

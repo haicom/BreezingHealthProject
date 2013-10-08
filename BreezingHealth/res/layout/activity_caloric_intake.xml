@@ -56,7 +56,7 @@
         <Button
             android:id="@+id/detail"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="38dp"
             android:layout_alignParentRight="true"
             android:layout_marginBottom="@dimen/searchbar_vertical_small_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
@@ -64,16 +64,24 @@
             android:background="@drawable/btn_white_small_selector"
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin"
+            android:layout_centerVertical="true"
             android:singleLine="true"
             android:text="@string/detail"
             android:textColor="@color/black" />
     </RelativeLayout>
+    
+    <ImageView android:id="@+id/divider2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/totalLayout"
+        android:background="@drawable/divider_search"
+        android:contentDescription="@string/content_description" />
 
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/totalLayout"
+        android:layout_below="@+id/divider2"
         android:cacheColorHint="@color/transparent" />
 
     <com.breezing.health.widget.MultiDirectionSlidingDrawer

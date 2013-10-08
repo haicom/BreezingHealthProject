@@ -207,4 +207,15 @@
     <string name = "account_delete_confirm" >请问，您是否确认要删除此帐户 ？</string>
     <string name = "account_quit_confirm">请问，您是否确认要退出此帐户 ？</string>
     <string name = "quit_current_account" >退出当前帐号</string>
+    
+    <string name="unknow">未知</string>
+    <string name="version_number">版本号</string>
+    <string name="official_webside">官方网站</string>
+    <string name="hot_line">热线电话</string>
+    <string name="breezing_hot_line">(800)555&#8211;4729</string>
+    <string name="copyright">© 2013 Breezing. All Rights Reserved.</string>
+    
+    <string name="are_you_sure_to_delete_intake_food_item">您确定要删除该已选食物？</string>
+    <string name="notice">提示</string>
+    <string name="selected">已选</string>
 </resources>

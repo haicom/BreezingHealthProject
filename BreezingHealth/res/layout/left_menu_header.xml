@@ -26,8 +26,7 @@
             android:gravity="center_vertical"
             android:singleLine="true"
             android:textColor="@color/white"
-            android:textSize="@dimen/large_textsize"
-            android:text="张三" />
+            android:textSize="@dimen/large_textsize" />
         
         <TextView
             android:id="@+id/sex"
@@ -37,7 +36,6 @@
             android:singleLine="true"
             android:textColor="@color/white"
             android:textSize="@dimen/middle_textsize"
-            android:text="男"
             android:layout_marginTop="@dimen/activity_vertical_small_margin" />
         
     </LinearLayout>

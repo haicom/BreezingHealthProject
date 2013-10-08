@@ -14,6 +14,6 @@
     
     <!-- ITEM TEXT COLORS - STATES - PRESSED AND DEFAULT -->
     <color name="text_color_default">#000000</color>
-    <color name="text_color_pressed">#ffffff</color>
+    <color name="text_color_pressed">#ff666666</color>
     
 </resources>

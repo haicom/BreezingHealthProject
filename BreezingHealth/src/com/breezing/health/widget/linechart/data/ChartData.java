@@ -9,7 +9,7 @@ import android.graphics.Color;
 public class ChartData {
 
 	public static final String LINE_COLOR_BLUE = "#3b86c4";
-	public static final String LINE_COLOR_RED = "#cf6e6e";
+	public static final String LINE_COLOR_RED = "#d95860";
 	public static final String LINE_COLOR_GREEN = "#7bab73";
 	
 	private List<AxisValue> yValues;
@@ -25,8 +25,8 @@ public class ChartData {
 		this.points = new ArrayList<Point>();
 		
 		this.lineColor = Color.parseColor(lineColor);
-		// 30% opacity
-		this.belowLineColor = Color.parseColor("#33" + lineColor.replace("#", ""));
+		// 90% opacity
+		this.belowLineColor = Color.parseColor("#99" + lineColor.replace("#", ""));
 	}
 	
 	public int getLineColor() {
@@ -152,5 +152,9 @@ public class ChartData {
 	public List<Point> getPoints() {
 		return points;
 	}
+	
+	public int getPopupBackgroundColor() {
+        return Color.parseColor("#ffffff");
+    }
 	
 }

@@ -381,7 +381,7 @@ public class BalanceHistoryActivity extends ActionBarActivity implements OnClick
     }
     
     private void refreshIntakeView() {       
-        ChartData data = new ChartData(ChartData.LINE_COLOR_BLUE);
+        ChartData data = new ChartData(ChartData.LINE_COLOR_RED);
 
         switch ( mBalanceChartModel ) {
             case WEEK: {
@@ -408,7 +408,7 @@ public class BalanceHistoryActivity extends ActionBarActivity implements OnClick
     }
     
     private void refreshBurnView() {       
-        ChartData data = new ChartData(ChartData.LINE_COLOR_BLUE);
+        ChartData data = new ChartData(ChartData.LINE_COLOR_RED);
 
         switch ( mBalanceChartModel ) {
             case WEEK: {
@@ -1068,7 +1068,7 @@ public class BalanceHistoryActivity extends ActionBarActivity implements OnClick
     
     
     private void refreshEnergyCostView() {       
-        ChartData data = new ChartData(ChartData.LINE_COLOR_BLUE);
+        ChartData data = new ChartData(ChartData.LINE_COLOR_RED);
 
         switch ( mBalanceChartModel ) {
             case WEEK: {
@@ -1402,7 +1402,7 @@ public class BalanceHistoryActivity extends ActionBarActivity implements OnClick
     }
     
     private void refreshWeightView() {
-        ChartData data = new ChartData(ChartData.LINE_COLOR_BLUE);
+        ChartData data = new ChartData(ChartData.LINE_COLOR_RED);
 
         switch ( mBalanceChartModel ) {
             case WEEK: {

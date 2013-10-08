@@ -53,6 +53,7 @@
 
     <style name="NPWidget.Holo.Light.NumberPicker" parent="NPWidget.Holo.NumberPicker">
         <item name="virtualButtonPressedDrawable">@drawable/item_background_holo_light</item>
+        <item name="selectionDivider">@color/transparent</item>
     </style>
 
 </resources>

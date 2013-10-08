@@ -7,29 +7,30 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/orange"
-        android:padding="@dimen/activity_horizontal_small_margin"
-        android:layout_above="@+id/list" >
+        android:layout_above="@+id/list"
+        android:background="@drawable/bg_action_bar"
+        android:padding="@dimen/activity_horizontal_small_margin" >
 
         <TextView
             android:id="@+id/title"
             style="@style/TitleTextViewStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/confirm"
             android:gravity="center"
-            android:singleLine="true"
-            android:textIsSelectable="false"
             android:paddingLeft="@dimen/activity_horizontal_small_margin"
             android:paddingRight="@dimen/activity_horizontal_small_margin"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/confirm" />
+            android:singleLine="true"
+            android:textIsSelectable="false" />
 
         <Button
             android:id="@+id/confirm"
             style="@style/ButtonStyle"
-            android:layout_width="80dp"
-            android:layout_height="@dimen/actionbar_height"
+            android:layout_width="60dp"
+            android:layout_height="38dp"
             android:layout_alignParentRight="true"
+            android:background="@drawable/btn_white_small_selector"
             android:text="@string/confirm" />
     </RelativeLayout>
 
@@ -38,7 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/picker_height"
         android:layout_alignParentBottom="true"
-        android:background="@color/white"
+        android:background="@color/background_color"
         android:cacheColorHint="@color/transparent" />
 
 </RelativeLayout>

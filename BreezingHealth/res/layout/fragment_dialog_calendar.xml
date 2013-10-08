@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/picker_height"
         android:layout_alignParentBottom="true"
-        android:background="@color/white" >
+        android:background="@color/background_color" >
 
         <com.breezing.health.widget.calendar.CalendarView
             android:id="@+id/calendarView"

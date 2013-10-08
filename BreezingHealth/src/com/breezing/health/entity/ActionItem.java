@@ -13,6 +13,7 @@ public class ActionItem {
     public final static int ACTION_HISTORY = 0x107;
     public final static int ACTION_BREEZING_TEST_HISTORY = 0x108;
     public final static int ACTION_EDIT = 0x119;
+	public final static int ACTION_ADD_ACCOUNT = 0x110;
 
     private String actionName;
     private int actionId;
@@ -73,6 +74,12 @@ public class ActionItem {
                 this.actionId = ACTION_EDIT;
                 this.actionIconRes = R.drawable.ic_edit;
                 break;
+				
+				case ACTION_ADD_ACCOUNT:
+            this.actionName = "add_account";
+            this.actionId = ACTION_ADD_ACCOUNT;
+            this.actionIconRes = R.drawable.ic_action_add_account;
+            break;
         }
     }
     

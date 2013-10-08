@@ -64,6 +64,7 @@ public class BreezingTestResultFragment extends BaseFragment implements OnClickL
     public void onClick(View v) {
         if ( v == mNext ) {
             Intent intent = new Intent(IntentAction.ACTIVITY_MAIN);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             getActivity().finish();
             return ;

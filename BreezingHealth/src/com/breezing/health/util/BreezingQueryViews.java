@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.util.Log;
 
 import com.breezing.health.R;
+import com.breezing.health.entity.AccountEntity;
 import com.breezing.health.entity.CatagoryEntity;
 import com.breezing.health.entity.FoodEntity;
 import com.breezing.health.providers.Breezing;
@@ -58,7 +59,7 @@ public class BreezingQueryViews {
     /**
      * 根据某一个帐户id查询基本信息视图
      */
-    public void queryBaseInfoViews(int accountId) {
+    public AccountEntity queryBaseInfoViews(int accountId) {
         Log.d(TAG, "queryBaseInfoView");
         
         String accountClause =  Account.ACCOUNT_ID + " = ?";
@@ -70,11 +71,14 @@ public class BreezingQueryViews {
         if (cursor == null) {
             Log.d(TAG, " testBaseInfoView cursor = " + cursor);
         }
-
   
+        AccountEntity account = null;
+        
         try {
             cursor.moveToPosition(-1);
             while (cursor.moveToNext() ) {
+                account = new AccountEntity();
+                
                 String  accountName = cursor.getString(INFO_ACCOUNT_NAME_INDEX);
                 String  accountPass = cursor.getString(INFO_ACCOUNT_PASSWORD_INDEX);
                 int     gender = cursor.getInt(INFO_GENDER_INDEX);
@@ -84,6 +88,17 @@ public class BreezingQueryViews {
                 float  weight = cursor.getFloat(INFO_WEIGHT_INDEX);
                 float  expectedWeight = cursor.getFloat(INFO_EXPECTED_WEIGHT_INDEX);
                 float  date = cursor.getFloat(INFO_DATE_INDEX);
+                
+                account.setAccountName(accountName);
+                account.setAccountPass(accountPass);
+                account.setGender(gender);
+                account.setHeight(height);
+                account.setBirthday(birthday);
+                account.setCustom(custom);
+                account.setWeight(weight);
+                account.setExpectedWeight(expectedWeight);
+                account.setDate(date);
+                
                 Log.d(TAG, " testCostWeeklyAndAccount accountName = " + accountName + " accountPass = " + accountPass
                         + " gender = " + gender + " height = " + height
                         + " birthday = " + birthday + " birthday = " + birthday 
@@ -93,6 +108,7 @@ public class BreezingQueryViews {
             }
         } finally {
             cursor.close();
+            return account;
         }
     }
     
@@ -767,6 +783,58 @@ public class BreezingQueryViews {
      
              } finally {
                  cursor.close();
+             }
+         }
+         
+         /**
+          * 查询账户视图列表
+          */
+         private static final String[] PROJECTION_ACCOUNT_INFO = new String[] {
+        	 Account.ACCOUNT_ID,			// 0
+             Account.ACCOUNT_NAME,          // 1
+             Account.ACCOUNT_PASSWORD,      // 2
+         };
+         
+         private static final int ACCOUNT_INFO_ID_INDEX = 0;
+         private static final int ACCOUNT_INFO_NAME_INDEX = 1;
+         private static final int ACCOUNT_INFO_PASSWORD_INDEX = 2;
+         
+         /**
+          * 查询所有账户视图
+          */
+         public ArrayList<AccountEntity> queryAllAccountViews() {
+             Log.d(TAG, "queryAllAccountViews");
+             
+             String sortOrder = Account.ACCOUNT_ID + " DESC";
+             
+             Cursor cursor  = mContentResolver.query(Account.CONTENT_URI,
+            		 PROJECTION_ACCOUNT_INFO, null, null, sortOrder);
+             if (cursor == null) {
+                 Log.d(TAG, " testBaseInfoView cursor = " + cursor);
+             }
+       
+             ArrayList<AccountEntity> accounts = new ArrayList<AccountEntity>();
+             
+             try {
+                 cursor.moveToPosition(-1);
+                 while (cursor.moveToNext() ) {
+                	 AccountEntity account = new AccountEntity();
+                     
+                     int  accountId = cursor.getInt(ACCOUNT_INFO_ID_INDEX);
+                     String  accountName = cursor.getString(ACCOUNT_INFO_NAME_INDEX);
+                     String  accountPass = cursor.getString(ACCOUNT_INFO_PASSWORD_INDEX);
+                     
+                     account.setAccountId(accountId);
+                     account.setAccountName(accountName);
+                     account.setAccountPass(accountPass);
+                     
+                     accounts.add(account);
+                     
+                     Log.d(TAG, " queryAllAccountViews accountName = " + accountName + " accountPass = " + accountPass);
+                 }
+             } finally {
+                 cursor.close();
+                 return accounts;
              }
          }
 
