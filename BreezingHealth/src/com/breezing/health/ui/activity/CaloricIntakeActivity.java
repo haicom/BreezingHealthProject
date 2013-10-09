@@ -39,24 +39,20 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
     private FoodCatagoryAdapter mCatagoryAdapter;
     private ListView mFoodList;
     private FoodAdapter mFoodAdapter;
-    
+
     private TextView mTotal;
     private Button mDetail;
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        // TODO Auto-generated method stub
-
         switch(keyCode) {
-        case KeyEvent.KEYCODE_BACK: {
-            if (mDrawer.isOpened()) {
-                mDrawer.animateToggle();
-                return true;
+            case KeyEvent.KEYCODE_BACK: {
+                if (mDrawer.isOpened()) {
+                    mDrawer.animateToggle();
+                    return true;
+                }
             }
         }
-
-        }
-
         return super.onKeyUp(keyCode, event);
     }
 
@@ -89,6 +85,7 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
             setActionBarTitle(R.string.other);
             break;
         }
+
         addLeftActionItem(new ActionItem(ActionItem.ACTION_BACK));
         addRightActionItem(new ActionItem(ActionItem.ACTION_MORE));
 
@@ -104,7 +101,7 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
         mCatagoryGridView.setAdapter(mCatagoryAdapter);
         mFoodAdapter = new FoodAdapter(this, mCatagoryAdapter);
         mFoodList.setAdapter(mFoodAdapter);
-        
+
         updateTotalCaloric();
     }
 
@@ -119,12 +116,11 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
 				mCatagoryAdapter.notifyDataSetChanged();
 			}
 		});
-    	
+
     	mDrawer.setOnDrawerCloseListener(new OnDrawerCloseListener() {
-			
+
 			@Override
 			public void onDrawerClosed() {
-				// TODO Auto-generated method stub
 				mFoodAdapter.refreshCatagoryItems();
 				mFoodAdapter.notifyDataSetChanged();
 			}
@@ -141,15 +137,14 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
         super.onClickActionBarItems(item, v);
     }
 
-	@Override
-	public void onClick(View v) {
-		// TODO Auto-generated method stub
-		if (v == mDetail) {
+    @Override
+    public void onClick(View v) {
+        if (v == mDetail) {
 			showDetailDialog();
 			return ;
 		}
 	}
-	
+
 	private void showDetailDialog() {
         FoodIntakeDialogFragment detailDialog = (FoodIntakeDialogFragment) getSupportFragmentManager().findFragmentByTag("detailPicker");
         if (detailDialog != null) {
@@ -159,10 +154,9 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
         detailDialog = FoodIntakeDialogFragment.newInstance();
         detailDialog.setSelectedFoods(mFoodAdapter.getSelectedFoods());
         detailDialog.setOnDeleteListener(new OnDismissCallback() {
-			
+
 			@Override
 			public void onDismiss(AbsListView listView, int[] reverseSortedPositions) {
-				// TODO Auto-generated method stub
 				for (int position : reverseSortedPositions) {
 					mFoodAdapter.removeSelectedFood(position);
 				}
@@ -171,7 +165,7 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
 		});
         detailDialog.show(getSupportFragmentManager(), "detailPicker");
     }
-	
+
 	public void updateTotalCaloric() {
 	    final String total = mFoodAdapter.getTotalCaloric();
 	    final String title = getString(R.string.total_food_intake, total);

@@ -74,6 +74,7 @@ public class Breezing {
         public static final String HEIGHT_UNIT = "height_unit";
         public static final String WEIGHT_UNIT = "weight_unit";
         public static final String DISTANCE_UNIT = "distance_unit";
+        public static final String ACCOUNT_PICTURE = "account_picture";
 
         public static final String INFO_GENDER = BreezingProvider.TABLE_INFORMATION + "." + GENDER;
         public static final String INFO_HEIGHT = BreezingProvider.TABLE_INFORMATION + "." + HEIGHT;
@@ -82,6 +83,7 @@ public class Breezing {
         public static final String INFO_HEIGHT_UNIT = BreezingProvider.TABLE_INFORMATION + "." + HEIGHT_UNIT;
         public static final String INFO_WEIGHT_UNIT = BreezingProvider.TABLE_INFORMATION + "." + WEIGHT_UNIT;
         public static final String INFO_DISTANCE_UNIT = BreezingProvider.TABLE_INFORMATION + "." + DISTANCE_UNIT;
+        public static final String INFO_ACCOUNT_PICTURE = BreezingProvider.TABLE_INFORMATION + "." + ACCOUNT_PICTURE;
        
         /**
          * The MIME type of {@link #CONTENT_URI} providing a directory of
@@ -213,11 +215,14 @@ public class Breezing {
 
         public static final String ACCOUNT_ID   = "account_id";
         public static final String WEIGHT   = "weight";
+        public static final String EVERY_WEIGHT = "every_weight";
         public static final String EXPECTED_WEIGHT   = "expected_weight";
         public static final String AVG_WEIGHT = "avg_weight";
+        public static final String EVERY_AVG_WEIGHT = "every_avg_weight";
         public static final String AVG_EXPECTED_WEIGHT = "avg_expected_weight";
 
         public static final String INFO_WEIGHT = BreezingProvider.TABLE_WEIGHT + "." + WEIGHT;
+        public static final String INFO_EVERY_WEIGHT = BreezingProvider.TABLE_WEIGHT + "." + EVERY_WEIGHT;
         public static final String INFO_EXPECTED_WEIGHT = BreezingProvider.TABLE_WEIGHT + "." + EXPECTED_WEIGHT;
         public static final String INFO_DATE = BreezingProvider.TABLE_WEIGHT + "." + DATE;
 

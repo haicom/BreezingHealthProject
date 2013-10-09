@@ -21,7 +21,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
     private final static String TAG = "BreezingDatabaseHelper";
     private static BreezingDatabaseHelper sInstance = null;
     static final String DATABASE_NAME = "breezing.db";
-    static final int DATABASE_VERSION = 4;
+    static final int DATABASE_VERSION = 5;
     private final Context mContext;
 
     public interface Views {
@@ -107,7 +107,8 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
               +   Information.CUSTOM + " INTEGER NOT NULL , "
               +   Information.HEIGHT_UNIT + " TEXT NOT NULL , "
               +   Information.WEIGHT_UNIT + " TEXT NOT NULL , "
-              +   Information.DISTANCE_UNIT + " TEXT NOT NULL  " +
+              +   Information.DISTANCE_UNIT + " TEXT NOT NULL , "
+              +   Information.ACCOUNT_PICTURE + " TEXT  " +
                    ");");
     }
 
@@ -252,6 +253,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
                  + WeightChange._ID + " INTEGER PRIMARY KEY, "
                  + WeightChange.ACCOUNT_ID + " INTEGER NOT NULL , "
                  + WeightChange.WEIGHT + " FLOAT NOT NULL , "
+                 + WeightChange.EVERY_WEIGHT + " FLOAT , "
                  + WeightChange.EXPECTED_WEIGHT + " FLOAT NOT NULL , "
                  + WeightChange.DATE + " INTEGER NOT NULL , "
                  + WeightChange.YEAR + " INTEGER NOT NULL , "
@@ -272,6 +274,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
         String weeklyWeightSelect =  " SELECT "
                 + WeightChange.ACCOUNT_ID + " , "
                 + " round( avg( " + WeightChange.WEIGHT + " ), 2 ) AS " + WeightChange.AVG_WEIGHT + " , "
+                + " round( avg( " + WeightChange.EVERY_WEIGHT + " ), 2 ) AS " + WeightChange.EVERY_AVG_WEIGHT + " , "
                 + " round( avg( " + WeightChange.EXPECTED_WEIGHT + " ) ,2)   AS "
                 + WeightChange.AVG_EXPECTED_WEIGHT + " , "
                 + WeightChange.YEAR_MONTH + " , "
@@ -284,6 +287,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
         String monthlyWeightSelect =  " SELECT "
                 + WeightChange.ACCOUNT_ID + " , "
                 + " round( avg( " + WeightChange.WEIGHT + " ), 2 ) AS " + WeightChange.AVG_WEIGHT + " , "
+                + " round( avg( " + WeightChange.EVERY_WEIGHT + " ), 2 ) AS " + WeightChange.EVERY_AVG_WEIGHT + " , "
                 + " round( avg( " + WeightChange.EXPECTED_WEIGHT + " ) ,2)   AS "
                 + WeightChange.AVG_EXPECTED_WEIGHT + " , "
                 + WeightChange.YEAR + " , "
@@ -296,6 +300,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
         String yearlyWeightSelect =  " SELECT "
                 + WeightChange.ACCOUNT_ID + " , "
                 + " round( avg( " + WeightChange.WEIGHT + " ), 2 ) AS  " +  WeightChange.AVG_WEIGHT + " , "
+                + " round( avg( " + WeightChange.EVERY_WEIGHT + " ), 2 ) AS " + WeightChange.EVERY_AVG_WEIGHT + " , "
                 + " round( avg( " + WeightChange.EXPECTED_WEIGHT + " ) ,2) AS "
                 + WeightChange.AVG_EXPECTED_WEIGHT + " , "
                 + WeightChange.YEAR
@@ -481,7 +486,9 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
                 + Information.INFO_HEIGHT_UNIT + " , "
                 + Information.INFO_WEIGHT_UNIT + " , "
                 + Information.INFO_DISTANCE_UNIT + " , "
+                + Information.INFO_ACCOUNT_PICTURE + " , "
                 + WeightChange.INFO_WEIGHT + " , "
+                + WeightChange.INFO_EVERY_WEIGHT + " , "
                 + WeightChange.INFO_EXPECTED_WEIGHT + " , "
                 + WeightChange.INFO_DATE
                 + " FROM " + BreezingProvider.TABLE_ACCOUNT
@@ -503,11 +510,18 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
 
         if (oldVersion == 1) {
             upgradeToVersion202(db);
+            upgradeToVersion3(db);
+            upgradeToVersion4(db);
+            upgradeToVersion5(db);
         } else if (oldVersion == 2) {
             upgradeToVersion3(db);
             upgradeToVersion4(db);
-        } else {
+            upgradeToVersion5(db);
+        } else if (oldVersion ==3 ){
             upgradeToVersion4(db);
+            upgradeToVersion5(db);
+        } else {
+            upgradeToVersion5(db);
         }
     }
 
@@ -527,6 +541,19 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(
                 "ALTER TABLE " + BreezingProvider.TABLE_ACCOUNT  +
                 " ADD " +  Account.ACCOUNT_DELETED +  " INTEGER NOT NULL DEFAULT 0 " );
+    }
+    
+    private void upgradeToVersion5(SQLiteDatabase db) {
+        
+        db.execSQL(
+                "ALTER TABLE " + BreezingProvider.TABLE_INFORMATION  +
+                " ADD " +  Information.ACCOUNT_PICTURE +  " TEXT " );
+        
+        db.execSQL(
+                "ALTER TABLE " + BreezingProvider.TABLE_WEIGHT  +
+                " ADD " +  WeightChange.EVERY_WEIGHT +  " FLOAT  " );
+        createBaseInfomationViews(db);
+        createWeightChangeViews(db);
     }
 
 }

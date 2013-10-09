@@ -112,11 +112,11 @@ public class LauncherActivity extends BaseActivity {
     }
 
     private String verifyLocalAccountInfo() {
-	
-		if (LocalSharedPrefsUtil.isFirstTime(LauncherActivity.this)) {
-    		return IntentAction.ACTIVITY_HELPER;
-    	}
-	
+
+        if (LocalSharedPrefsUtil.isFirstTime(LauncherActivity.this)) {
+            return IntentAction.ACTIVITY_HELPER;
+        }
+
         String action = IntentAction.ACTIVITY_FILLIN_INFORMATION;
 
         int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this,
@@ -316,6 +316,6 @@ public class LauncherActivity extends BaseActivity {
 //
 //        }
 //    };
-    
+
     private static final int LAUNCHER_DELAY_MILLIS = 3000;
 }
