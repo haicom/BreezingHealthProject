@@ -195,6 +195,8 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
         ArrayList<FoodEntity> foods = mFoodAdapter.getSelectedFoods();
         for (FoodEntity food: foods ) {
             count = queryIngestiveRecord( food.getFoodId() );
+            Log.d(TAG, "appendFoodInfo food.getFoodName() =" + food.getFoodName() + " food.getFoodQuantity() = " + food.getFoodQuantity() 
+                    + " food.getSelectedNumber() =    " + food.getSelectedNumber() );
             if (count == 0) {
                 appendIngestiveRecord(ops, food);
             } else {
@@ -205,7 +207,7 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
         count = queryIngestive();
         
         if (count == 0) {
-            if (Float.parseFloat( mFoodAdapter.getTotalCaloric() )> 0) {
+            if ( mFoodAdapter.getTotalCaloric() > 0) {
                 appendTotalIngestive(ops); 
             }
             
@@ -225,7 +227,7 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
         ops.add(ContentProviderOperation.newInsert(IngestiveRecord.CONTENT_URI)
                 .withValue(IngestiveRecord.ACCOUNT_ID, mAccountId)
                 .withValue(IngestiveRecord.FOOD_ID, foodEntity.getFoodId() )                
-                .withValue(IngestiveRecord.FOOD_QUANTITY, foodEntity.getFoodQuantity())
+                .withValue(IngestiveRecord.FOOD_QUANTITY, foodEntity.getSelectedNumber() )
                 .withValue(IngestiveRecord.DINING, String.valueOf(mCaloricIntakeType) )
                 .withValue(IngestiveRecord.DATE, mDate)              
                 .build());
@@ -247,7 +249,7 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
                                        String.valueOf(String.valueOf(mDate)        ) } ) 
                 .withValue(IngestiveRecord.ACCOUNT_ID, mAccountId)
                 .withValue(IngestiveRecord.FOOD_ID, foodEntity.getFoodId() )                
-                .withValue(IngestiveRecord.FOOD_QUANTITY, foodEntity.getFoodQuantity())
+                .withValue(IngestiveRecord.FOOD_QUANTITY, foodEntity.getSelectedNumber() )
                 .withValue(IngestiveRecord.DINING, String.valueOf(mCaloricIntakeType) )
                 .withValue(IngestiveRecord.DATE, mDate)              
                 .build());
@@ -261,16 +263,16 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
         
         switch ( mCaloricIntakeType ) {
             case BREAKFAST:
-                breakfast = Integer.parseInt( mFoodAdapter.getTotalCaloric() );
+                breakfast =  mFoodAdapter.getTotalCaloric() ;
                 break;
             case LUNCH:
-                lunch = Integer.parseInt( mFoodAdapter.getTotalCaloric() );
+                lunch = mFoodAdapter.getTotalCaloric();
                 break;
             case DINNER:
-                dinner = Integer.parseInt( mFoodAdapter.getTotalCaloric() );
+                dinner = mFoodAdapter.getTotalCaloric();
                 break;
             case OTHER:
-                etc = Integer.parseInt( mFoodAdapter.getTotalCaloric() );
+                etc = mFoodAdapter.getTotalCaloric();
                 break;
         }
         
@@ -301,16 +303,16 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
         
         switch ( mCaloricIntakeType ) {
             case BREAKFAST:
-                builder.withValue(Ingestion.BREAKFAST, Integer.valueOf(mFoodAdapter.getTotalCaloric() ) );
+                builder.withValue(Ingestion.BREAKFAST, mFoodAdapter.getTotalCaloric() );
                 break;
             case LUNCH:
-                builder.withValue(Ingestion.LUNCH, Integer.valueOf(mFoodAdapter.getTotalCaloric() ) );
+                builder.withValue(Ingestion.LUNCH, mFoodAdapter.getTotalCaloric() );
                 break;
             case DINNER:
-                builder.withValue(Ingestion.DINNER, Integer.valueOf(mFoodAdapter.getTotalCaloric() ) );
+                builder.withValue(Ingestion.DINNER, mFoodAdapter.getTotalCaloric() );
                 break;
             case OTHER:
-                builder.withValue(Ingestion.ETC, Integer.valueOf(mFoodAdapter.getTotalCaloric() ) );
+                builder.withValue(Ingestion.ETC, mFoodAdapter.getTotalCaloric() );
                 break;
         }
         
@@ -380,7 +382,7 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
 
     
     public void updateTotalCaloric() {
-        final String total = mFoodAdapter.getTotalCaloric();
+        final String total = String.valueOf( mFoodAdapter.getTotalCaloric() );
         final String title = getString(R.string.total_food_intake, total);
 
         SpannableString span = new SpannableString(title);
