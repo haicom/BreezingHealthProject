@@ -1,73 +1,94 @@
 package com.breezing.health.entity;
 
 public class FoodEntity {
-
-	private int foodClassifyId;
-    private String foodName;
-    private String nameExpress;
-    private int priority;
-    private int foodQuantity;
-    private int calorie;
-    private int imageRes;
-    private int selectedNumber;
+	private int mFoodClassifyId;
+	private int mFoodId;
+    private String mFoodName;
+    private String mNameExpress;
+    private int mPriority;
+    private int mFoodQuantity;
+    private int mCalorie;
+    private String mImageRes;
+    private int mSelectedNumber = 0;
     
+    public int getFoodId() {
+        return mFoodId;
+    }
+
+    public void setFoodId(int foodId) {
+        this.mFoodId = foodId;
+    }
     
     public int getFoodClassifyId() {
-        return foodClassifyId;
+        return mFoodClassifyId;
     }
+
     public void setFoodClassifyId(int foodClassifyId) {
-        this.foodClassifyId = foodClassifyId;
+        this.mFoodClassifyId = foodClassifyId;
     }
+
 	public String getFoodName() {
-		return foodName;
+		return mFoodName;
 	}
+
 	public void setFoodName(String foodName) {
-		this.foodName = foodName;
+		this.mFoodName = foodName;
 	}
+
 	public String getNameExpress() {
-		return nameExpress;
+		return mNameExpress;
 	}
+
 	public void setNameExpress(String nameExpress) {
-		this.nameExpress = nameExpress;
+		this.mNameExpress = nameExpress;
 	}
+
 	public int getPriority() {
-		return priority;
+		return mPriority;
 	}
+
 	public void setPriority(int priority) {
-		this.priority = priority;
+		this.mPriority = priority;
 	}
+
 	public int getFoodQuantity() {
-		return foodQuantity;
+		return mFoodQuantity;
 	}
+
 	public void setFoodQuantity(int foodQuantity) {
-		this.foodQuantity = foodQuantity;
+		this.mFoodQuantity = foodQuantity;
 	}
+
 	public int getCalorie() {
-		return calorie;
+		return mCalorie;
 	}
+
 	public void setCalorie(int calorie) {
-		this.calorie = calorie;
+		this.mCalorie = calorie;
 	}
-	public int getImageRes() {
-		return imageRes;
+
+	public String getImageRes() {
+		return mImageRes;
 	}
-	public void setImageRes(int imageRes) {
-		this.imageRes = imageRes;
+
+	public void setImageRes(String imageRes) {
+		this.mImageRes = imageRes;
 	}
+
 	public int getSelectedNumber() {
-		return selectedNumber;
+		return mSelectedNumber;
 	}
 	public void setSelectedNumber(int selectedNumber) {
-		this.selectedNumber = selectedNumber;
+		this.mSelectedNumber = selectedNumber;
 	}
     public void increaseSelectedNumber() {
-    	selectedNumber++;
+        mSelectedNumber++;
     }
     
     public void decreaseSelectedNumber() {
-    	if (selectedNumber > 0) {
-    		selectedNumber--;
-    	}
+        if ( mSelectedNumber > 0 ) {
+            mSelectedNumber--;
+        }
     }
    
     

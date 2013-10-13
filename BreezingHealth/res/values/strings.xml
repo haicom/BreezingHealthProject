@@ -127,19 +127,19 @@
     <string name="account_detail">账户详情</string>
     <string name = "delete_account" > 删除该账号 </string>
     <string name = "logout_account" >退出当前帐号</string>
-  
+
 
     <string name="height_unit">身高单位</string>
     <string name="weight_unit">体重单位</string>
     <string name="distance_unit">距离单位</string>
     <string name = "height_meter" >米</string>
-  
-    
+
+
     <string name = "unit" >单位</string>
     <string name = "sport_type_runing">跑步</string>
     <string name = "sport_type_gengeral">次</string>
-    
-   
+
+
 
     <string name="my_breezing">Breezing</string>
     <string name="my_pedometer">计步器</string>
@@ -201,21 +201,22 @@
     <string name="digest_exercise_caloric_burn">消化能量消耗</string>
     <string name="other_caloric_burn">其他能量消耗</string>
     <string name="total_food_intake">摄入总量：%1$s千焦</string>
-    
+
     <string name = "alert_dialog_ok" >确定</string>
     <string name = "alert_dialog_cancel" >取消</string>
     <string name = "account_delete_confirm" >请问，您是否确认要删除此帐户 ？</string>
     <string name = "account_quit_confirm">请问，您是否确认要退出此帐户 ？</string>
     <string name = "quit_current_account" >退出当前帐号</string>
-    
+
     <string name="unknow">未知</string>
     <string name="version_number">版本号</string>
     <string name="official_webside">官方网站</string>
     <string name="hot_line">热线电话</string>
     <string name="breezing_hot_line">(800)555&#8211;4729</string>
     <string name="copyright">© 2013 Breezing. All Rights Reserved.</string>
-    
+
     <string name="are_you_sure_to_delete_intake_food_item">您确定要删除该已选食物？</string>
     <string name="notice">提示</string>
     <string name="selected">已选</string>
+    <string name = "account_info_password">您输入的密码不正确，请重新输入</string>
 </resources>

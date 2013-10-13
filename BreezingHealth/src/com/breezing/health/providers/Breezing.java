@@ -327,6 +327,7 @@ public class Breezing {
                 Uri.withAppendedPath(AUTHORITY_URI, "heat_ingestion");
         
         public static final String FOOD_CLASSIFY_ID = "classify_id";
+        public static final String FOOD_ID = "food_id";
         public static final String FOOD_TYPE   = "food_type ";
         public static final String FOOD_NAME   = "food_name";
         public static final String NAME_EXPRESS   = "name_express";
@@ -397,6 +398,7 @@ public class Breezing {
                 Uri.withAppendedPath(AUTHORITY_URI, "ingestive_record");
         
         public static final String ACCOUNT_ID   = "account_id";
+        public static final String FOOD_ID = "food_id";
         public static final String FOOD_NAME   = "food_name";
         public static final String NAME_EXPRESS   = "name_express";
         public static final String FOOD_QUANTITY   = "food_quantity";

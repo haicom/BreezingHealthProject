@@ -102,8 +102,7 @@ public class FoodIntakeDialogFragment extends BaseDialogFragment implements OnCl
     }
 
 	@Override
-	public void onClick(View v) {
-		// TODO Auto-generated method stub
+	public void onClick(View v) {		
 		if (v == mConfirm) {
 			dismiss();
 			return ;

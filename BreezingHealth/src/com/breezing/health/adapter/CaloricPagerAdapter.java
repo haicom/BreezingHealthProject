@@ -9,9 +9,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 public class CaloricPagerAdapter extends FragmentPagerAdapter {
-
-    public CaloricPagerAdapter(FragmentManager fm) {
+    private int mAccountId;
+    private int mDate;
+    
+    public CaloricPagerAdapter(FragmentManager fm, int accountId, int date) {
         super(fm);
+        mAccountId = accountId;
+        mDate = date;
+        
     }
 
     @Override
@@ -20,7 +25,7 @@ public class CaloricPagerAdapter extends FragmentPagerAdapter {
             case BURN:
                 return CaloricBurnFragment.getInstance();
             case INTAKE:
-                return CaloricIntakeFragment.getInstance();
+                return CaloricIntakeFragment.getInstance(mAccountId, mDate);
         }
 
         return null;

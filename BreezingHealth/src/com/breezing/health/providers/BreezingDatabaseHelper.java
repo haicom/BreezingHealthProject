@@ -21,7 +21,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
     private final static String TAG = "BreezingDatabaseHelper";
     private static BreezingDatabaseHelper sInstance = null;
     static final String DATABASE_NAME = "breezing.db";
-    static final int DATABASE_VERSION = 5;
+    static final int DATABASE_VERSION = 7;
     private final Context mContext;
 
     public interface Views {
@@ -369,6 +369,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + BreezingProvider.TABLE_HEAT_INGESTION  + " ("
                    +  HeatIngestion._ID + " INTEGER PRIMARY KEY , "
                    +  HeatIngestion.FOOD_CLASSIFY_ID + " INTEGER NOT NULL , "
+                   +  HeatIngestion.FOOD_ID + " INTEGER NOT NULL , "
                    +  HeatIngestion.FOOD_NAME + " TEXT NOT NULL , "
                    +  HeatIngestion.NAME_EXPRESS + " TEXT NOT NULL , "
                    +  HeatIngestion.PRIORITY + " INTEGER , "
@@ -444,10 +445,8 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + BreezingProvider.TABLE_INGESTIVE_RECORD  + " ("
                    +  IngestiveRecord._ID + " INTEGER PRIMARY KEY , "
                    +  IngestiveRecord.ACCOUNT_ID + " INTEGER NOT NULL , "
-                   +  IngestiveRecord.FOOD_NAME + " TEXT NOT NULL , "
-                   +  IngestiveRecord.NAME_EXPRESS + " TEXT NOT NULL , "
-                   +  IngestiveRecord.FOOD_QUANTITY + " INTEGER NOT NULL , "
-                   +  IngestiveRecord.CALORIE + " INTEGER NOT NULL , "
+                   +  IngestiveRecord.FOOD_ID + " INTEGER NOT NULL , "
+                   +  IngestiveRecord.FOOD_QUANTITY + " INTEGER NOT NULL , "               
                    +  IngestiveRecord.DINING + " TEXT NOT NULL , "
                    +  IngestiveRecord.DATE + " INTEGER NOT NULL  " +
                    ");");
@@ -513,16 +512,29 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
             upgradeToVersion3(db);
             upgradeToVersion4(db);
             upgradeToVersion5(db);
+            upgradeToVersion6(db);
+            upgradeToVersion7(db);
         } else if (oldVersion == 2) {
             upgradeToVersion3(db);
             upgradeToVersion4(db);
             upgradeToVersion5(db);
+            upgradeToVersion6(db);
+            upgradeToVersion7(db);
         } else if (oldVersion ==3 ){
             upgradeToVersion4(db);
             upgradeToVersion5(db);
-        } else {
+            upgradeToVersion6(db);
+            upgradeToVersion7(db);
+        } else if (oldVersion == 4 ) {
             upgradeToVersion5(db);
-        }
+            upgradeToVersion6(db);
+            upgradeToVersion7(db);
+        } else if (oldVersion == 5) {
+            upgradeToVersion6(db);
+            upgradeToVersion7(db);
+        } else  {
+            upgradeToVersion7(db);
+        } 
     }
 
     private void upgradeToVersion202(SQLiteDatabase db) {
@@ -554,6 +566,25 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
                 " ADD " +  WeightChange.EVERY_WEIGHT +  " FLOAT  " );
         createBaseInfomationViews(db);
         createWeightChangeViews(db);
+    }
+
+    private void upgradeToVersion6(SQLiteDatabase db) {
+
+        db.execSQL(
+                "ALTER TABLE " + BreezingProvider.TABLE_HEAT_INGESTION  +
+                        " ADD " +  HeatIngestion.FOOD_ID +  " INTEGER " );
+
+        db.execSQL(
+                "ALTER TABLE " + BreezingProvider.TABLE_INGESTIVE_RECORD  +
+                        " ADD " +  IngestiveRecord.FOOD_ID +  " INTEGER  " );
+        createBaseInfomationViews(db);
+        createWeightChangeViews(db);
+    }
+    
+    private void upgradeToVersion7(SQLiteDatabase db) {
+        
+        db.execSQL("DROP TABLE " + BreezingProvider.TABLE_INGESTIVE_RECORD); 
+        createIngestiveRecordTables(db);
     }
 
 }

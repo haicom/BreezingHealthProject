@@ -37,7 +37,9 @@ import android.util.Log;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class BreezingProvider extends  SQLiteContentProvider {
     private final static String TAG = "BreezingProvider";
@@ -316,22 +318,37 @@ public class BreezingProvider extends  SQLiteContentProvider {
      * @param addDate
      */
     private ContentValues addDateFormat(ContentValues initialValues, ContentValues values, boolean addDate) {
-        int date = simpleDateFormat("yyyyMMdd");
+        int dateInt = simpleDateFormat("yyyyMMdd");
+        int year = 0;
+        int month = 0;
+        int week = 0;
+        int weekOfYear = 0; 
 
         if (addDate) {
-            values.put(Breezing.BaseDateColumns.DATE, date);
+            values.put(Breezing.BaseDateColumns.DATE, dateInt);
+            year = simpleDateFormat("yyyy");
+            month = simpleDateFormat("yyyyMM");
+            weekOfYear = CalendarUtil.getWeekOfYear(new Date());
+            week = DateFormatUtil.getCompleteWeek(year, weekOfYear);
+        } else {
+            Date date = null;            
+            dateInt = values.getAsInteger(Breezing.BaseDateColumns.DATE);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+            try {
+                date = dateFormat.parse( String.valueOf(dateInt) );
+            } catch (ParseException e) {                
+                e.printStackTrace();
+            }
+            year = simpleDateFormat("yyyy", dateInt);
+            month = simpleDateFormat("yyyyMM", dateInt);
+            weekOfYear = CalendarUtil.getWeekOfYear(date);
+            week = DateFormatUtil.getCompleteWeek(year, weekOfYear);
         }
 
-        int year = simpleDateFormat("yyyy");
-        values.put(Breezing.BaseDateColumns.YEAR, year);
-
-        int month = simpleDateFormat("yyyyMM");
+        
+        values.put(Breezing.BaseDateColumns.YEAR, year);        
         values.put(Breezing.BaseDateColumns.YEAR_MONTH, month);
-
-        //int week = simpleDateFormat("yyyyww");
-
-        int weekOfYear = CalendarUtil.getWeekOfYear(new Date());
-        int week = DateFormatUtil.getCompleteWeek(year, weekOfYear);
+        //int week = simpleDateFormat("yyyyww");        
         values.put(Breezing.BaseDateColumns.YEAR_WEEK, week);
 
         return values;
@@ -353,6 +370,35 @@ public class BreezingProvider extends  SQLiteContentProvider {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
+        Log.d(TAG, " simpleDateFormat date = " + date);
+        int intDate = Integer.parseInt(strDate);
+        Log.d(TAG, "simpleDateFormat longDate = " + intDate);
+        return intDate;
+    }
+    
+    /***
+     * 获得现在日期格式并转化为int类型
+     * @param format
+     * @return
+     */
+    private int simpleDateFormat(String format, int inputDate) {
+        Date date = null;
+        if (inputDate != 0 ) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+            try {
+                date = dateFormat.parse( String.valueOf(inputDate) );
+            } catch (ParseException e) {                
+                e.printStackTrace();
+            }
+        } else {
+            date = new Date();
+        }        
+        
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        String strDate = sdf.format( date );
+        Log.d(TAG, "format = " + format + " sdf.format(new Date())  = " +  sdf.format(new Date()));
+        
 
         Log.d(TAG, " simpleDateFormat date = " + date);
         int intDate = Integer.parseInt(strDate);

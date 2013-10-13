@@ -5,9 +5,9 @@
 
     <data
         breezing:name="food"
-        breezing:type="insert"
-        breezing:version="6.0"
-        breezing:object="com.breezing.health.transation.HeatIngestionInserter"/>
+        breezing:type="update"
+        breezing:version="9.0"
+        breezing:object="com.breezing.health.transation.HeatIngestionUpdater"/>
   
     <data
         breezing:name="settings"
@@ -23,9 +23,9 @@
     
      <data
         breezing:name="classify"
-        breezing:type="insert"
-        breezing:version="1.0"
-        breezing:object="com.breezing.health.transation.FoodClassifyInserter"/>
+        breezing:type="update"
+        breezing:version="3.0"
+        breezing:object="com.breezing.health.transation.FoodClassifyUpdater"/>
 
 </datas>
 

@@ -652,42 +652,7 @@ public class BreezingQueryViews {
          }
      }
      
-     
-     /**
-      * 我的体重变化查看每年，某一个帐户的年信息
-      */
-     private static final String[] PROJECTION_FOOD_CLASSIFY = new String[] {
-         FoodClassify.FOOD_CLASSIFY_ID,               // 0
-         FoodClassify.FOOD_TYPE
-     };
-
-     private static final int FOOD_CLASSIFY_ID_INDEX = 0;
-     private static final int FOOD_TYPE_INDEX = 1;
-     
-     public ArrayList<CatagoryEntity> queryFoodTypes() {
-    	 ArrayList<CatagoryEntity> catatories = new ArrayList<CatagoryEntity>();
-
-         Cursor cursor  = mContentResolver.query(
-                 FoodClassify.CONTENT_URI,
-                 PROJECTION_FOOD_CLASSIFY, null, null, null);
-
-         if (cursor == null) {
-             BLog.d(TAG, " queryFoodTypes cursor = " + cursor);
-         }
-
-         try {
-             cursor.moveToPosition(-1);
-             while (cursor.moveToNext() ) {
-                 CatagoryEntity catagory = new CatagoryEntity(cursor.getInt(FOOD_CLASSIFY_ID_INDEX), cursor.getString(FOOD_TYPE_INDEX), R.drawable.all_catagory_selector);
-                 catatories.add(catagory);
-             }
-         } finally {
-             cursor.close();
-         }
-
-         return catatories;
-
-     }
+    
      
      /***
       * 插入食物的记录

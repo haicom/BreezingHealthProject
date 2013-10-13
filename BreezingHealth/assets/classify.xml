@@ -1,7 +1,8 @@
-001,蛋与肉类,100
-002,主食类,200
-003,蔬果和菌藻,300
-004,奶类,400
-005,饮料类,500
-006,其他,600
-007,水果类,700
+000,全部,category_all_selector
+001,蛋与肉类,category_meat_selector
+002,主食类,category_main_selector
+003,蔬果和菌藻,category_vegetable_selector
+004,奶类,category_milk_selector
+005,饮料类,category_drink_selector
+006,其他,category_other_selector
+007,水果类,category_fruit_selector

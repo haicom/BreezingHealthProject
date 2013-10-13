@@ -36,15 +36,23 @@ public class CaloricIntakeFragment extends BaseFragment implements OnItemClickLi
     private PieGraph mPieGraph;
     private TextView mUptakeCaloric;
     private AddCaloricRecordAdapter mAdapter;
+    
+    private int mAccountId;
+    private int mDate;
 
-    public static CaloricIntakeFragment newInstance() {
-        CaloricIntakeFragment fragment = new CaloricIntakeFragment();
+    public static CaloricIntakeFragment newInstance(int accountId, int date) {
+        CaloricIntakeFragment fragment = new CaloricIntakeFragment(accountId, date);
         return fragment;
     }
-
-    public static CaloricIntakeFragment getInstance() {
+    
+    private CaloricIntakeFragment(int accountId, int date) {
+        mAccountId = accountId;
+        mDate = date;
+    }
+    
+    public static CaloricIntakeFragment getInstance(int accountId, int date) {
         if (mCaloricIntakeFragment == null) {
-            mCaloricIntakeFragment = new CaloricIntakeFragment();
+            mCaloricIntakeFragment = new CaloricIntakeFragment(accountId, date);
         }
         return mCaloricIntakeFragment;
     }
@@ -239,10 +247,12 @@ public class CaloricIntakeFragment extends BaseFragment implements OnItemClickLi
 
     @Override
     public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-        // TODO Auto-generated method stub
+        
         final RecordFunctionEntity fun = (RecordFunctionEntity) mAdapter.getItem(arg2);
         
         Intent intent = new Intent(IntentAction.ACTIVITY_CALORIC_INTAKE);
+        intent.putExtra(ExtraName.EXTRA_DATE, mDate);
+        intent.putExtra(ExtraName.EXTRA_ACCOUNT_ID, mAccountId);
         switch(fun.getTitleRes()) {
         case R.string.breakfast:
             intent.putExtra(ExtraName.EXTRA_TYPE, CaloricIntakeType.BREAKFAST.ordinal());
