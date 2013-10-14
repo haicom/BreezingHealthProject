@@ -41,18 +41,14 @@ public class CaloricIntakeFragment extends BaseFragment implements OnItemClickLi
     private int mDate;
 
     public static CaloricIntakeFragment newInstance(int accountId, int date) {
-        CaloricIntakeFragment fragment = new CaloricIntakeFragment(accountId, date);
+        CaloricIntakeFragment fragment = new CaloricIntakeFragment( );
         return fragment;
     }
+   
     
-    private CaloricIntakeFragment(int accountId, int date) {
-        mAccountId = accountId;
-        mDate = date;
-    }
-    
-    public static CaloricIntakeFragment getInstance(int accountId, int date) {
+    public static CaloricIntakeFragment getInstance( ) {
         if (mCaloricIntakeFragment == null) {
-            mCaloricIntakeFragment = new CaloricIntakeFragment(accountId, date);
+            mCaloricIntakeFragment = new CaloricIntakeFragment();
         }
         return mCaloricIntakeFragment;
     }
@@ -73,41 +69,22 @@ public class CaloricIntakeFragment extends BaseFragment implements OnItemClickLi
         mGridView = (GridView) mFragmentView.findViewById(R.id.gridView);
         mPieGraph = (PieGraph) mFragmentView.findViewById(R.id.pie_graph);
         mUptakeCaloric = (TextView)mFragmentView.findViewById(R.id.uptake_caloric);
-
-//        ArrayList<PiePartEntity> pieParts = new ArrayList<PiePartEntity>();
-//        pieParts.add(new PiePartEntity(10.0f, R.color.black));
-//        pieParts.add(new PiePartEntity(20.0f, R.color.orange));
-//        pieParts.add(new PiePartEntity(30.0f, R.color.red));
-//        pieParts.add(new PiePartEntity(40.0f, R.color.gray));
-//
-//        try {
-//            mPieChart.setAdapter(pieParts);
-//            mPieChart.setClickable(false);
-//            mPieChart.setOnSelectedListener(new OnSelectedLisenter() {
-//                @Override
-//                public void onSelected(int iSelectedIndex) {
-//
-//                }
-//            });
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        ArrayList<RecordFunctionEntity> funs = new ArrayList<RecordFunctionEntity>();
-//        funs.add(new RecordFunctionEntity(R.string.breakfast, 30, 100, R.color.orange));
-//        funs.add(new RecordFunctionEntity(R.string.lunch, 55, 100, R.color.orange));
-//        funs.add(new RecordFunctionEntity(R.string.dinner, 15, 100, R.color.orange));
-//        funs.add(new RecordFunctionEntity(R.string.other, 15, 100, R.color.orange));
-//        mAdapter = new AddCaloricRecordAdapter(getActivity(), funs);
-//        mGridView.setAdapter(mAdapter);
-       Bundle bundel = getArguments();
+        
+        Bundle bundel = this.getArguments();
+        
+        mAccountId = bundel.getInt(MainActivity.MAIN_ACCOUNT_ID);
+        mDate = bundel.getInt(MainActivity.MAIN_DATE);
        
-       int accountId = bundel.getInt(MainActivity.MAIN_ACCOUNT_ID);
-       int date = bundel.getInt(MainActivity.MAIN_DATE);
-       
-       drawPieChar(accountId, date);
        
        return mFragmentView;
+    }
+    
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume");
+       
+        drawPieChar(mAccountId, mDate);
     }
     
     private static final String[] PROJECTION_INGESTION = new String[] {

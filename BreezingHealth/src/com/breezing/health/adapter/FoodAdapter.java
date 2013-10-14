@@ -362,7 +362,7 @@ public class FoodAdapter extends BaseAdapter implements OnClickListener {
                  PROJECTION_INGESTIVE_RECORD_SORT,
                  stringBuilder.toString(),
                  new String[] { String.valueOf(mAccountId),                                
-                                   String.valueOf(mCaloricIntakeType),
+                                   String.valueOf( mCaloricIntakeType.ordinal() ),
                                    String.valueOf(mDate) },
                  null);
 
@@ -370,7 +370,7 @@ public class FoodAdapter extends BaseAdapter implements OnClickListener {
         try {
              cursor.moveToPosition(-1);
              while (cursor.moveToNext() ) {
-                 int foodId = cursor.getInt(INGESTIVE_RECORD_FOOD_ID_INDEX);;
+                 int foodId = cursor.getInt(INGESTIVE_RECORD_FOOD_ID_INDEX);
                  int selectedNumber = cursor.getInt(INGESTIVE_RECORD_FOOD_QUANTITY_INDEX);  
                  findSelectedNumber(foodId, selectedNumber);
              }            

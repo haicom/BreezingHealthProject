@@ -228,7 +228,7 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
                 .withValue(IngestiveRecord.ACCOUNT_ID, mAccountId)
                 .withValue(IngestiveRecord.FOOD_ID, foodEntity.getFoodId() )                
                 .withValue(IngestiveRecord.FOOD_QUANTITY, foodEntity.getSelectedNumber() )
-                .withValue(IngestiveRecord.DINING, String.valueOf(mCaloricIntakeType) )
+                .withValue(IngestiveRecord.DINING, String.valueOf(mCaloricIntakeType.ordinal() ) )
                 .withValue(IngestiveRecord.DATE, mDate)              
                 .build());
     }
@@ -245,12 +245,12 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
                 .withSelection(stringBuilder.toString(),  
                         new String[] { String.valueOf(mAccountId), 
                                        String.valueOf(foodEntity.getFoodId()), 
-                                       String.valueOf(String.valueOf( mCaloricIntakeType) ),
+                                       String.valueOf(String.valueOf( mCaloricIntakeType.ordinal() ) ),
                                        String.valueOf(String.valueOf(mDate)        ) } ) 
                 .withValue(IngestiveRecord.ACCOUNT_ID, mAccountId)
                 .withValue(IngestiveRecord.FOOD_ID, foodEntity.getFoodId() )                
                 .withValue(IngestiveRecord.FOOD_QUANTITY, foodEntity.getSelectedNumber() )
-                .withValue(IngestiveRecord.DINING, String.valueOf(mCaloricIntakeType) )
+                .withValue(IngestiveRecord.DINING, String.valueOf( mCaloricIntakeType.ordinal() ) )
                 .withValue(IngestiveRecord.DATE, mDate)              
                 .build());
     }
@@ -286,17 +286,63 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
                 .build() );
     }
     
+    
+    /**
+     * 获取食物种类
+     */
+    private static final String[] PROJECTION_INGESTIVE_SORT = new String[] {
+        Ingestion.BREAKFAST,
+        Ingestion.LUNCH,
+        Ingestion.DINNER,
+        Ingestion.ETC
+    };
+
+
+    private static final int INGESTIVE_BREAKFAST_INDEX = 0;
+    private static final int INGESTIVE_LUNCH_INDEX = 1;
+    private static final int INGESTIVE_DINNER_INDEX = 2;
+    private static final int INGESTIVE_ETC_INDEX = 3;
+    
     private void updateTotalIngestive(ArrayList<ContentProviderOperation> ops) {
-        
-        
-        ContentProviderOperation.Builder builder = ContentProviderOperation     
-                .newUpdate(Ingestion.CONTENT_URI); 
+        Cursor cursor = null;
+        int count = 0;
+        int breakfest = 0;
+        int lunch = 0;
+        int dinner = 0;
+        int etc = 0;        
+        int total = 0;
         
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.setLength(0);
-        stringBuilder.append(Ingestion.ACCOUNT_ID + " = ? "  + " AND ");    
+        stringBuilder.append(Ingestion.ACCOUNT_ID + " = ? "  + " AND ");     
         stringBuilder.append(Ingestion.DATE + "= ? " );
         
+        try {
+            cursor = getContentResolver().query(Ingestion.CONTENT_URI,
+                    PROJECTION_INGESTIVE_SORT,
+                    stringBuilder.toString(),
+                    new String[] { String.valueOf(mAccountId),                                
+                                   String.valueOf(mDate) },
+                    null);
+
+            if (cursor != null) {
+                count =  cursor.getCount();
+                if (count > 0) {
+                    cursor.moveToPosition(0);
+                    breakfest =  cursor.getInt(INGESTIVE_BREAKFAST_INDEX);
+                    lunch =  cursor.getInt(INGESTIVE_LUNCH_INDEX);
+                    dinner =  cursor.getInt(INGESTIVE_DINNER_INDEX);
+                    etc =  cursor.getInt(INGESTIVE_ETC_INDEX);
+                }
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        
+        ContentProviderOperation.Builder builder = ContentProviderOperation     
+                .newUpdate(Ingestion.CONTENT_URI);       
         builder.withSelection( stringBuilder.toString(),  
                 new String[] { String.valueOf(mAccountId),                              
                                String.valueOf( String.valueOf(mDate) ) } );
@@ -304,18 +350,25 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
         switch ( mCaloricIntakeType ) {
             case BREAKFAST:
                 builder.withValue(Ingestion.BREAKFAST, mFoodAdapter.getTotalCaloric() );
+                breakfest = mFoodAdapter.getTotalCaloric();
                 break;
             case LUNCH:
                 builder.withValue(Ingestion.LUNCH, mFoodAdapter.getTotalCaloric() );
+                lunch = mFoodAdapter.getTotalCaloric();
                 break;
             case DINNER:
                 builder.withValue(Ingestion.DINNER, mFoodAdapter.getTotalCaloric() );
+                dinner = mFoodAdapter.getTotalCaloric();
                 break;
             case OTHER:
                 builder.withValue(Ingestion.ETC, mFoodAdapter.getTotalCaloric() );
+                etc = mFoodAdapter.getTotalCaloric();
                 break;
         }
         
+        total = breakfest + lunch + dinner + etc;
+        builder.withValue(Ingestion.TOTAL_INGESTION, total );
+        builder.withValue(Ingestion.DATE, mDate );
         ops.add(builder.build() );
     }
     
@@ -335,7 +388,7 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
                     stringBuilder.toString(),
                     new String[] { String.valueOf(mAccountId), 
                                    String.valueOf(foodId), 
-                                   String.valueOf(mCaloricIntakeType),
+                                   String.valueOf( mCaloricIntakeType.ordinal() ),
                                    String.valueOf(mDate) },
                     null);
 

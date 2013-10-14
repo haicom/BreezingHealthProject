@@ -94,7 +94,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
     private void valueToView() {
         setActionBarTitle(R.string.app_name);
-        mCaloricPagerAdapter = new CaloricPagerAdapter( getSupportFragmentManager(), mAccountId, mDate );
+        mCaloricPagerAdapter = new CaloricPagerAdapter( getSupportFragmentManager() );
         mViewPager.setAdapter(mCaloricPagerAdapter);
         
         CaloricIntakeFragment caloricIntakeFragment  = (CaloricIntakeFragment) mCaloricPagerAdapter.
