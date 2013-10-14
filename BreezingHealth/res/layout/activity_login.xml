@@ -11,7 +11,9 @@
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:background="@drawable/btn_spinner_selector" />
+        android:background="@drawable/btn_spinner_selector"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin" />
     
     <EditText
        android:id="@+id/login_pass"
@@ -21,7 +23,9 @@
        android:layout_width = "match_parent"
        android:layout_height = "wrap_content"
        android:background="@drawable/bg_edittext_selector"
-       android:password="true"/>
+       android:password="true"
+       android:paddingLeft="@dimen/activity_horizontal_margin"
+       android:paddingRight="@dimen/activity_horizontal_margin" />
     
     <CheckBox android:layout_width="wrap_content"
         android:layout_height="wrap_content"

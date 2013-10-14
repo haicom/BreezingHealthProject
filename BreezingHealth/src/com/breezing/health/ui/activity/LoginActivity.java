@@ -2,11 +2,6 @@ package com.breezing.health.ui.activity;
 
 
 
-import com.breezing.health.R;
-import com.breezing.health.adapter.AccountRecordAdapter;
-import com.breezing.health.providers.Breezing.Account;
-import com.breezing.health.tools.IntentAction;
-
 import android.content.AsyncQueryHandler;
 import android.content.Context;
 import android.content.Intent;
@@ -20,6 +15,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.breezing.health.R;
+import com.breezing.health.adapter.AccountRecordAdapter;
+import com.breezing.health.providers.Breezing.Account;
+import com.breezing.health.tools.IntentAction;
 
 
 public class LoginActivity extends ActionBarActivity implements View.OnClickListener , OnItemSelectedListener{
@@ -50,9 +50,10 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
         mQueryHandler = new QueryHandler(this);
 
 
+        Cursor cursor = queryAcctounInfo();
         mAdapter = new AccountRecordAdapter(this,
                    android.R.layout.simple_spinner_item,
-                   null,
+                   cursor,
                    new String[] {Account.ACCOUNT_NAME },
                    new int[] { android.R.id.text1 }
                    );

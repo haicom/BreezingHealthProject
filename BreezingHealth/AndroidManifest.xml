@@ -11,6 +11,8 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     
     <application
         android:allowBackup="true"
@@ -217,6 +219,15 @@
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="action.intent.breezing.health.ACTIVITY_LOGIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        
+        <activity
+            android:name=".widget.imagecrop.CropImage"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="action.intent.breezing.health.IMAGE_CROP" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

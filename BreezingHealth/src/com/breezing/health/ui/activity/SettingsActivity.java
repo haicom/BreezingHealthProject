@@ -128,6 +128,7 @@ public class SettingsActivity extends ActionBarActivity implements View.OnClickL
         }
         getSupportFragmentManager().beginTransaction().addToBackStack(null);
         
+        imagePicker = ImagePickerDialogFragment.newInstance();
         imagePicker.setFileTemp(mTempFile);
         imagePicker.setTitle(getString(R.string.please_pick_image_resource));
         imagePicker.show(getSupportFragmentManager(), "imagePicker");

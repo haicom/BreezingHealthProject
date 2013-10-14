@@ -4,10 +4,13 @@ import java.io.File;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -48,6 +51,7 @@ public class ImagePickerDialogFragment extends BaseDialogFragment implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setStyle(DialogFragment.STYLE_NO_TITLE, R.style.AppTheme_NoTitleBar);
 	}
 
 	@Override
@@ -70,8 +74,11 @@ public class ImagePickerDialogFragment extends BaseDialogFragment implements
 
 		mTakeAPhoto.setOnClickListener(this);
 		mPickFromGallery.setOnClickListener(this);
+		
+		getDialog().getWindow().setBackgroundDrawable(new
+                ColorDrawable(Color.TRANSPARENT));
 
-		return super.onCreateView(inflater, container, savedInstanceState);
+		return mFragmentView;
 	}
 
 	@Override
@@ -107,16 +114,19 @@ public class ImagePickerDialogFragment extends BaseDialogFragment implements
 			intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT,
 					mImageCaptureUri);
 			intent.putExtra("return-data", true);
-			startActivityForResult(intent, REQUEST_CODE_TAKE_PICTURE);
+			getActivity().startActivityForResult(intent, REQUEST_CODE_TAKE_PICTURE);
 		} catch (ActivityNotFoundException e) {
 			BLog.d(TAG, "cannot take picture", e);
 		}
+		
+		dismiss();
 	}
 
 	private void openGallery() {
 		Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
 		photoPickerIntent.setType("image/*");
-		startActivityForResult(photoPickerIntent, REQUEST_CODE_GALLERY);
+		getActivity().startActivityForResult(photoPickerIntent, REQUEST_CODE_GALLERY);
+		dismiss();
 	}
 
 }
