@@ -37,6 +37,7 @@
     <string name="next">下一步</string>
     <string name="confirm">确定</string>
     <string name="cancel">取消</string>
+    <string name="save">保存</string>
     <string name="year">年</string>
     <string name="month">月</string>
     <string name="day">日</string>
@@ -91,6 +92,7 @@
     <string name = "exercise_calorie">%1$s千焦</string>
     <string name = "exercise_description">%1$d%2$s\n%3$s</string>
 
+    <string name="modify">修改</string>
     <string name="settings">设置</string>
     <string name="share">分享</string>
     <string name="history">历史</string>
@@ -127,19 +129,19 @@
     <string name="account_detail">账户详情</string>
     <string name = "delete_account" > 删除该账号 </string>
     <string name = "logout_account" >退出当前帐号</string>
-
+  
 
     <string name="height_unit">身高单位</string>
     <string name="weight_unit">体重单位</string>
     <string name="distance_unit">距离单位</string>
     <string name = "height_meter" >米</string>
-
-
+  
+    
     <string name = "unit" >单位</string>
     <string name = "sport_type_runing">跑步</string>
     <string name = "sport_type_gengeral">次</string>
-
-
+    
+   
 
     <string name="my_breezing">Breezing</string>
     <string name="my_pedometer">计步器</string>
@@ -181,10 +183,10 @@
     <string name="weight_trend_notice">温馨提醒：预计您的体重将每年增加0.8kg。</string>
 
     <string name="update_weight">更新体重</string>
-    <string name="weight_update_notice">%1$d年%2$d月%3$d日测试的体重为：%4$d斤</string>
+    <string name="weight_update_notice">%1$s年%2$s月%3$s日测试的体重为：%4$s%5$s</string>
     <string name="birthday">%1$s年%2$s月%3$s日</string>
     <string name="hope_weight_notice">◀%1$d斤</string>
-    <string name="different_weight_value_notice">距离目标体重：%1$d斤</string>
+    <string name="different_weight_value_notice">距离目标体重：%1$s%2$s</string>
     <string name="click_to_select_weight">点击选择体重</string>
     <string name="record_current_weight">记录当前体重</string>
     <string name="connect_to_weight_scale">连接蓝牙秤</string>
@@ -197,26 +199,42 @@
     <string name="helper_step_three_intro">只需三步，您的新陈代谢便可了如指掌！</string>
     <string name="helper_step_four_intro">随时记录您的饮食材料，让您的健康“有理有据”！</string>
     <string name="begin_breezing_life">开始体验</string>
-    <string name="base_exercise_caloric_burn">基本运动能量消耗</string>
+    <string name="base_exercise_caloric_burn">日常活动能量消耗</string>
+    <string name="base_exercise_caloric_burn_notice">*日常生活及工作中的基本能量消耗</string>
     <string name="digest_exercise_caloric_burn">消化能量消耗</string>
+    <string name="digest_exercise_caloric_burn_notice">*在食物消化过程中消耗的能量</string>
     <string name="other_caloric_burn">其他能量消耗</string>
     <string name="total_food_intake">摄入总量：%1$s千焦</string>
-
+    
     <string name = "alert_dialog_ok" >确定</string>
     <string name = "alert_dialog_cancel" >取消</string>
     <string name = "account_delete_confirm" >请问，您是否确认要删除此帐户 ？</string>
     <string name = "account_quit_confirm">请问，您是否确认要退出此帐户 ？</string>
     <string name = "quit_current_account" >退出当前帐号</string>
-
+    
     <string name="unknow">未知</string>
     <string name="version_number">版本号</string>
     <string name="official_webside">官方网站</string>
     <string name="hot_line">热线电话</string>
     <string name="breezing_hot_line">(800)555&#8211;4729</string>
     <string name="copyright">© 2013 Breezing. All Rights Reserved.</string>
-
+    
     <string name="are_you_sure_to_delete_intake_food_item">您确定要删除该已选食物？</string>
     <string name="notice">提示</string>
     <string name="selected">已选</string>
+    
+    <string name="title_select_date">选择日期</string>
+    <string name="auto_login_notice">记住密码并自动登录</string>
+
+    <string name="saving_image">正在保存图像</string>
+    <string name="preparing_card">SD卡准备中</string>
+    <string name="no_storage_card">没有发现SD卡</string>
+    <string name="not_enough_space">没有足够的存储空间</string>
+    <string name="modify_avatar">修改头像</string>
+    <string name="modify_avatar_summary">定义个性化的头像</string>
+    
+    <string name="pick_image_from_gallery">从相册选择</string>
+    <string name="take_a_photo">拍照</string>
+    <string name="please_pick_image_resource">请选择图片源</string>    
     <string name = "account_info_password">您输入的密码不正确，请重新输入</string>
 </resources>

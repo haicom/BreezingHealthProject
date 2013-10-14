@@ -2,7 +2,10 @@ package com.breezing.health.ui.activity;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +23,10 @@ import com.breezing.health.tools.IntentAction;
 import com.breezing.health.ui.fragment.BaseDialogFragment;
 import com.breezing.health.ui.fragment.BreezingDialogFragment;
 import com.breezing.health.ui.fragment.DialogFragmentInterface;
-import com.breezing.health.util.BLog;
+import com.breezing.health.ui.fragment.ImagePickerDialogFragment;
+import com.breezing.health.util.InternalStorageContentProvider;
 import com.breezing.health.util.LocalSharedPrefsUtil;
+import com.breezing.health.widget.imagecrop.CropImage;
 
 public class SettingsActivity extends ActionBarActivity implements View.OnClickListener {
 
@@ -36,6 +41,8 @@ public class SettingsActivity extends ActionBarActivity implements View.OnClickL
     private BasicItem mNameItem;
 
     private Button mButton;
+    
+    private File mTempFile = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -89,12 +96,93 @@ public class SettingsActivity extends ActionBarActivity implements View.OnClickL
             @Override
             public void onClick(View view, ViewGroup contentView, String action, GroupIndex index) {
                 if (action != null) {
-                    Intent intent = new Intent(action);
-                    startActivity(intent);
+                    if (action.equals(IntentAction.INTENT_IMAGE_CROP)) {
+                    	showImagePickerDialog();
+                    } else {
+                    	Intent intent = new Intent(action);
+                        startActivity(intent);
+                    }
                     return;
                 }
             }
         });
+    }
+    
+    private void showImagePickerDialog() {
+    	String state = Environment.getExternalStorageState();
+    	if (Environment.MEDIA_MOUNTED.equals(state)) {
+    		mTempFile = new File(Environment.getExternalStorageDirectory(), InternalStorageContentProvider.TEMP_PHOTO_FILE_NAME);
+    	} else {
+    		mTempFile = new File(getFilesDir(), InternalStorageContentProvider.TEMP_PHOTO_FILE_NAME);
+    	}
+    	
+    	ImagePickerDialogFragment imagePicker = (ImagePickerDialogFragment) getSupportFragmentManager().findFragmentByTag("imagePicker");
+        if (imagePicker != null) {
+            getSupportFragmentManager().beginTransaction().remove(imagePicker);
+        }
+        getSupportFragmentManager().beginTransaction().addToBackStack(null);
+        
+        imagePicker.setFileTemp(mTempFile);
+        imagePicker.setTitle(getString(R.string.please_pick_image_resource));
+        imagePicker.show(getSupportFragmentManager(), "imagePicker");
+    }
+    
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (resultCode != RESULT_OK) {
+            return;
+        }
+
+        Bitmap bitmap;
+        switch (requestCode) {
+            case ImagePickerDialogFragment.REQUEST_CODE_GALLERY:
+                try {
+                    InputStream inputStream = getContentResolver().openInputStream(data.getData());
+                    FileOutputStream fileOutputStream = new FileOutputStream(mTempFile);
+                    copyStream(inputStream, fileOutputStream);
+                    fileOutputStream.close();
+                    inputStream.close();
+                    startCropImage();
+                } catch (Exception e) {
+                    Log.e(TAG, "Error while creating temp file", e);
+                }
+                break;
+                
+            case ImagePickerDialogFragment.REQUEST_CODE_TAKE_PICTURE:
+                startCropImage();
+                break;
+                
+            case ImagePickerDialogFragment.REQUEST_CODE_CROP_IMAGE:
+            	String path = data.getStringExtra(CropImage.IMAGE_PATH);
+                if (path == null) {
+                    return;
+                }
+                bitmap = BitmapFactory.decodeFile(mTempFile.getPath());
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+    
+    private void startCropImage() {
+        Intent intent = new Intent(this, CropImage.class);
+        intent.putExtra(CropImage.IMAGE_PATH, mTempFile.getPath());
+        intent.putExtra(CropImage.SCALE, true);
+        intent.putExtra(CropImage.ASPECT_X, 3);
+        intent.putExtra(CropImage.ASPECT_Y, 2);
+
+        startActivityForResult(intent, ImagePickerDialogFragment.REQUEST_CODE_CROP_IMAGE);
+    }
+
+
+    public static void copyStream(InputStream input, OutputStream output)
+            throws IOException {
+
+        byte[] buffer = new byte[1024];
+        int bytesRead;
+        while ((bytesRead = input.read(buffer)) != -1) {
+            output.write(buffer, 0, bytesRead);
+        }
     }
 
     /**
@@ -106,6 +194,11 @@ public class SettingsActivity extends ActionBarActivity implements View.OnClickL
                     null,
                     IntentAction.ACTIVITY_ACCOUNT_DETAIL );
         mTableView.addBasicItem(mNameItem);
+        
+        BasicItem modifyAvatar = new BasicItem(getString(R.string.modify_avatar),
+        		getString(R.string.modify_avatar_summary),
+                IntentAction.INTENT_IMAGE_CROP);
+        mTableView.addBasicItem(modifyAvatar);
 
         mTableView.addBasicItem(getString(R.string.modify_password),
                    getString(R.string.modify_password_summary),

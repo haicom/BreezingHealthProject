@@ -4,8 +4,6 @@ import java.security.MessageDigest;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 
-import com.breezing.health.R;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -14,8 +12,15 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.view.View;
+import android.widget.ImageView;
+
+import com.breezing.health.R;
+import com.breezing.health.util.BLog;
 
 public class Tools {
+    
+    private static final String TAG = "Tools";
 
     public static String EncoderByMd5(String inStr) {
         MessageDigest md5 = null;
@@ -239,6 +244,51 @@ public class Tools {
         intent.putExtra(android.content.Intent.EXTRA_TEXT, message);
         context.startActivity(Intent.createChooser(intent, context.getString(R.string.please_choose_share_method)));
 
+    }
+    
+    public static void refreshVane(int number, View vane) {
+        if (number > 9999) {
+            return ;
+        }
+        
+        final int k = number / 1000;
+        final int h = number % 1000 / 100;
+        final int t = number % 1000 % 100 / 10;
+        final int u = number % 1000 % 100 % 10;
+        
+        BLog.v(TAG, "number =" + number + ";k =" + k + ";h = " + h + "; t = " + t + ";u = " + u);
+        
+        ((ImageView)vane.findViewById(R.id.number_first)).setImageResource(getVaneImageRes(k));
+        ((ImageView)vane.findViewById(R.id.number_second)).setImageResource(getVaneImageRes(h));
+        ((ImageView)vane.findViewById(R.id.number_third)).setImageResource(getVaneImageRes(t));
+        ((ImageView)vane.findViewById(R.id.number_forth)).setImageResource(getVaneImageRes(u));
+    }
+    
+    public static int getVaneImageRes(int number) {
+        switch(number) {
+        case 0:
+            return R.drawable.number0;
+        case 1:
+            return R.drawable.number1;
+        case 2:
+            return R.drawable.number2;
+        case 3:
+            return R.drawable.number3;
+        case 4:
+            return R.drawable.number4;
+        case 5:
+            return R.drawable.number5;
+        case 6:
+            return R.drawable.number6;
+        case 7:
+            return R.drawable.number7;
+        case 8:
+            return R.drawable.number8;
+        case 9:
+            return R.drawable.number9;
+        default:
+            return 0;
+        }
     }
     
 }

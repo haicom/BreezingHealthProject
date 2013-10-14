@@ -201,5 +201,5 @@ public class WeightPickerDialogFragment extends BaseDialogFragment implements On
     private static final int SHOW_INTEGER_CURRENT_POUND = 200;
 
     private static final int SHOW_DECIMALS_MAX = 9;
-    private static final int SHOW_DECIMALS_MIN = 1;
+    private static final int SHOW_DECIMALS_MIN = 0;
 }

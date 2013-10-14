@@ -64,7 +64,9 @@ public class EditInformationActivity extends ActionBarActivity implements OnClic
     
     private BaseInformationOutput mBaseInformationOutput;
     
-    private ArrayList<ContentProviderOperation> mOps;    
+    private ArrayList<ContentProviderOperation> mOps;
+    
+    private Button mModify;
    
 
     @Override
@@ -97,9 +99,12 @@ public class EditInformationActivity extends ActionBarActivity implements OnClic
         mBaseInformationOutput = bundle.getParcelable(AccountDetailActivity.BASE_INFO_PARCELABLE);
         
         setActionBarTitle(R.string.title_edit_personal_information);
+        addLeftActionItem(new ActionItem(ActionItem.ACTION_BACK));
         
-        addRightActionItem(new ActionItem(ActionItem.ACTION_DONE) );    
+//        addRightActionItem(new ActionItem(ActionItem.ACTION_DONE) );    
 
+        mModify = (Button) findViewById(R.id.modify);
+        
         mRadioMale = (RadioButton) findViewById(R.id.male);
         mRadioFemale = (RadioButton) findViewById(R.id.female);
         
@@ -189,6 +194,7 @@ public class EditInformationActivity extends ActionBarActivity implements OnClic
         mWeight.setOnClickListener(this);
         mHopeWeight.setOnClickListener(this);
         mHeight.setOnClickListener(this);
+        mModify.setOnClickListener(this);
     }
 
     @Override
@@ -208,6 +214,10 @@ public class EditInformationActivity extends ActionBarActivity implements OnClic
             return ;
         } else if (v == mJobType) {
             showJobTypePicker();
+            return ;
+        } else if (v == mModify) {
+            updateAccountInfo();             
+            this.finish();
             return ;
         }
     }

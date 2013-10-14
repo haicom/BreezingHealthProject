@@ -14,6 +14,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.breezing.health.tools.Tools;
 import com.breezing.health.widget.linechart.data.AxisValue;
 import com.breezing.health.widget.linechart.data.ChartData;
 import com.breezing.health.widget.linechart.data.Point;
@@ -157,8 +158,8 @@ public class FancyChart extends View {
 		int maxTextRowLength = Math.max(title.length(), subtitle.length());
 		
 		// TODO: Crashes on smaller text lengths
-		int rWidth = (int) (maxTextRowLength*(chartStyle.getBoxTextSize()));
-		int rHeight = (int) (chartStyle.getBoxTextSize()*1.78*2);
+		int rWidth = (int) (maxTextRowLength*(Tools.dip2px(getContext(), chartStyle.getBoxTextSize())));
+		int rHeight = (int) (Tools.dip2px(getContext(), chartStyle.getBoxTextSize())*3);
 		
 		RectF borderRectangle = new RectF(point.canvasX-(rWidth/2), point.canvasY-(rHeight/2)-chartStyle.getPointRadius()*6, point.canvasX+(rWidth/2), point.canvasY+(rHeight/2)-chartStyle.getPointRadius()*6);
 		canvas.drawRoundRect(borderRectangle, 5, 5, paintSelectedBorder);
@@ -213,7 +214,7 @@ public class FancyChart extends View {
 		textPaint.setColor(chartStyle.getBoxTextColor());
 		textPaint.setStyle(Paint.Style.FILL);
 		textPaint.setAntiAlias(true);
-		textPaint.setTextSize(chartStyle.getBoxTextSize());
+		textPaint.setTextSize(Tools.dip2px(getContext(), chartStyle.getBoxTextSize()));
 		
 		textPaint.setTypeface(Typeface.DEFAULT_BOLD);
 		canvas.drawText(title, rInside.left + 7, rInside.top + 20, textPaint);
@@ -352,7 +353,7 @@ public class FancyChart extends View {
 		Paint paintLegend = new Paint();
 		paintLegend.setColor(chartStyle.getyAxisLegendColor());
 		paintLegend.setStyle(Paint.Style.FILL);
-		paintLegend.setTextSize(chartStyle.getLegendTextSize());
+		paintLegend.setTextSize(Tools.dip2px(getContext(), chartStyle.getLegendTextSize()));
 		paintLegend.setAntiAlias(true);
 		
 		double min = getMinY();
@@ -385,7 +386,7 @@ public class FancyChart extends View {
 			
 			if(value.title != null) {
 				int length = value.title.length();
-				canvas.drawText(value.title, 20 - length * 6, y + 5, paintLegend);
+				canvas.drawText(value.title, 5, y + 5, paintLegend);
 			}
 		}
 	}
@@ -405,7 +406,7 @@ public class FancyChart extends View {
 		Paint paintLegend = new Paint();
 		paintLegend.setColor(chartStyle.getxAxisLegendColor());
 		paintLegend.setStyle(Paint.Style.FILL);
-		paintLegend.setTextSize(chartStyle.getLegendTextSize());
+		paintLegend.setTextSize(Tools.dip2px(getContext(), chartStyle.getLegendTextSize()));
 		paintLegend.setAntiAlias(true);
 		
 		List<AxisValue> xValues = new ArrayList<AxisValue>();
@@ -421,7 +422,7 @@ public class FancyChart extends View {
 
 			if(value.title != null) {
 				int length = value.title.length();
-				canvas.drawText(value.title, x-length*6/2, getHeight()-chartStyle.getLegendTextSize()/2, paintLegend);
+				canvas.drawText(value.title, x - length * 4, getHeight()-Tools.dip2px(getContext(), chartStyle.getLegendTextSize())/2, paintLegend);
 			}
 		}
 	}

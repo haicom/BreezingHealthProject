@@ -15,10 +15,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.breezing.health.R;
-import com.breezing.health.providers.Breezing.Account;
 import com.breezing.health.providers.Breezing.EnergyCost;
-import com.breezing.health.providers.Breezing.UnitSettings;
 import com.breezing.health.tools.IntentAction;
+import com.breezing.health.tools.Tools;
 import com.breezing.health.util.LocalSharedPrefsUtil;
 
 public class BreezingTestResultFragment extends BaseFragment implements OnClickListener {
@@ -29,6 +28,7 @@ public class BreezingTestResultFragment extends BaseFragment implements OnClickL
     private int mTotalEnergy = 0;
     private int mEnergyCostDate = 0;
     private static BreezingTestResultFragment mFragment;
+    private View mTotalVane;
 
     public static BreezingTestResultFragment newInstance() {
         
@@ -48,6 +48,7 @@ public class BreezingTestResultFragment extends BaseFragment implements OnClickL
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {        
         mFragmentView = inflater.inflate(R.layout.fragment_breezing_test_result, null);
+        mTotalVane = mFragmentView.findViewById(R.id.total_vane);
         mTextView = (TextView) mFragmentView.findViewById(R.id.result);
         mNext = (Button) mFragmentView.findViewById(R.id.next);
         mNext.setOnClickListener(this);
@@ -87,6 +88,8 @@ public class BreezingTestResultFragment extends BaseFragment implements OnClickL
             spannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.black)), 2, 13, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             mTextView.setText(spannable);
         }
+        
+        Tools.refreshVane(mTotalEnergy, mTotalVane);
     }
 
     private final static int ENERGY_COST_TOTAL_ENERGY = 0;

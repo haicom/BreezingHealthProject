@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/translucence"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/fragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/picker_height"
+        android:layout_alignParentBottom="true"
+        android:background="@color/background_color"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:orientation="vertical"
+        android:gravity="center" >
+        
+        <Button
+            android:id="@+id/camera"
+            style="@style/ButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:background="@drawable/btn_red_round_selector"
+            android:singleLine="true"
+            android:text="@string/take_a_photo"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/gallery"
+            style="@style/ButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:background="@drawable/btn_white_round_big_selector"
+            android:singleLine="true"
+            android:text="@string/pick_image_from_gallery"
+            android:textColor="@color/black" />
+
+    </LinearLayout>
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/fragmentContainer"
+        layout="@layout/fragment_dialog_picker_actionbar" />
+
+</RelativeLayout>

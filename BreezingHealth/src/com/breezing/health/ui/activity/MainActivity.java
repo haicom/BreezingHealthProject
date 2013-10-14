@@ -189,7 +189,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 //        }
 //        getSupportFragmentManager().beginTransaction().addToBackStack(null);
         calendar = CalendarDialogFragment.getInstance();
-        calendar.setTitle(getString(R.string.title_select_born_date));
+        calendar.setTitle(getString(R.string.title_select_date));
         calendar.setPositiveClickListener(new DialogFragmentInterface.OnClickListener() {
             @Override
             public void onClick(BaseDialogFragment dialog,

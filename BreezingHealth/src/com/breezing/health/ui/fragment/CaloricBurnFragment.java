@@ -242,6 +242,8 @@ public class CaloricBurnFragment extends BaseFragment implements OnItemClickList
             CaloricBurnFragment.this.startActivity(intent); 
         } else if (recordFunction.getTitleRes() == R.string.other) {
             Intent intent = new Intent(IntentAction.ACTIVITY_OTHER_CALORIC_BURN);
+            intent.putExtra(ExtraName.EXTRA_ACCOUNT_ID, ( (MainActivity)getActivity() ).getAccountId());
+            intent.putExtra(ExtraName.EXTRA_DATE, mDate);
             CaloricBurnFragment.this.startActivity(intent);
         }
         

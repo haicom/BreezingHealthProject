@@ -212,7 +212,7 @@ public class HeightPickerDialogFragment extends BaseDialogFragment implements On
     private static final int SHOW_INTEGER_CENTIMETRE_MIN = 50;
     private static final int SHOW_INTEGER_CURRENT_CENTIMETRE = 170;
     private static final int SHOW_DECIMALS_CENTIMETRE_MAX = 9;
-    private static final int SHOW_DECIMALS_CENTIMETRE_MIN = 1;
+    private static final int SHOW_DECIMALS_CENTIMETRE_MIN = 0;
 
     private static final int SHOW_INTEGER_METRE_MAX = SHOW_INTEGER_CENTIMETRE_MAX / 100;
     private static final int SHOW_INTEGER_METRE_MIN = 0;

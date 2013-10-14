@@ -7,10 +7,11 @@
     <Spinner
         android:id="@+id/login_spinner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/information_cell_height"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_vertical_margin" />
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:background="@drawable/btn_spinner_selector" />
     
     <EditText
        android:id="@+id/login_pass"
@@ -19,7 +20,19 @@
        android:layout_marginRight="@dimen/activity_horizontal_margin"
        android:layout_width = "match_parent"
        android:layout_height = "wrap_content"
+       android:background="@drawable/bg_edittext_selector"
        android:password="true"/>
+    
+    <CheckBox android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:id="@+id/auto_login"
+        android:checked="true"
+        android:text="@string/auto_login_notice"
+        android:button="@drawable/checkbox_selector" />
 
     <Button
         android:id="@+id/login_button"
@@ -30,6 +43,8 @@
         android:background="@drawable/btn_red_round_selector"
         android:singleLine="true"
         android:textColor="@color/white"
-        android:textSize="@dimen/normal_textsize" />
+        android:textSize="@dimen/normal_textsize"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin" />
        
 </LinearLayout>

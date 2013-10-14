@@ -50,15 +50,15 @@ public class FancyChartStyle {
 		pointRadius = 9;
 		pointStrokeWidth = 3;
 		
-		legendTextSize = 14;
-		boxTextSize = 14;
+		legendTextSize = 11;
+		boxTextSize = 11;
 		
 		dataLineWidth = 5;
 		gridLineWidth = 1;
 		selectedBoxStrokeWidth = 3;
 		
-		chartPaddingLeft = 20;
-		chartPaddingRight = 20;
+		chartPaddingLeft = 40;
+		chartPaddingRight = 40;
 		chartPaddingTop = 20;
 		chartPaddingBottom = 20;
 		

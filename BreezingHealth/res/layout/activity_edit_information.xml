@@ -181,6 +181,19 @@
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin" />
         </RelativeLayout>
+        
+        <Button   
+            android:id="@+id/modify"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:singleLine="true"   
+            android:background="@drawable/btn_red_round_selector"
+            android:textColor="@color/white"
+            android:textSize ="@dimen/normal_textsize"
+            android:text="@string/modify" />
+        
     </LinearLayout>
 
 </ScrollView>
