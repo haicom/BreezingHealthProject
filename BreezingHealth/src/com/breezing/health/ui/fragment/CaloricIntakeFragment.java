@@ -84,7 +84,9 @@ public class CaloricIntakeFragment extends BaseFragment implements OnItemClickLi
         super.onResume();
         Log.d(TAG, "onResume");
        
-        drawPieChar(mAccountId, mDate);
+        if ( (mAccountId !=0) && (mDate != 0) ) {
+            drawPieChar(mAccountId, mDate);
+        }        
     }
     
     private static final String[] PROJECTION_INGESTION = new String[] {

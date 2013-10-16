@@ -20,6 +20,7 @@ import com.breezing.health.R;
 import com.breezing.health.adapter.AccountRecordAdapter;
 import com.breezing.health.providers.Breezing.Account;
 import com.breezing.health.tools.IntentAction;
+import com.breezing.health.util.LocalSharedPrefsUtil;
 
 
 public class LoginActivity extends ActionBarActivity implements View.OnClickListener , OnItemSelectedListener{
@@ -50,10 +51,10 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
         mQueryHandler = new QueryHandler(this);
 
 
-        Cursor cursor = queryAcctounInfo();
+       
         mAdapter = new AccountRecordAdapter(this,
                    android.R.layout.simple_spinner_item,
-                   cursor,
+                   null,
                    new String[] {Account.ACCOUNT_NAME },
                    new int[] { android.R.id.text1 }
                    );
@@ -63,7 +64,8 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
         mAdapter.setOnDataSetChangedListener(mDataSetChangedListener);
         mSpinner.setAdapter(mAdapter);
         mSpinner.setSelection(0);
-        mName = mSpinner.getSelectedItem().toString();
+
+//        mName = mSpinner.getSelectedItem().toString();
      // Specify the layout to use when the list of choices appears
         mSpinner.setOnItemSelectedListener(this);
         doQueryAccountInfo();
@@ -139,10 +141,11 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
 
     @Override
     public void onClick(View  v) {
-        int count = queryAccountInfo(mName, mEditText.getText().toString().trim() );
-        if (count == 1 ) {
-             Intent intent = new Intent(IntentAction.ACTIVITY_MAIN);
-             startActivity(intent);
+        int accountId = queryAccountInfo(mName, mEditText.getText().toString().trim() );
+        if (accountId > 0 ) {
+            LocalSharedPrefsUtil.saveSharedPrefsAccount(this, accountId, mEditText.getText().toString().trim() );
+            Intent intent = new Intent(IntentAction.ACTIVITY_MAIN);
+            startActivity(intent);
         } else {
              Toast.makeText(this,
                      R.string.account_info_password, Toast.LENGTH_SHORT).show();
@@ -171,7 +174,7 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
      * @param accountPass
      */
     private int queryAccountInfo(final String accountName, final String accountPass) {
-        int count = 0;
+        int account = 0;
         Log.d(TAG, " queryAccountInfo accountName = " + accountName + " accountPass = " + accountPass);
         StringBuilder where = new StringBuilder();
         where.setLength(0);
@@ -185,8 +188,11 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                     new String[] { accountName, accountPass},
                     null);
 
-            if (cursor != null) {
-               count = cursor.getCount();
+            if (cursor != null) {               
+               if ( cursor.getCount() > 0 ) {                   
+                   cursor.moveToPosition(0);
+                   account = cursor.getInt(0);
+               }
             }
         } finally {
             if (cursor != null) {
@@ -194,9 +200,9 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
             }
         }
 
-        Log.d(TAG, " queryAccountInfo count = " + count);
+        Log.d(TAG, " queryAccountInfo count = " + account);
 
-        return count;
+        return account;
     }
 
 
@@ -207,7 +213,7 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
     public void onItemSelected(AdapterView<?> parent, View view,
             int position, long id) {
         mSpinner.setSelection(position);
-        mName = mSpinner.getSelectedItem().toString();
+        mName = mAdapter.getCursor().getString(1);
     }
 
 

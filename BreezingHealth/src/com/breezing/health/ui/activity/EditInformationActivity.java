@@ -609,6 +609,7 @@ public class EditInformationActivity extends ActionBarActivity implements OnClic
                         String.valueOf(accountId) , 
                         String.valueOf( mBaseInformationOutput.getDate() ) } )               
                 .withValue(WeightChange.WEIGHT, weight)
+                .withValue(WeightChange.EVERY_WEIGHT, weight)
                 .withValue(WeightChange.EXPECTED_WEIGHT, expectedWeight)               
                 .build());
     }

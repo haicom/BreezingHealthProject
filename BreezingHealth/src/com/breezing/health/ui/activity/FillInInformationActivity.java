@@ -522,6 +522,7 @@ public class FillInInformationActivity extends ActionBarActivity implements OnCl
         ops.add(ContentProviderOperation.newInsert(WeightChange.CONTENT_URI)
                 .withValue(WeightChange.ACCOUNT_ID, accountId)
                 .withValue(WeightChange.WEIGHT, weight)
+                .withValue(WeightChange.EVERY_WEIGHT, weight)
                 .withValue(WeightChange.EXPECTED_WEIGHT, expectedWeight)
                 .build());
     }

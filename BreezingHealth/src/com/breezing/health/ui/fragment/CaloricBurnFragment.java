@@ -35,7 +35,7 @@ public class CaloricBurnFragment extends BaseFragment implements OnItemClickList
     private TextView mBurnCaloric;
     private AddCaloricRecordAdapter mAdapter;
     private static CaloricBurnFragment mCaloricBurnFragment;
-    
+    private int mAccountId;
     private int mDate;
 
     public static CaloricBurnFragment newInstance() {
@@ -61,6 +61,7 @@ public class CaloricBurnFragment extends BaseFragment implements OnItemClickList
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mDate = 0;
         Log.d(TAG, "onCreate");
     }
 
@@ -73,25 +74,11 @@ public class CaloricBurnFragment extends BaseFragment implements OnItemClickList
         mGridView = (GridView) mFragmentView.findViewById(R.id.gridView);
         mPieGraph = (PieGraph) mFragmentView.findViewById(R.id.pie_graph);
         mBurnCaloric = (TextView)mFragmentView.findViewById(R.id.burn_caloric);
-
-//        ArrayList<PiePartEntity> pieParts = new ArrayList<PiePartEntity>();
-//        pieParts.add(new PiePartEntity(70.0f, R.color.orange));
-//        pieParts.add(new PiePartEntity(30.0f, R.color.red));
-//
-//        try {
-//            mPieChart.setAdapter(pieParts);
-//            mPieChart.setClickable(false);
-//            mPieChart.setOnSelectedListener(new OnSelectedLisenter() {
-//                @Override
-//                public void onSelected(int iSelectedIndex) {
-//
-//                }
-//            });
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-       
-
+        
+        Bundle bundel = this.getArguments();
+        
+        mAccountId = bundel.getInt(MainActivity.MAIN_ACCOUNT_ID);
+        mDate = bundel.getInt(MainActivity.MAIN_DATE);
 
 
         return mFragmentView;
@@ -101,10 +88,12 @@ public class CaloricBurnFragment extends BaseFragment implements OnItemClickList
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume");
-        int accountId = ( (MainActivity)getActivity() ).getAccountId();
-        mDate = ( (MainActivity)getActivity() ).getDate();
-
-        drawPieChar(accountId, mDate);
+      
+        
+        if ( ( mAccountId !=0 ) || ( mDate != 0 ) ) {
+            drawPieChar(mAccountId, mDate);
+        }
+        
     }
 
     private static final String[] PROJECTION_ENERGY_COST = new String[] {

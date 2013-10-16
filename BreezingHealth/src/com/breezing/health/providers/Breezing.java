@@ -170,11 +170,18 @@ public class Breezing {
         public static final Uri CONTENT_YEAR_URI = Uri.withAppendedPath(AUTHORITY_URI,
                 "ingestion_yearly");
 
+        public static final Uri CONTENT_MONTHLY_COMPARE_URI = Uri.withAppendedPath(AUTHORITY_URI,
+                "ingestion_compare_monthly");
+
+        public static final Uri CONTENT_YEAR_COMPARE_URI = Uri.withAppendedPath(AUTHORITY_URI,
+                "ingestion_compare_yearly");
+
         public static final String ACCOUNT_ID   = "account_id";
         public static final String BREAKFAST   = "breakfast";
         public static final String LUNCH   = "lunch";
         public static final String DINNER   = "dinner";
         public static final String ETC  = "etc";
+        public static final String FOOD_QTY = "food_qty";
         public static final String TOTAL_INGESTION   = "total_ingestion";
         public static final String AVG_TOTAL_INGESTION = "avg_total_ingestion";
         public static final String ALL_TOTAL_INGESTION = "all_total_ingestion";

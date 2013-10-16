@@ -24,6 +24,7 @@ import com.breezing.health.entity.ActionItem;
 import com.breezing.health.entity.enums.ChartModel;
 import com.breezing.health.providers.Breezing.EnergyCost;
 import com.breezing.health.providers.Breezing.Ingestion;
+import com.breezing.health.providers.Breezing.WeightChange;
 import com.breezing.health.ui.activity.CaloricHistoryActivity.CaloricHistoryType;
 import com.breezing.health.ui.fragment.BaseDialogFragment;
 import com.breezing.health.ui.fragment.CaloricWeeklyHistoryFragment;
@@ -404,6 +405,7 @@ public class BalanceHistoryActivity extends ActionBarActivity implements OnClick
         if (data != null) {
             mIntakeHistoryChart.clearValues();
             mIntakeHistoryChart.addData(data);
+            mIntakeHistoryChart.invalidate();
         }
     }
     
@@ -431,6 +433,7 @@ public class BalanceHistoryActivity extends ActionBarActivity implements OnClick
         if (data != null) {
             mBurnHistoryChart.clearValues();
             mBurnHistoryChart.addData(data);
+            mBurnHistoryChart.invalidate();
         }
     }
 
@@ -1091,6 +1094,7 @@ public class BalanceHistoryActivity extends ActionBarActivity implements OnClick
         if (data != null) {
             mEnergyCostChart.clearValues();
             mEnergyCostChart.addData(data);
+            mEnergyCostChart.invalidate();
         }
     }
     
@@ -1425,6 +1429,7 @@ public class BalanceHistoryActivity extends ActionBarActivity implements OnClick
         if (data != null) {
             mWeightHistoryChart.clearValues();
             mWeightHistoryChart.addData(data);
+            mWeightHistoryChart.invalidate();
         }
     }
     
@@ -1470,7 +1475,7 @@ public class BalanceHistoryActivity extends ActionBarActivity implements OnClick
             index++;
         }  while ( fistCalendar.compareTo(lastCalendar) <= 0 );
         
-       
+        chartData =  fillInWeightChangeInWeek( yearWeek, chartData, hashMap);
         return chartData;
     }
     
@@ -1502,6 +1507,7 @@ public class BalanceHistoryActivity extends ActionBarActivity implements OnClick
              fistCalendar.add(Calendar.WEEK_OF_YEAR, 1);
         }
         
+        chartData = fillInWeightChangeInMonth(yearMonth, chartData, hashMap);
               
         return chartData;
     }
@@ -1534,7 +1540,205 @@ public class BalanceHistoryActivity extends ActionBarActivity implements OnClick
              fistCalendar.add(Calendar.WEEK_OF_YEAR, 1);
         }
         
-     
+        chartData = fillInWeightChangeInYear(chartData, hashMap);
+        return chartData;
+    }
+
+    private static final String[] PROJECTION_WEIGHT_CHANGE_DAYLY = new String[] {
+            WeightChange.EVERY_WEIGHT ,   // 0
+            WeightChange.DATE       // 1
+    };
+
+
+    private static final int WEIGHT_COLUMN_DAYLY_INDEX = 0;
+    private static final int WEIGHT_DATE_COLUMN_DAYLY_INDEX = 1;
+
+    /***
+     * 周视图,我的能量代谢到ChartData队列中
+     * @param yearWeek
+     * @param chartData
+     * @param hashMap
+     * @return
+     */
+    private ChartData  fillInWeightChangeInWeek(int yearWeek ,
+                                                   ChartData chartData,
+                                                   HashMap<Integer, Integer> hashMap ) {
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.setLength(0);
+        stringBuilder.append(WeightChange.ACCOUNT_ID + " = ? AND ");
+        stringBuilder.append(WeightChange.YEAR_WEEK + " = ? ");
+
+        String sortOrder = WeightChange.DATE + " ASC ";
+
+        Cursor cursor = null;
+        try {
+            cursor = mContentResolver.query(WeightChange.CONTENT_URI,
+                    PROJECTION_WEIGHT_CHANGE_DAYLY,
+                    stringBuilder.toString(),
+                    new String[] { String.valueOf(mAccountId),  String.valueOf(yearWeek) },
+                    sortOrder );
+
+            if (cursor == null) {
+                Log.d(TAG, " fillInTotalEnergyInWeek cursor = " + cursor);
+            }
+
+            cursor.moveToPosition(-1);
+
+            while (cursor.moveToNext() ) {
+                float weight = cursor.getFloat(WEIGHT_COLUMN_DAYLY_INDEX);
+                int  day = cursor.getInt(WEIGHT_DATE_COLUMN_DAYLY_INDEX);
+                if ( hashMap.containsKey(day) ) {
+                    int index = hashMap.get(day);
+                    chartData.addPoint(index,
+                            (int)weight,
+                            getString(mBalanceChartModel.nameRes),
+                            String.valueOf(weight) );
+                }
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return chartData;
+    }
+
+
+
+    /**
+     * 我的总能量消耗查看每一周，某一个帐户的周信息列表
+     */
+    private static final String[] PROJECTION_WEIGHT_CHANGE_WEEKLY = new String[] {
+            WeightChange.EVERY_AVG_WEIGHT,    // 2
+            WeightChange.YEAR_WEEK            //5
+    };
+
+
+    private static final int WEIGHT_COLUMN_WEEKLY_INDEX = 0;
+
+
+    /***
+     * 填写我的能量消耗月视图总能量到ChartData队列中
+     * @param yearWeek
+     * @param chartData
+     * @param hashMap
+     * @return
+     */
+    private ChartData  fillInWeightChangeInMonth(int  yearMonth ,
+                                                    ChartData chartData,
+                                                    HashMap<Integer, Integer> hashMap ) {
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.setLength(0);
+        stringBuilder.append(WeightChange.ACCOUNT_ID + " = ? AND ");
+        stringBuilder.append(WeightChange.YEAR_MONTH + " = ? ");
+
+        String sortOrder = WeightChange.YEAR_WEEK + " ASC ";
+
+        Cursor cursor = null;
+        try {
+            cursor = mContentResolver.query(WeightChange.CONTENT_WEEKLY_URI,
+                    PROJECTION_WEIGHT_CHANGE_WEEKLY,
+                    stringBuilder.toString(),
+                    new String[] { String.valueOf(mAccountId),  String.valueOf(yearMonth) },
+                    sortOrder );
+
+            if (cursor == null) {
+                Log.d(TAG, " fillInTotalEnergyInMonth cursor = " + cursor);
+            }
+
+            cursor.moveToPosition(-1);
+
+            while (cursor.moveToNext() ) {
+                float weight = cursor.getFloat(WEIGHT_COLUMN_WEEKLY_INDEX);
+                int  yearWeek = cursor.getInt(YEAR_WEEK_COLUMN_WEEKLY_INDEX);
+                Log.d(TAG, " fillInWeightChangeInMonth weight = " + weight + " yearWeek = " + yearWeek);
+                if ( hashMap.containsKey(yearWeek) ) {
+                    int index = hashMap.get(yearWeek);
+                    Log.d(TAG, " fillInWeightChangeInMonth index = " + index);
+                    chartData.addPoint(index,
+                            (int)weight,
+                            getString(mBalanceChartModel.nameRes),
+                            String.valueOf(weight) );
+                }
+
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return chartData;
+    }
+
+    /**
+     * 我的总能量消耗查看每一月，某一个帐户的周信息列表
+     */
+    private static final String[] PROJECTION_WEIGHT_CHANGE_MONTHLY = new String[] {
+            WeightChange.EVERY_AVG_WEIGHT,    // 1
+            WeightChange.YEAR_MONTH            //2
+    };
+
+
+    private static final int WEIGHT_COLUMN_MONTHLY_INDEX = 0;
+
+
+    /***
+     * 填写年视图总能量到ChartData队列中
+     * @param yearWeek
+     * @param chartData
+     * @param hashMap
+     * @return
+     */
+    private ChartData  fillInWeightChangeInYear(ChartData chartData,
+                                                   HashMap<Integer, Integer> hashMap ) {
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.setLength(0);
+        stringBuilder.append(WeightChange.ACCOUNT_ID + " = ? AND ");
+        stringBuilder.append(WeightChange.YEAR + " = ? ");
+
+        String sortOrder = WeightChange.YEAR_MONTH + " ASC ";
+
+        Cursor cursor = null;
+        try {
+            cursor = mContentResolver.query(WeightChange.CONTENT_MONTHLY_URI,
+                    PROJECTION_WEIGHT_CHANGE_MONTHLY,
+                    stringBuilder.toString(),
+                    new String[] { String.valueOf(mAccountId),  String.valueOf(mYear) },
+                    sortOrder );
+
+            if (cursor == null) {
+                Log.d(TAG, " testCostWeekly cursor = " + cursor);
+            }
+
+            cursor.moveToPosition(-1);
+
+            while (cursor.moveToNext() ) {
+                float weight = cursor.getFloat(WEIGHT_COLUMN_MONTHLY_INDEX);
+                int  yearMonth = cursor.getInt(YEAR_MONTH_COLUMN_INDEX);
+
+                Log.d(TAG, " fillInWeightChangeInYear avgTotalEnergy = " + weight + " yearMonth = " + yearMonth);
+
+                if ( hashMap.containsKey(yearMonth) ) {
+                    int index = hashMap.get(yearMonth);
+                    Log.d(TAG, " fillInWeightChangeInYear index = " + index);
+                    chartData.addPoint(index,
+                            (int)weight,
+                            getString(mBalanceChartModel.nameRes),
+                            String.valueOf(weight) );
+                }
+
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
         return chartData;
     }
 

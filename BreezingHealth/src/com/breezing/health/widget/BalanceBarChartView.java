@@ -1,5 +1,9 @@
 package com.breezing.health.widget;
 
+import android.util.Log;
+import com.breezing.health.util.CalendarUtil;
+import com.breezing.health.util.DateFormatUtil;
+import com.breezing.health.widget.linechart.data.ChartData;
 import org.afree.chart.AFreeChart;
 import org.afree.chart.ChartFactory;
 import org.afree.chart.plot.CategoryPlot;
@@ -15,6 +19,10 @@ import com.breezing.health.R;
 
 import android.content.Context;
 import android.graphics.Color;
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
 
 /**
  * BalanceBarChartView
@@ -43,10 +51,10 @@ public class BalanceBarChartView extends BarChartBaseView {
 
         // row keys...
         String series1 = "First";
-
+        String series2 = "Second";
         // column keys...
-        String category1 = "Category 1";
-        String category2 = "Category 2";
+        String category1 = "1Category 1";
+        String category2 = "2Category 2";
         String category3 = "Category 3";
         String category4 = "Category 4";
         String category5 = "Category 5";
@@ -114,8 +122,54 @@ public class BalanceBarChartView extends BarChartBaseView {
         
         renderer.setSeriesPaintType(0, gp0);
         renderer.setSeriesPaintType(1, gp1);
+//        renderer.setSeriesPaintType(0, new SolidColor(Color.BLUE));
+//        renderer.setSeriesPaintType(1, new SolidColor(Color.GREEN));
+//        renderer.setSeriesPaintType(2, new SolidColor(Color.RED));
 
         return chart;
 
     }
+
+   
+//    private ChartData drawIntakeChartDataWeekly( ChartData chartData ) {
+//
+//        int  yearWeek =  DateFormatUtil.getCompleteWeek(mYear, mWeek);
+//
+//
+//        Calendar fistCalendar = CalendarUtil.getFirstDayOfWeek(mYear, mWeek) ;
+//        Calendar lastCalendar = CalendarUtil.getLastDayOfWeek(mYear, mWeek);
+//
+//        HashMap<Integer, Integer> hashMap =
+//                new HashMap<Integer, Integer>();
+//
+//        Log.d(TAG, " drawChartDataWeekly yearWeek = " + yearWeek
+//                + " mYear = " + mYear + " mWeek = " + mWeek);
+//
+//        int index = 0;
+//
+//        do {
+//
+//            StringBuilder stringBuilder = new StringBuilder();
+//            stringBuilder.setLength(0);
+//
+//            int month = fistCalendar.get(Calendar.MONTH) + 1;
+//            int day = fistCalendar.get(Calendar.DAY_OF_MONTH);
+//            int date = Integer.valueOf(
+//                    CalendarUtil.getDayFromCalendar( fistCalendar ) );
+//
+//            stringBuilder.append( String.valueOf(month) );
+//            stringBuilder.append(".");
+//            stringBuilder.append( String.valueOf(day) );
+//            chartData.addXValue( index, stringBuilder.toString() );
+//            hashMap.put(date, index);
+//
+//            fistCalendar.add(GregorianCalendar.DATE, 1);
+//            Log.d(TAG, " drawChartDataWeekly index = " + index);
+//            index++;
+//        }  while ( fistCalendar.compareTo(lastCalendar) <= 0 );
+//
+//        chartData = fillInTotalIngestionInWeek( yearWeek, chartData, hashMap );
+//        return chartData;
+//    }
+
 }

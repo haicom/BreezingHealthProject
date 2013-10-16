@@ -4,8 +4,10 @@ import java.util.ArrayList;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.util.Log;
@@ -16,6 +18,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -36,7 +39,7 @@ import com.breezing.health.widget.MultiDirectionSlidingDrawer;
 import com.breezing.health.widget.MultiDirectionSlidingDrawer.OnDrawerCloseListener;
 import com.haarman.listviewanimations.itemmanipulation.OnDismissCallback;
 
-public class CaloricIntakeActivity extends ActionBarActivity implements OnClickListener {
+public class CaloricIntakeActivity extends ActionBarActivity implements OnClickListener, TextWatcher {
     private static final String TAG = "CaloricIntakeActivity";
     
     public enum CaloricIntakeType {
@@ -53,6 +56,8 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
 
     private TextView mTotal;
     private Button mDetail;
+    
+    private EditText mEditText;
     
     private int mAccountId;
     private int mDate;
@@ -112,6 +117,8 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
         mFoodList = (ListView) findViewById(R.id.list);
         mDetail = (Button) findViewById(R.id.detail);
         mTotal = (TextView) findViewById(R.id.total);
+        mEditText = (EditText) findViewById(R.id.keyword);
+        mEditText.addTextChangedListener(this);
         mDrawer.animateToggle();
     }
 
@@ -126,10 +133,10 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
     }
 
     private void initListeners() {
-    mDetail.setOnClickListener(this);
-    mCatagoryGridView.setOnItemClickListener(new OnItemClickListener() {
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, 
+        mDetail.setOnClickListener(this);
+        mCatagoryGridView.setOnItemClickListener(new OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, 
             int position, long id) {
             mCatagoryAdapter.toggle(position);
             mCatagoryAdapter.notifyDataSetChanged();
@@ -140,7 +147,7 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
     mDrawer.setOnDrawerCloseListener(new OnDrawerCloseListener() {
         @Override
         public void onDrawerClosed() {
-            mFoodAdapter.refreshCatagoryItems();
+            mFoodAdapter.refreshCatagoryItems( mEditText.getText().toString().trim() );
             mFoodAdapter.notifyDataSetChanged();
         } });
     }
@@ -276,12 +283,15 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
                 break;
         }
         
+        int foodQty = obtainFoodQty(breakfast, lunch, dinner, etc);
+        
         ops.add(ContentProviderOperation.newInsert(Ingestion.CONTENT_URI)
                 .withValue(Ingestion.ACCOUNT_ID, mAccountId)
                 .withValue(Ingestion.BREAKFAST, breakfast)
                 .withValue(Ingestion.LUNCH, lunch)
                 .withValue(Ingestion.DINNER, dinner)
                 .withValue(Ingestion.ETC, etc)  
+                .withValue(Ingestion.FOOD_QTY, foodQty)  
                 .withValue(Ingestion.DATE, mDate)  
                 .build() );
     }
@@ -306,7 +316,7 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
     private void updateTotalIngestive(ArrayList<ContentProviderOperation> ops) {
         Cursor cursor = null;
         int count = 0;
-        int breakfest = 0;
+        int breakfast = 0;
         int lunch = 0;
         int dinner = 0;
         int etc = 0;        
@@ -329,7 +339,7 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
                 count =  cursor.getCount();
                 if (count > 0) {
                     cursor.moveToPosition(0);
-                    breakfest =  cursor.getInt(INGESTIVE_BREAKFAST_INDEX);
+                    breakfast =  cursor.getInt(INGESTIVE_BREAKFAST_INDEX);
                     lunch =  cursor.getInt(INGESTIVE_LUNCH_INDEX);
                     dinner =  cursor.getInt(INGESTIVE_DINNER_INDEX);
                     etc =  cursor.getInt(INGESTIVE_ETC_INDEX);
@@ -350,7 +360,7 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
         switch ( mCaloricIntakeType ) {
             case BREAKFAST:
                 builder.withValue(Ingestion.BREAKFAST, mFoodAdapter.getTotalCaloric() );
-                breakfest = mFoodAdapter.getTotalCaloric();
+                breakfast = mFoodAdapter.getTotalCaloric();
                 break;
             case LUNCH:
                 builder.withValue(Ingestion.LUNCH, mFoodAdapter.getTotalCaloric() );
@@ -366,10 +376,36 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
                 break;
         }
         
-        total = breakfest + lunch + dinner + etc;
+        total = breakfast + lunch + dinner + etc;
+        int foodQty = obtainFoodQty(breakfast, lunch, dinner, etc);
         builder.withValue(Ingestion.TOTAL_INGESTION, total );
+        builder.withValue(Ingestion.FOOD_QTY, foodQty);
         builder.withValue(Ingestion.DATE, mDate );
         ops.add(builder.build() );
+    }
+
+    private int obtainFoodQty(int breakfest, int lunch,
+                              int dinner,  int etc ) {
+        int count = 0;
+
+        if (breakfest > 0) {
+            count++;
+        }
+
+        if (lunch > 0) {
+            count++;
+        }
+
+        if (dinner > 0) {
+            count++;
+        }
+
+        if (etc > 0) {
+            count++;
+        }
+
+        return count;
+
     }
     
     private int queryIngestiveRecord(int foodId) {
@@ -448,6 +484,29 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         mTotal.setText(span);
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        Log.d(TAG, " afterTextChanged s.toString() = " + s.toString());
+        
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count,
+            int after) {
+        Log.d(TAG, " beforeTextChanged s.toString() = " + s.toString());
+        
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        Log.d(TAG, " onTextChanged s.toString() = " + s.toString() );
+      
+        
+        
+        mFoodAdapter.refreshCatagoryItems( mEditText.getText().toString().trim() );
+        mFoodAdapter.notifyDataSetChanged();
     }
     
     

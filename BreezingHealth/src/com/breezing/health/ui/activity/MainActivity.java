@@ -99,11 +99,15 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         
         CaloricIntakeFragment caloricIntakeFragment  = (CaloricIntakeFragment) mCaloricPagerAdapter.
                 getItem(CaloricHistoryType.INTAKE.ordinal());
+        
+        CaloricBurnFragment caloricBurnFragment  = (CaloricBurnFragment) mCaloricPagerAdapter.
+                getItem(CaloricHistoryType.BURN.ordinal());
+        
         Bundle bundle = new Bundle();
         bundle.putInt(MAIN_ACCOUNT_ID, mAccountId);
         bundle.putInt(MAIN_DATE, mDate);
         caloricIntakeFragment.setArguments(bundle);
-		
+        caloricBurnFragment.setArguments(bundle);
         mLinePageIndicator.setViewPager(mViewPager);
     }
 

@@ -46,7 +46,7 @@ public class FoodAdapter extends BaseAdapter implements OnClickListener {
         mAccountId = accountId;
         mDate = date;
         mCaloricIntakeType = caloricIntakeType;
-        refreshCatagoryItems();        
+        refreshCatagoryItems(null);        
     }
 
   
@@ -74,26 +74,22 @@ public class FoodAdapter extends BaseAdapter implements OnClickListener {
     }
     
     public void addItems(ArrayList<FoodEntity> foods) {
-    	if (foods != null) {
-    		for (FoodEntity food : foods) {
-    			foods.add(food);
-    		}
-    	}
+       if (foods != null) {
+            for (FoodEntity food : foods) {
+                foods.add(food);
+            }
+        }
     }
     
     public void clearItems() {
         if (mFoods != null) {
             mFoods.clear();
-    	}
-        
-        if ( mSelectedFoods != null ) {
-            mSelectedFoods.clear();
         }
     }
     
-    public void refreshCatagoryItems() {
+    public void refreshCatagoryItems(String name) {
         clearItems();
-        getFoodSortFromFoodTypes( mCatagoryAdapter.getCheckedCatagories() );
+        getFoodSortFromFoodTypes( mCatagoryAdapter.getCheckedCatagories(), name);
     }
     
     public void increaseFoodNumber(FoodEntity food) {
@@ -257,9 +253,9 @@ public class FoodAdapter extends BaseAdapter implements OnClickListener {
      *
      *
      */
-    public void getFoodSortFromFoodTypes(CatagoryEntity catagory) {
+    public void getFoodSortFromFoodTypes(CatagoryEntity catagory, String name) {
         
-        Log.d(TAG, " getFoodSortFromFoodTypes foodTypes.size() " + catagory );
+        Log.d(TAG, " getFoodSortFromFoodTypes foodTypes.size() " + catagory + " name = " + name);
         
         if ( catagory == null ) {
             return;
@@ -270,28 +266,34 @@ public class FoodAdapter extends BaseAdapter implements OnClickListener {
         
        
         Cursor cursor = null;
-
-//        for (CatagoryEntity catagory: foodTypes) {
-//            if (first) {
-//                first = false;
-//                foodBuilder.append( catagory.getId() );
-//
-//            } else {
-//                foodBuilder.append(',');
-//                foodBuilder.append( catagory.getId() );
-//            }
-//        }
         StringBuilder foodBuilder = new StringBuilder();
         foodBuilder.setLength(0);
         foodBuilder.append( catagory.getId() );
-       
+        
+        StringBuilder nameBuilder = null;
+        if (name != null && name.length() > 0) {
+            nameBuilder = new StringBuilder();
+            nameBuilder.setLength(0);
+            nameBuilder.append(HeatIngestion.FOOD_NAME );
+            nameBuilder.append(" GLOB '" + name + "*' ");            
+        }
+        
         Log.d(TAG, " getFoodSortFromFoodTypes foodBuilder ＝ " + foodBuilder.toString() );
         
         if ( foodBuilder.length() > 0 ) {
             
             String whereClause = null;
             if ( !foodBuilder.toString().equals( String.valueOf(0) ) ) {
-                whereClause = HeatIngestion.FOOD_CLASSIFY_ID + " = (" + foodBuilder.toString() + ")";
+                whereClause = HeatIngestion.FOOD_CLASSIFY_ID + " = " + foodBuilder.toString() ;
+            }
+            
+            if ( nameBuilder != null && nameBuilder.length() > 0 ) {
+                if (whereClause == null) {
+                    whereClause = nameBuilder.toString();
+                } else {
+                    whereClause = whereClause + " AND " + nameBuilder.toString();
+                }
+                
             }
             
             Log.d(TAG, "getFoodSortFromFoodTypes whereClause = " + whereClause);
@@ -392,8 +394,10 @@ public class FoodAdapter extends BaseAdapter implements OnClickListener {
             if ( foodEntity.getFoodId() == foodId ) {
                 Log.d(TAG, "findSelectedNumber foodEntity.getFoodId() = " + foodEntity.getFoodId() );
                 foodEntity.setSelectedNumber(selectedNumber);
-                mFoods.set(index, foodEntity);               
-                mSelectedFoods.add(foodEntity);                             
+                mFoods.set(index, foodEntity);
+                if ( getSelectedFoodIndex(foodId) == -1) {
+                    mSelectedFoods.add(foodEntity); 
+                }                                            
                 break;
             }
         }

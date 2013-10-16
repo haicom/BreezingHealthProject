@@ -21,7 +21,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
     private final static String TAG = "BreezingDatabaseHelper";
     private static BreezingDatabaseHelper sInstance = null;
     static final String DATABASE_NAME = "breezing.db";
-    static final int DATABASE_VERSION = 7;
+    static final int DATABASE_VERSION = 8;
     private final Context mContext;
 
     public interface Views {
@@ -31,6 +31,8 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
         public static final String INGESTION_WEEKLY = "view_ingestion_weekly";
         public static final String INGESTION_MONTHLY = "view_ingestion_monthly";
         public static final String INGESTION_YEARLY = "view_ingestion_yearly";
+        public static final String INGESTION_COMPARE_MONTHLY = "ingestion_compare_monthly";
+        public static final String INGESTION_COMPARE_YEARLY = "ingestion_compare_yearly";
         public static final String WEIGHT_WEEKLY = "view_weight_weekly";
         public static final String WEIGHT_MONTHLY = "view_weight_monthly";
         public static final String WEIGHT_YEARLY = "view_weight_yearly";
@@ -69,6 +71,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
         createHeatIngestionTables(db);   
         createFoodClassifyTables(db);
         createIngestiveRecordTables(db);
+        createIngestionCompareViews(db);
         createEnergyCostViews(db);
         createIngestionViews(db);
         createWeightChangeViews(db);
@@ -194,6 +197,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
                   + Ingestion.LUNCH + " INTEGER NOT NULL , "
                   + Ingestion.DINNER + " INTEGER NOT NULL , "
                   + Ingestion.ETC + " INTEGER NOT NULL , "
+                  + Ingestion.FOOD_QTY + " INTEGER DEFAULT 0 , "
                   + Ingestion.TOTAL_INGESTION + " INTEGER NOT NULL , "
                   + Ingestion.DATE + " INTEGER NOT NULL , "
                   + Ingestion.YEAR + " INTEGER NOT NULL , "
@@ -242,6 +246,40 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
                 + " GROUP BY " + Ingestion.ACCOUNT_ID + " , " +  Ingestion.YEAR;
 
         db.execSQL("CREATE VIEW " + Views.INGESTION_YEARLY + " AS " + yearlyIngestionSelect);
+    }
+
+    /***
+     * 产生我的摄入比较数据视图，周，月，年
+     *
+     */
+    private void createIngestionCompareViews(SQLiteDatabase db) {
+        db.execSQL("DROP VIEW IF EXISTS " + Views.INGESTION_COMPARE_MONTHLY + ";");
+        db.execSQL("DROP VIEW IF EXISTS " + Views.INGESTION_COMPARE_YEARLY + ";");
+
+        String monthlyIngestionSelect =  "SELECT "
+                + Ingestion.ACCOUNT_ID + " , "
+                + " round ( avg( " +  Ingestion.TOTAL_INGESTION + " ) ) AS " + Ingestion.AVG_TOTAL_INGESTION + " , "
+                + " total( " + Ingestion.TOTAL_INGESTION + " )  AS "+ Ingestion.ALL_TOTAL_INGESTION + " , "
+                +  Ingestion.YEAR_MONTH + " , "
+                +  Ingestion.YEAR_WEEK
+                + " FROM " + BreezingProvider.TABLE_INGESTION
+                + " WHERE " + Ingestion.FOOD_QTY + " >= 2"
+                + " GROUP BY " + Ingestion.ACCOUNT_ID + " , " + Ingestion.YEAR_WEEK;
+
+        db.execSQL("CREATE VIEW " + Views.INGESTION_COMPARE_MONTHLY  + " AS " + monthlyIngestionSelect);
+
+        String yearlyIngestionSelect =  "SELECT "
+                + Ingestion.ACCOUNT_ID + " , "
+                + " round ( avg( " +  Ingestion.TOTAL_INGESTION + " ) ) AS  " + Ingestion.AVG_TOTAL_INGESTION + " , "
+                + " total( " + Ingestion.TOTAL_INGESTION + " )  AS "+ Ingestion.ALL_TOTAL_INGESTION + " , "
+                +  Ingestion.YEAR + " , "
+                +  Ingestion.YEAR_MONTH
+                + " FROM " + BreezingProvider.TABLE_INGESTION
+                + " WHERE " + Ingestion.FOOD_QTY + " >= 2"
+                + " GROUP BY " + Ingestion.ACCOUNT_ID + " , " + Ingestion.YEAR_MONTH;
+
+        db.execSQL("CREATE VIEW " + Views.INGESTION_COMPARE_YEARLY + " AS " + yearlyIngestionSelect);
+
     }
 
     /***
@@ -514,27 +552,35 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
             upgradeToVersion5(db);
             upgradeToVersion6(db);
             upgradeToVersion7(db);
+            upgradeToVersion8(db);
         } else if (oldVersion == 2) {
             upgradeToVersion3(db);
             upgradeToVersion4(db);
             upgradeToVersion5(db);
             upgradeToVersion6(db);
             upgradeToVersion7(db);
+            upgradeToVersion8(db);
         } else if (oldVersion ==3 ){
             upgradeToVersion4(db);
             upgradeToVersion5(db);
             upgradeToVersion6(db);
             upgradeToVersion7(db);
+            upgradeToVersion8(db);
         } else if (oldVersion == 4 ) {
             upgradeToVersion5(db);
             upgradeToVersion6(db);
             upgradeToVersion7(db);
+            upgradeToVersion8(db);
         } else if (oldVersion == 5) {
             upgradeToVersion6(db);
             upgradeToVersion7(db);
-        } else  {
+            upgradeToVersion8(db);
+        } else if (oldVersion == 6 ) {
             upgradeToVersion7(db);
-        } 
+            upgradeToVersion8(db);
+        } else {
+            upgradeToVersion8(db);
+        }
     }
 
     private void upgradeToVersion202(SQLiteDatabase db) {
@@ -585,6 +631,15 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
         
         db.execSQL("DROP TABLE " + BreezingProvider.TABLE_INGESTIVE_RECORD); 
         createIngestiveRecordTables(db);
+    }
+
+    private void upgradeToVersion8(SQLiteDatabase db) {
+        db.execSQL(
+                "ALTER TABLE " + BreezingProvider.TABLE_INGESTION  +
+                        " ADD " +  Ingestion.FOOD_QTY + " INTEGER DEFAULT 0 " );
+
+        createIngestionCompareViews(db);
+
     }
 
 }

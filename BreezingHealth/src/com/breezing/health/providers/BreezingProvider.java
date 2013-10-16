@@ -1,6 +1,7 @@
 package com.breezing.health.providers;
 
 
+
 import com.breezing.health.providers.Breezing.Account;
 import com.breezing.health.providers.Breezing.EnergyCost;
 import com.breezing.health.providers.Breezing.FoodClassify;
@@ -187,6 +188,12 @@ public class BreezingProvider extends  SQLiteContentProvider {
                 break;
             case BREEZING_INGESTION_YEARLY:
                 qb.setTables(Views.INGESTION_YEARLY);
+                break;
+            case BREEZING_INGESTION_COMPARE_MONTHLY:
+                qb.setTables(Views.INGESTION_COMPARE_MONTHLY);
+                break;
+            case BREEZING_INGESTION_COMPARE_YEARLY:
+                qb.setTables(Views.INGESTION_COMPARE_YEARLY);
                 break;
             case BREEZING_WEIGHT:
                 qb.setTables(TABLE_WEIGHT);
@@ -888,28 +895,30 @@ public class BreezingProvider extends  SQLiteContentProvider {
     private static final int BREEZING_INGESTION = 11;
     private static final int BREEZING_INGESTION_ID = 12;
     private static final int BREEZING_INGESTION_WEEKLY = 13;
-    private static final int BREEZING_INGESTION_MONTHLY = 14;
-    private static final int BREEZING_INGESTION_YEARLY = 15;
-    private static final int BREEZING_WEIGHT = 16;
-    private static final int BREEZING_WEIGHT_ID = 17;
-    private static final int BREEZING_WEIGHT_WEEKLY = 18;
-    private static final int BREEZING_WEIGHT_MONTHLY = 19;
-    private static final int BREEZING_WEIGHT_YEARLY = 20;
-    private static final int BREEZING_HEAT_CONSUMPTION = 21;
-    private static final int BREEZING_HEAT_CONSUMPTION_ID = 22;
-    private static final int BREEZING_SPORT_TYPE = 23;
-    private static final int BREEZING_CONSUMPTION_RECORD = 24;
-    private static final int BREEZING_CONSUMPTION_RECORD_ID = 25;
-    private static final int BREEZING_HEAT_INGESTION = 26;
-    private static final int BREEZING_HEAT_INGESTION_ID = 27;
-    private static final int BREEZING_FOOD_CLASSIFY = 28;
-    private static final int BREEZING_FOOD_CLASSIFY_ID = 29;
-    private static final int BREEZING_FOOD_INGESTION = 30;   
-    private static final int BREEZING_FOOD_TYPE = 31;
-    private static final int BREEZING_INGESTIVE_RECORD = 32;
-    private static final int BREEZING_INGESTIVE_RECORD_ID = 33;
-    private static final int BREEZING_UNIT_SETTINGS = 34;
-    private static final int BREEZING_UNIT_SETTINGS_ID = 35;
+    private static final int BREEZING_INGESTION_COMPARE_MONTHLY = 14;
+    private static final int BREEZING_INGESTION_COMPARE_YEARLY = 15;
+    private static final int BREEZING_INGESTION_MONTHLY = 16;
+    private static final int BREEZING_INGESTION_YEARLY = 17;
+    private static final int BREEZING_WEIGHT = 18;
+    private static final int BREEZING_WEIGHT_ID = 19;
+    private static final int BREEZING_WEIGHT_WEEKLY = 20;
+    private static final int BREEZING_WEIGHT_MONTHLY = 21;
+    private static final int BREEZING_WEIGHT_YEARLY = 22;
+    private static final int BREEZING_HEAT_CONSUMPTION = 23;
+    private static final int BREEZING_HEAT_CONSUMPTION_ID = 24;
+    private static final int BREEZING_SPORT_TYPE = 25;
+    private static final int BREEZING_CONSUMPTION_RECORD = 26;
+    private static final int BREEZING_CONSUMPTION_RECORD_ID = 27;
+    private static final int BREEZING_HEAT_INGESTION = 28;
+    private static final int BREEZING_HEAT_INGESTION_ID = 29;
+    private static final int BREEZING_FOOD_CLASSIFY = 30;
+    private static final int BREEZING_FOOD_CLASSIFY_ID = 31;
+    private static final int BREEZING_FOOD_INGESTION = 32;
+    private static final int BREEZING_FOOD_TYPE = 33;
+    private static final int BREEZING_INGESTIVE_RECORD = 34;
+    private static final int BREEZING_INGESTIVE_RECORD_ID = 35;
+    private static final int BREEZING_UNIT_SETTINGS = 36;
+    private static final int BREEZING_UNIT_SETTINGS_ID = 37;
 
     private static final UriMatcher sURLMatcher =
             new UriMatcher(UriMatcher.NO_MATCH);
@@ -930,6 +939,8 @@ public class BreezingProvider extends  SQLiteContentProvider {
         sURLMatcher.addURI(Breezing.AUTHORITY, "ingestion_weekly", BREEZING_INGESTION_WEEKLY);
         sURLMatcher.addURI(Breezing.AUTHORITY, "ingestion_monthly", BREEZING_INGESTION_MONTHLY);
         sURLMatcher.addURI(Breezing.AUTHORITY, "ingestion_yearly", BREEZING_INGESTION_YEARLY);
+        sURLMatcher.addURI(Breezing.AUTHORITY, "ingestion_compare_monthly", BREEZING_INGESTION_COMPARE_MONTHLY);
+        sURLMatcher.addURI(Breezing.AUTHORITY, "ingestion_compare_yearly", BREEZING_INGESTION_COMPARE_YEARLY);
         sURLMatcher.addURI(Breezing.AUTHORITY, "weight", BREEZING_WEIGHT);
         sURLMatcher.addURI(Breezing.AUTHORITY, "weight/#", BREEZING_WEIGHT_ID);
         sURLMatcher.addURI(Breezing.AUTHORITY, "weight_weekly", BREEZING_WEIGHT_WEEKLY);

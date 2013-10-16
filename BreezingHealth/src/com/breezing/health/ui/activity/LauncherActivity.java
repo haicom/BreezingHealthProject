@@ -117,7 +117,17 @@ public class LauncherActivity extends BaseActivity {
             return IntentAction.ACTIVITY_HELPER;
         }
 
-        String action = IntentAction.ACTIVITY_FILLIN_INFORMATION;
+        String action = null;
+        
+        int userLogin = LocalSharedPrefsUtil.getSharedPrefsValueInt(this,
+                LocalSharedPrefsUtil.PREFS_USER_LOGIN);
+        
+        if (userLogin == LocalSharedPrefsUtil.USER_NEEDFUL_LOGIN) {
+            action = IntentAction.ACTIVITY_LOGIN;
+        } else {
+            action = IntentAction.ACTIVITY_FILLIN_INFORMATION;
+        }
+        
 
         int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this,
                 LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
