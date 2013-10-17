@@ -18,6 +18,7 @@ import com.breezing.health.R;
 import com.breezing.health.providers.Breezing.EnergyCost;
 import com.breezing.health.tools.IntentAction;
 import com.breezing.health.tools.Tools;
+import com.breezing.health.util.ExtraName;
 import com.breezing.health.util.LocalSharedPrefsUtil;
 
 public class BreezingTestResultFragment extends BaseFragment implements OnClickListener {
@@ -51,6 +52,10 @@ public class BreezingTestResultFragment extends BaseFragment implements OnClickL
         mTotalVane = mFragmentView.findViewById(R.id.total_vane);
         mTextView = (TextView) mFragmentView.findViewById(R.id.result);
         mNext = (Button) mFragmentView.findViewById(R.id.next);
+        final boolean isUpdate = getActivity().getIntent().getBooleanExtra(ExtraName.EXTRA_DATE, false);
+        if (isUpdate) {
+            mNext.setVisibility(View.INVISIBLE);
+        }
         mNext.setOnClickListener(this);
         return mFragmentView;
     }

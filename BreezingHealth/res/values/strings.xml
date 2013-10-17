@@ -252,4 +252,6 @@
     <string name="modify_unit_failure">修改单位失败</string>
     <string name="please_select_unit">请选择单位</string>
     
+    <string name = "last_breezing_test_result" >于&#160;%1$s年%2$s月%3$s日&#160;的能量代谢值是</string>
+    
 </resources>
