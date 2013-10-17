@@ -3,19 +3,23 @@ package com.breezing.health.ui.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.breezing.health.R;
 import com.breezing.health.adapter.AccountAdapter;
 import com.breezing.health.entity.ActionItem;
 import com.breezing.health.tools.IntentAction;
+import com.breezing.health.util.LocalSharedPrefsUtil;
 
-public class AccountManagementActivity extends ActionBarActivity {
+public class AccountManagementActivity extends ActionBarActivity implements OnClickListener {
 
 	private ListView mListView;
 	private AccountAdapter mAccountAdapter;
+	private Button mAddAccount;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -34,9 +38,10 @@ public class AccountManagementActivity extends ActionBarActivity {
     private void initViews() {
         setActionBarTitle(R.string.account_management);
         addLeftActionItem(new ActionItem(ActionItem.ACTION_BACK));
-        addRightActionItem(new ActionItem(ActionItem.ACTION_ADD_ACCOUNT));
+//        addRightActionItem(new ActionItem(ActionItem.ACTION_ADD_ACCOUNT));
         
         mListView = (ListView) findViewById(R.id.list);
+        mAddAccount = (Button) findViewById(R.id.add_account);
     }
 
     private void valueToView() {
@@ -45,13 +50,16 @@ public class AccountManagementActivity extends ActionBarActivity {
     }
 
     private void initListeners() {
+        mAddAccount.setOnClickListener(this);
     	mListView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> adapterView, View view, int position,
 					long id) {
-				mAccountAdapter.setSelected(position);
-				mAccountAdapter.notifyDataSetChanged();
+				LocalSharedPrefsUtil.saveSharedPrefsAccount(AccountManagementActivity.this,
+				        mAccountAdapter.getItem(position).getAccountId(),
+				        mAccountAdapter.getItem(position).getAccountPass());
+				finish();
 				return ;
 			}
 		});
@@ -70,5 +78,15 @@ public class AccountManagementActivity extends ActionBarActivity {
     	}
     	
     	super.onClickActionBarItems(item, v);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v == mAddAccount) {
+            Intent intent = new Intent(IntentAction.ACTIVITY_FILLIN_INFORMATION);
+            startActivity(intent);
+            finish();
+            return ;
+        }
     }
 }

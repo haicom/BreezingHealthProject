@@ -1,7 +1,15 @@
 package com.breezing.health.ui.fragment;
 
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
+
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +22,12 @@ import android.widget.TextView;
 import com.breezing.health.R;
 import com.breezing.health.adapter.LeftMenuAdapter;
 import com.breezing.health.entity.AccountEntity;
-import com.breezing.health.tools.IntentAction;
+import com.breezing.health.providers.Breezing.EnergyCost;
 import com.breezing.health.ui.activity.BaseActivity;
+import com.breezing.health.ui.activity.MainActivity;
 import com.breezing.health.util.BreezingQueryViews;
 import com.breezing.health.util.ChangeUnitUtil;
+import com.breezing.health.util.InternalStorageContentProvider;
 import com.breezing.health.util.LocalSharedPrefsUtil;
 
 public class LeftMenuFragment extends BaseFragment implements android.view.View.OnClickListener {
@@ -29,7 +39,7 @@ public class LeftMenuFragment extends BaseFragment implements android.view.View.
     private LeftMenuAdapter mAdapter;
     private View mHeaderView;
     private ImageView mAvatar;
-
+    
     public static LeftMenuFragment newInstance() {
         LeftMenuFragment fragment = new LeftMenuFragment();
         return fragment;
@@ -90,11 +100,72 @@ public class LeftMenuFragment extends BaseFragment implements android.view.View.
         
         if (v == mAvatar) {
             ((BaseActivity) getActivity()).toggle();
-            Intent intent = new Intent(IntentAction.ACTIVITY_ACCOUNT_MANAGEMENT);
-            startActivity(intent);
+            ((MainActivity) getActivity()).showImagePickerDialog();
             return ;
         }
         
+    }
+    
+    @Override
+    public void onResume() {
+        super.onResume();
+        queryEnergyCost();
+        setAvatar();
+    }
+    
+    private void setAvatar() {
+        final int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(getActivity(),
+                LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
+        try {
+            File f = new File(getActivity().getFilesDir(), String.valueOf(accountId) + InternalStorageContentProvider.PHOTO_FILE_NAME);
+            if (f.exists()) {
+                ParcelFileDescriptor pfd =  (ParcelFileDescriptor.open(f, ParcelFileDescriptor.MODE_READ_WRITE));
+                if (pfd != null) {
+                    FileDescriptor fd = pfd.getFileDescriptor();
+                    Bitmap bm = BitmapFactory.decodeFileDescriptor(fd);
+                    mAvatar.setImageBitmap(bm);
+                }
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private final static int ENERGY_COST_TOTAL_ENERGY = 0;
+    /*** 
+     * 查询能量消耗值
+     */
+    private void queryEnergyCost() {
+
+        int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(getActivity(),
+                LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
+        String sortOrder = EnergyCost.ENERGY_COST_DATE + " DESC";
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.setLength(0);
+        stringBuilder.append(EnergyCost.ACCOUNT_ID + " = ? ");
+        Cursor cursor = null;
+        try {
+            cursor = getActivity().getContentResolver().query(EnergyCost.CONTENT_URI,
+                    new String[] {EnergyCost.TOTAL_ENERGY},
+                    stringBuilder.toString(),
+                    new String[] { String.valueOf(accountId) },
+                    sortOrder);
+
+            if (cursor != null) {
+                if ( cursor.getCount() > 0 ) {
+                    cursor.moveToPosition(0);
+                    final String unit = getString(R.string.kilojoule);
+                    mSex.setText(String.valueOf(cursor.getInt(ENERGY_COST_TOTAL_ENERGY)) + unit);
+                }
+
+
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
     }
     
 }

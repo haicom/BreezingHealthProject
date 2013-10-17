@@ -16,13 +16,14 @@
         android:gravity="center_vertical"
         android:textIsSelectable="false" />
 
-    <TextView
-        android:id="@+id/content"
-        style="@style/content_page_large_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <ImageView
+        android:id="@+id/selected"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:textIsSelectable="false" />
+        android:scaleType="centerInside"
+        android:contentDescription="@string/content_description"
+        android:src="@drawable/ic_selected" />
 
 </RelativeLayout>

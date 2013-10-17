@@ -1,20 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
 
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_margin="@dimen/activity_vertical_margin"
+        android:background="@drawable/background_view_rounded_single"
         android:cacheColorHint="@color/transparent"
         android:divider="@drawable/divider_record_form"
         android:dividerHeight="1dp"
         android:footerDividersEnabled="false"
         android:headerDividersEnabled="false"
         android:listSelector="@color/transparent"
-        android:scrollbars="none"
-        android:background="@drawable/background_view_rounded_single"
-        android:layout_margin="@dimen/activity_vertical_margin" />
+        android:scrollbars="none" />
 
-</RelativeLayout>
+    <Button
+        android:id="@+id/add_account"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:background="@drawable/btn_red_round_selector"
+        android:singleLine="true"
+        android:text="@string/add_account"
+        android:textColor="@color/white"
+        android:textSize="@dimen/normal_textsize" />
+
+</LinearLayout>

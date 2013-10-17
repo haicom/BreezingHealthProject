@@ -1,12 +1,18 @@
 package com.breezing.health.ui.activity;
 
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.text.DecimalFormat;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
@@ -22,16 +28,20 @@ import com.breezing.health.providers.Breezing.Information;
 import com.breezing.health.providers.Breezing.UnitSettings;
 import com.breezing.health.providers.Breezing.WeightChange;
 import com.breezing.health.tools.IntentAction;
+import com.breezing.health.tools.Tools;
 import com.breezing.health.ui.activity.CaloricHistoryActivity.CaloricHistoryType;
 import com.breezing.health.ui.fragment.BaseDialogFragment;
 import com.breezing.health.ui.fragment.CalendarDialogFragment;
 import com.breezing.health.ui.fragment.CaloricBurnFragment;
 import com.breezing.health.ui.fragment.CaloricIntakeFragment;
 import com.breezing.health.ui.fragment.DialogFragmentInterface;
+import com.breezing.health.ui.fragment.ImagePickerDialogFragment;
 import com.breezing.health.util.BLog;
 import com.breezing.health.util.DateFormatUtil;
 import com.breezing.health.util.ExtraName;
+import com.breezing.health.util.InternalStorageContentProvider;
 import com.breezing.health.util.LocalSharedPrefsUtil;
+import com.breezing.health.widget.imagecrop.CropImage;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnClosedListener;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnOpenedListener;
 import com.viewpagerindicator.LinePageIndicator;
@@ -49,6 +59,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
     private int mDate;
     private int mAccountId;
     private CaloricHistoryType mPosition = CaloricHistoryType.BURN;
+    
+    private File mTempFile = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -321,4 +333,75 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
     
     public static final String MAIN_ACCOUNT_ID = "account_id";
     public static final String MAIN_DATE = "date";
+    
+    public void showImagePickerDialog() {
+        
+        int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this,
+                LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
+        
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            mTempFile = new File(Environment.getExternalStorageDirectory(), String.valueOf(accountId) + InternalStorageContentProvider.PHOTO_FILE_NAME);
+        } else {
+            mTempFile = new File(getFilesDir(), String.valueOf(accountId) + InternalStorageContentProvider.PHOTO_FILE_NAME);
+        }
+        
+        ImagePickerDialogFragment imagePicker = (ImagePickerDialogFragment) getSupportFragmentManager().findFragmentByTag("imagePicker");
+        if (imagePicker != null) {
+            getSupportFragmentManager().beginTransaction().remove(imagePicker);
+        }
+        getSupportFragmentManager().beginTransaction().addToBackStack(null);
+        
+        imagePicker = ImagePickerDialogFragment.newInstance();
+        imagePicker.setFileTemp(mTempFile);
+        imagePicker.setTitle(getString(R.string.please_pick_image_resource));
+        imagePicker.show(getSupportFragmentManager(), "imagePicker");
+    }
+    
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+
+        Bitmap bitmap;
+        switch (requestCode) {
+            case ImagePickerDialogFragment.REQUEST_CODE_GALLERY:
+                try {
+                    InputStream inputStream = getContentResolver().openInputStream(data.getData());
+                    FileOutputStream fileOutputStream = new FileOutputStream(mTempFile);
+                    Tools.copyStream(inputStream, fileOutputStream);
+                    fileOutputStream.close();
+                    inputStream.close();
+                    startCropImage();
+                } catch (Exception e) {
+                    Log.e(TAG, "Error while creating temp file", e);
+                }
+                break;
+                
+            case ImagePickerDialogFragment.REQUEST_CODE_TAKE_PICTURE:
+                startCropImage();
+                break;
+                
+            case ImagePickerDialogFragment.REQUEST_CODE_CROP_IMAGE:
+//              String path = data.getStringExtra(CropImage.IMAGE_PATH);
+//                if (path == null) {
+//                    return;
+//                }
+//                bitmap = BitmapFactory.decodeFile(mTempFile.getPath());
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+    
+    private void startCropImage() {
+        Intent intent = new Intent(this, CropImage.class);
+        intent.putExtra(CropImage.IMAGE_PATH, mTempFile.getPath());
+        intent.putExtra(CropImage.SCALE, true);
+        intent.putExtra(CropImage.ASPECT_X, 2);
+        intent.putExtra(CropImage.ASPECT_Y, 2);
+
+        startActivityForResult(intent, ImagePickerDialogFragment.REQUEST_CODE_CROP_IMAGE);
+    }
+    
 }

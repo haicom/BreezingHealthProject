@@ -23,9 +23,10 @@
        android:layout_width = "match_parent"
        android:layout_height = "wrap_content"
        android:background="@drawable/bg_edittext_selector"
-       android:password="true"
+       android:inputType="textPassword"
        android:paddingLeft="@dimen/activity_horizontal_margin"
-       android:paddingRight="@dimen/activity_horizontal_margin" />
+       android:paddingRight="@dimen/activity_horizontal_margin"
+       android:hint="@string/password" />
     
     <CheckBox android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -2,14 +2,10 @@ package com.breezing.health.ui.activity;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -26,6 +22,7 @@ import com.breezing.health.application.SysApplication;
 import com.breezing.health.entity.ActionItem;
 import com.breezing.health.providers.Breezing.Account;
 import com.breezing.health.tools.IntentAction;
+import com.breezing.health.tools.Tools;
 import com.breezing.health.ui.fragment.BaseDialogFragment;
 import com.breezing.health.ui.fragment.BreezingDialogFragment;
 import com.breezing.health.ui.fragment.DialogFragmentInterface;
@@ -115,11 +112,15 @@ public class SettingsActivity extends ActionBarActivity implements View.OnClickL
     }
     
     private void showImagePickerDialog() {
+        
+        int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this,
+                LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
+        
     	String state = Environment.getExternalStorageState();
     	if (Environment.MEDIA_MOUNTED.equals(state)) {
-    		mTempFile = new File(Environment.getExternalStorageDirectory(), InternalStorageContentProvider.TEMP_PHOTO_FILE_NAME);
+    		mTempFile = new File(Environment.getExternalStorageDirectory(), String.valueOf(accountId) + InternalStorageContentProvider.PHOTO_FILE_NAME);
     	} else {
-    		mTempFile = new File(getFilesDir(), InternalStorageContentProvider.TEMP_PHOTO_FILE_NAME);
+    		mTempFile = new File(getFilesDir(), String.valueOf(accountId) + InternalStorageContentProvider.PHOTO_FILE_NAME);
     	}
     	
     	ImagePickerDialogFragment imagePicker = (ImagePickerDialogFragment) getSupportFragmentManager().findFragmentByTag("imagePicker");
@@ -141,13 +142,13 @@ public class SettingsActivity extends ActionBarActivity implements View.OnClickL
             return;
         }
 
-        Bitmap bitmap;
+//        Bitmap bitmap;
         switch (requestCode) {
             case ImagePickerDialogFragment.REQUEST_CODE_GALLERY:
                 try {
                     InputStream inputStream = getContentResolver().openInputStream(data.getData());
                     FileOutputStream fileOutputStream = new FileOutputStream(mTempFile);
-                    copyStream(inputStream, fileOutputStream);
+                    Tools.copyStream(inputStream, fileOutputStream);
                     fileOutputStream.close();
                     inputStream.close();
                     startCropImage();
@@ -161,11 +162,11 @@ public class SettingsActivity extends ActionBarActivity implements View.OnClickL
                 break;
                 
             case ImagePickerDialogFragment.REQUEST_CODE_CROP_IMAGE:
-            	String path = data.getStringExtra(CropImage.IMAGE_PATH);
-                if (path == null) {
-                    return;
-                }
-                bitmap = BitmapFactory.decodeFile(mTempFile.getPath());
+//            	String path = data.getStringExtra(CropImage.IMAGE_PATH);
+//                if (path == null) {
+//                    return;
+//                }
+//                bitmap = BitmapFactory.decodeFile(mTempFile.getPath());
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -175,21 +176,10 @@ public class SettingsActivity extends ActionBarActivity implements View.OnClickL
         Intent intent = new Intent(this, CropImage.class);
         intent.putExtra(CropImage.IMAGE_PATH, mTempFile.getPath());
         intent.putExtra(CropImage.SCALE, true);
-        intent.putExtra(CropImage.ASPECT_X, 3);
+        intent.putExtra(CropImage.ASPECT_X, 2);
         intent.putExtra(CropImage.ASPECT_Y, 2);
 
         startActivityForResult(intent, ImagePickerDialogFragment.REQUEST_CODE_CROP_IMAGE);
-    }
-
-
-    public static void copyStream(InputStream input, OutputStream output)
-            throws IOException {
-
-        byte[] buffer = new byte[1024];
-        int bytesRead;
-        while ((bytesRead = input.read(buffer)) != -1) {
-            output.write(buffer, 0, bytesRead);
-        }
     }
 
     /**

@@ -7,7 +7,7 @@
     <ImageView
         android:id="@+id/icon"
         android:layout_width="@dimen/left_menu_header_height"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/left_menu_header_height"
         android:contentDescription="@string/content_description"
         android:scaleType="centerInside"
         android:src="@drawable/default_avatar_selector" />

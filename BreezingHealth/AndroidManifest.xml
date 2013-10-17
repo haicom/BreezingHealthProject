@@ -236,6 +236,11 @@
             android:name=".providers.BreezingProvider"
             android:authorities="breezing"
             android:multiprocess="false" />
+        
+        <provider
+            android:name=".util.InternalStorageContentProvider"
+            android:authorities="breezing"
+            android:multiprocess="false" />
 
         <service android:name=".transation.DataTaskService" >
         </service>  

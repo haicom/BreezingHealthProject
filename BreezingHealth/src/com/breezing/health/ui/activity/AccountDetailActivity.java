@@ -53,11 +53,8 @@ public class AccountDetailActivity extends ActionBarActivity implements View.OnC
     private TextView mAgeContent;
     private TextView mJobTypeContent;
     private TextView mHeightContent;
-    private TextView mHeightUnit;
     private TextView mWeightContent;
-    private TextView mWeightUnit;
     private TextView mHopeWeightContent;
-    private TextView mHopeWeightUnit;
     
     private Button   mButton;
     
@@ -126,8 +123,7 @@ public class AccountDetailActivity extends ActionBarActivity implements View.OnC
         }
         
         String heightString = heightFormat.format(height);
-        mHeightContent.setText( heightString );
-        mHeightUnit.setText( mBaseInformationOutput.getHeightUnit() );
+        mHeightContent.setText( heightString + mBaseInformationOutput.getHeightUnit() );
         
         float  weight = queryUnitObtainData(mBaseInformationOutput.getWeight(), 
                 getString(R.string.weight_type),
@@ -136,8 +132,7 @@ public class AccountDetailActivity extends ActionBarActivity implements View.OnC
         DecimalFormat weightFormat = new DecimalFormat("#.0");
         String weightString = weightFormat.format(weight);
         
-        mWeightContent.setText( weightString );
-        mWeightUnit.setText( mBaseInformationOutput.getWeightUnit() );
+        mWeightContent.setText( weightString + mBaseInformationOutput.getWeightUnit() );
         
         float  hopeWeight = queryUnitObtainData( mBaseInformationOutput.getExpectedWeight(), 
                 getString(R.string.weight_type),
@@ -146,8 +141,7 @@ public class AccountDetailActivity extends ActionBarActivity implements View.OnC
         DecimalFormat hopeWeightFormat = new DecimalFormat("#.0");
         String hopeWeightString = hopeWeightFormat.format(hopeWeight);
         
-        mHopeWeightContent.setText( hopeWeightString );
-        mHopeWeightUnit.setText( mBaseInformationOutput.getWeightUnit() );
+        mHopeWeightContent.setText( hopeWeightString + mBaseInformationOutput.getWeightUnit() );
         
     }
     /**
@@ -189,21 +183,19 @@ public class AccountDetailActivity extends ActionBarActivity implements View.OnC
         ViewItem jobTypeViewItem = new ViewItem(jobTypeView);
         mTableView.addViewItem(jobTypeViewItem);
         
-        View heightView = inflater.inflate(R.layout.uitableview_item_with_unit, null);
+        View heightView = inflater.inflate(R.layout.uitableview_custom_item, null);
         
         TextView heightTitle = (TextView) heightView.findViewById(R.id.title);
         mHeightContent = (TextView) heightView.findViewById(R.id.content);
-        mHeightUnit =  (TextView) heightView.findViewById(R.id.unit);
         
         heightTitle.setText(R.string.height);        
         ViewItem heightViewItem = new ViewItem(heightView);
         mTableView.addViewItem(heightViewItem);
         
-        View weightView = inflater.inflate(R.layout.uitableview_item_with_unit, null);
+        View weightView = inflater.inflate(R.layout.uitableview_custom_item, null);
         
         TextView weightTitle = (TextView) weightView.findViewById(R.id.title);
         mWeightContent = (TextView) weightView.findViewById(R.id.content);
-        mWeightUnit =  (TextView) weightView.findViewById(R.id.unit);
         
         weightTitle.setText(R.string.weight);
         
@@ -212,10 +204,9 @@ public class AccountDetailActivity extends ActionBarActivity implements View.OnC
         ViewItem weightViewItem = new ViewItem(weightView);
         mTableView.addViewItem(weightViewItem);
         
-        View hopeWeightView = inflater.inflate(R.layout.uitableview_item_with_unit, null);
+        View hopeWeightView = inflater.inflate(R.layout.uitableview_custom_item, null);
         TextView hopeWeightTitle = (TextView) hopeWeightView.findViewById(R.id.title);
         mHopeWeightContent = (TextView) hopeWeightView.findViewById(R.id.content);
-        mHopeWeightUnit =  (TextView) hopeWeightView.findViewById(R.id.unit);
         
         hopeWeightTitle.setText(R.string.hope_weight);       
         

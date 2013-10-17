@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.breezing.health.R;
@@ -55,7 +56,7 @@ public class AccountAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.list_account_item, null);
             holder = new ViewHolder();
             holder.title = (TextView) convertView.findViewById(R.id.title);
-            holder.content = (TextView) convertView.findViewById(R.id.content);
+            holder.selected = (ImageView) convertView.findViewById(R.id.selected);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -65,9 +66,9 @@ public class AccountAdapter extends BaseAdapter {
         holder.title.setText(account.getAccountName());
         
         if (account.getAccountId() == selectedAccount) {
-        	holder.content.setText(R.string.selected);
+        	holder.selected.setVisibility(View.VISIBLE);
         } else {
-        	holder.content.setText("");
+        	holder.selected.setVisibility(View.INVISIBLE);
         }
         
         return convertView;
@@ -75,7 +76,7 @@ public class AccountAdapter extends BaseAdapter {
 
     class ViewHolder {
         TextView title;
-        TextView content;
+        ImageView selected;
     }
 
 }

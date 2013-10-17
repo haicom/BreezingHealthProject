@@ -45,4 +45,6 @@
     <color name="food_catagory_selected_color">#d95860</color>
     <color name="bg_food_catagory_color">#f6f6f6</color>
     
+    <color name="blue">#0800ff</color>
+    
 </resources>

@@ -61,6 +61,7 @@
     <string name ="height_type">身高</string>
     <string name ="weight_type">体重</string>
     <string name ="distance_type">跑步</string>
+    <string name="caloric_type">热量</string>
 
     <string name = "weight_jin">斤</string>
     <string name = "weight_kilo">公斤</string>
@@ -237,4 +238,18 @@
     <string name="take_a_photo">拍照</string>
     <string name="please_pick_image_resource">请选择图片源</string>    
     <string name = "account_info_password">您输入的密码不正确，请重新输入</string>
+    <string name="add_account">添加账户</string>
+    
+    <string name="old_password_cant_be_null">请输入旧密码</string>
+    <string name="new_password_cant_be_null">请输入新密码</string>
+    <string name="check_password_failure">两次密码输入不一致</string>
+    <string name="old_paasword_input_failure">旧密码输入错误</string>
+    <string name="modify_password_success">修改密码成功</string>
+    <string name="modify_password_failure">修改密码失败</string>
+    <string name="password">密码</string>
+    <string name="caloric_unit">能量单位</string>
+    <string name="modify_unit_success">修改单位成功</string>
+    <string name="modify_unit_failure">修改单位失败</string>
+    <string name="please_select_unit">请选择单位</string>
+    
 </resources>

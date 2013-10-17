@@ -13,7 +13,9 @@
         android:id="@+id/title"
         android:gravity="center_vertical"
         android:layout_centerVertical="true"
-        style="@style/content_page_large_text" />
+        android:textColor="@color/uitableview_title_selector"
+        android:textSize="@dimen/normal_textsize"
+        android:duplicateParentState="true" />
         
     <TextView
          android:id="@+id/content"
@@ -21,6 +23,8 @@
          android:layout_height="wrap_content"
          android:layout_alignParentRight="true"
          android:layout_centerVertical="true"
-         style="@style/content_page_large_text" />
+         android:textColor="@color/uitableview_content_selector"
+         android:textSize="@dimen/normal_textsize"
+         android:duplicateParentState="true" />
         
 </RelativeLayout>

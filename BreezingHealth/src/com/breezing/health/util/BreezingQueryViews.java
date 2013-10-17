@@ -8,19 +8,19 @@ import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 
-import com.breezing.health.R;
 import com.breezing.health.entity.AccountEntity;
 import com.breezing.health.entity.CatagoryEntity;
 import com.breezing.health.entity.FoodEntity;
+import com.breezing.health.entity.UnitEntity;
 import com.breezing.health.providers.Breezing;
 import com.breezing.health.providers.Breezing.Account;
 import com.breezing.health.providers.Breezing.EnergyCost;
-import com.breezing.health.providers.Breezing.FoodClassify;
 import com.breezing.health.providers.Breezing.HeatConsumptionRecord;
 import com.breezing.health.providers.Breezing.HeatIngestion;
 import com.breezing.health.providers.Breezing.Information;
 import com.breezing.health.providers.Breezing.Ingestion;
 import com.breezing.health.providers.Breezing.IngestiveRecord;
+import com.breezing.health.providers.Breezing.UnitSettings;
 import com.breezing.health.providers.Breezing.WeightChange;
 
 public class BreezingQueryViews {
@@ -43,7 +43,10 @@ public class BreezingQueryViews {
         Information.CUSTOM ,            //5
         WeightChange.WEIGHT,            //6
         WeightChange.EXPECTED_WEIGHT,   //7
-        WeightChange.DATE              //8
+        WeightChange.DATE,              //8
+        Information.HEIGHT_UNIT,
+        Information.WEIGHT_UNIT,
+        Information.DISTANCE_UNIT
     };
     
     private static final int INFO_ACCOUNT_NAME_INDEX = 0;
@@ -55,6 +58,9 @@ public class BreezingQueryViews {
     private static final int INFO_WEIGHT_INDEX = 6;
     private static final int INFO_EXPECTED_WEIGHT_INDEX = 7;
     private static final int INFO_DATE_INDEX = 8;
+    private static final int INFO_HEIGHT_UNIT_INDEX = 9;
+    private static final int INFO_WEIGHT_UNIT_INDEX = 10;
+    private static final int INFO_DISTANCE_UNIT_INDEX = 11;
     
     /**
      * 根据某一个帐户id查询基本信息视图
@@ -88,6 +94,9 @@ public class BreezingQueryViews {
                 float  weight = cursor.getFloat(INFO_WEIGHT_INDEX);
                 float  expectedWeight = cursor.getFloat(INFO_EXPECTED_WEIGHT_INDEX);
                 float  date = cursor.getFloat(INFO_DATE_INDEX);
+                String heightUnit = cursor.getString(INFO_HEIGHT_UNIT_INDEX);
+                String weightUnit = cursor.getString(INFO_WEIGHT_UNIT_INDEX);
+                String distanceUnit = cursor.getString(INFO_DISTANCE_UNIT_INDEX);
                 
                 account.setAccountName(accountName);
                 account.setAccountPass(accountPass);
@@ -98,6 +107,9 @@ public class BreezingQueryViews {
                 account.setWeight(weight);
                 account.setExpectedWeight(expectedWeight);
                 account.setDate(date);
+                account.setHeightUnit(heightUnit);
+                account.setWeightUnit(weightUnit);
+                account.setDistanceUnit(distanceUnit);
                 
                 Log.d(TAG, " testCostWeeklyAndAccount accountName = " + accountName + " accountPass = " + accountPass
                         + " gender = " + gender + " height = " + height
@@ -801,6 +813,59 @@ public class BreezingQueryViews {
                  cursor.close();
                  return accounts;
              }
+         }
+         
+         /**
+          * 我的体重变化查看每一月，某一个帐户的月信息
+          */
+         private static final String[] PROJECTION_UNIT_SETTINGS = new String[] {
+             UnitSettings.UNIT_TYPE,               // 0
+             UnitSettings.UNIT_NAME,      // 1
+             UnitSettings.UNIT_UNIFY_DATA,      // 2
+             UnitSettings.UNIT_OBTAIN_DATA                 //3     
+         };
+
+         private static final int UNIT_TYPE_INDEX = 0;
+         private static final int UNIT_NAME_INDEX = 1;
+         private static final int UNIT_UNIFY_DATA_INDEX = 2;
+         private static final int UNIT_OBTAIN_DATA_INDEX = 3;
+         
+         /**
+          * 根据某一个帐户id查询我的体重变化月信息
+          */
+         public ArrayList<UnitEntity> queryUnitsByType(String unitType) {
+             
+             ArrayList<UnitEntity> units = new ArrayList<UnitEntity>();
+             
+             BLog.d(TAG, "queryUnitsByType");
+             String clause = UnitSettings.UNIT_TYPE + " = ?";
+             String[] args = new String[] {unitType};
+             Cursor cursor  = mContentResolver.query(UnitSettings.CONTENT_URI,
+                     PROJECTION_UNIT_SETTINGS, clause, args, null);
+             if (cursor == null) {
+                 BLog.d(TAG, " queryUnitsByType cursor = " + cursor);
+             }
+
+       
+             try {
+                 cursor.moveToPosition(-1);
+                 while (cursor.moveToNext() ) {
+                     
+                     UnitEntity unit = new UnitEntity();
+                     
+                     unit.setUnitName(cursor.getString(UNIT_NAME_INDEX));
+                     unit.setUnitType(cursor.getString(UNIT_TYPE_INDEX));
+                     unit.setUnitUnifyData(cursor.getString(UNIT_UNIFY_DATA_INDEX));
+                     unit.setUnitObtainData(cursor.getString(UNIT_OBTAIN_DATA_INDEX));
+                     
+                     units.add(unit);
+                     
+                 }
+             } finally {
+                 cursor.close();
+             }
+             
+             return units;
          }
 
 }
