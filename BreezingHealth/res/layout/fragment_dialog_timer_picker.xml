@@ -19,7 +19,7 @@
             android:padding="@dimen/activity_horizontal_margin" >
 
             <net.simonvt.numberpicker.NumberPicker
-                android:id="@+id/year"
+                android:id="@+id/hour"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
@@ -32,10 +32,10 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:singleLine="true"
-                android:text="@string/year" />
+                android:text="@string/hour" />
 
             <net.simonvt.numberpicker.NumberPicker
-                android:id="@+id/month"
+                android:id="@+id/minite"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
@@ -48,10 +48,10 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:singleLine="true"
-                android:text="@string/month" />
+                android:text="@string/minite" />
 
             <net.simonvt.numberpicker.NumberPicker
-                android:id="@+id/day"
+                android:id="@+id/second"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
@@ -64,7 +64,7 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:singleLine="true"
-                android:text="@string/day" />
+                android:text="@string/second" />
         </LinearLayout>
         
         <ImageView android:layout_centerInParent="true"
