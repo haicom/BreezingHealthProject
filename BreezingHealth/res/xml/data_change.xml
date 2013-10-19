@@ -11,9 +11,9 @@
   
     <data
         breezing:name="settings"
-        breezing:type="update"
-        breezing:version="5.0"
-        breezing:object="com.breezing.health.transation.UnitSettingsInserter"/>
+        breezing:type="insert"
+        breezing:version="4.0"
+        breezing:object="com.breezing.health.transation.UnitSettingsUpdater"/>
     
     <data
         breezing:name="sport"

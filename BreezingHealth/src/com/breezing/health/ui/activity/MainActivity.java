@@ -192,6 +192,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
             return ;
         } else if (v == mWeight) {
             Intent intent = new Intent(IntentAction.ACTIVITY_WEIGHT_RECORD);
+            intent.putExtra(MAIN_DATE, mDate);
             startActivity(intent);
             return ;
         }

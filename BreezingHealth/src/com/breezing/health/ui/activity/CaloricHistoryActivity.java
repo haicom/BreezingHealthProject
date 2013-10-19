@@ -59,6 +59,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
     private int mWeek;
     private int mAccountId;
     private int mType;
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

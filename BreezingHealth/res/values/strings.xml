@@ -188,6 +188,7 @@
     <string name="birthday">%1$s年%2$s月%3$s日</string>
     <string name="hope_weight_notice">◀%1$d斤</string>
     <string name="different_weight_value_notice">距离目标体重：%1$s%2$s</string>
+    <string name="click_to_select_expected_weight">点击选择期望体重</string>
     <string name="click_to_select_weight">点击选择体重</string>
     <string name="record_current_weight">记录当前体重</string>
     <string name="connect_to_weight_scale">连接蓝牙秤</string>
