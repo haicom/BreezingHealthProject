@@ -91,7 +91,9 @@
     <string name = "intensity_unit">%1$s&#160;&#160;%2$s</string>
 
     <string name = "exercise_calorie">%1$s千焦</string>
-    <string name = "exercise_description">%1$d%2$s\n%3$s</string>
+    <string name = "exercise_hour_description">%1$s小时\n%2$s</string>
+    <string name = "exercise_minite_description">%1$s分钟\n%2$s</string>
+    <string name = "exercise_second_description">%1$s秒\n%2$s</string>
 
     <string name="modify">修改</string>
     <string name="settings">设置</string>
@@ -253,5 +255,11 @@
     <string name="please_select_unit">请选择单位</string>
     
     <string name = "last_breezing_test_result" >于&#160;%1$s年%2$s月%3$s日&#160;的能量代谢值是</string>
+    <string name="hour">时</string>
+    <string name="minite">分</string>
+    <string name="second">秒</string>
+    <string name="exercise_timer">%1$d时%2$d分%3$d秒</string>
+    <string name="exercise_timer_notice">请选择运动时长</string>
+    <string name="exercise_timer_hint">运动时长</string>
     
 </resources>

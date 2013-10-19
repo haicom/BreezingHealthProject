@@ -19,7 +19,6 @@ import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +34,7 @@ import com.breezing.health.ui.fragment.BaseDialogFragment;
 import com.breezing.health.ui.fragment.DialogFragmentInterface;
 import com.breezing.health.ui.fragment.SportIntensityPickerDialogFragment;
 import com.breezing.health.ui.fragment.SportTypePickerDialogFragment;
+import com.breezing.health.ui.fragment.TimerPickerDialogFragment;
 import com.breezing.health.util.BLog;
 import com.breezing.health.util.DateFormatUtil;
 import com.breezing.health.util.ExtraName;
@@ -53,10 +53,10 @@ public class ExerciseRecordActivity extends ActionBarActivity
 
     private TextView mTotalCaloric;
 
-    private EditText mEditAmount;
+    private Button mEditAmount;
     private Button mButtonType;
     private Button mButtonIntensity;
-    private Button mButtonEquipment;
+//    private Button mButtonEquipment;
     private Button mButtonRecord;
 
     private String mSportType;
@@ -72,6 +72,9 @@ public class ExerciseRecordActivity extends ActionBarActivity
     private int mDate;
 
     private float mTotalCalorie;
+    private int mHour;
+    private int mMinite;
+    private int mSecond;
 
 
     @Override
@@ -130,10 +133,10 @@ public class ExerciseRecordActivity extends ActionBarActivity
         View recordHeader = getLayoutInflater().inflate(R.layout.exercise_record_header, null);
         mButtonType = (Button) recordHeader.findViewById(R.id.type);
         mButtonIntensity = (Button) recordHeader.findViewById(R.id.intensity);
-        mButtonEquipment = (Button) recordHeader.findViewById(R.id.equipment);
+//        mButtonEquipment = (Button) recordHeader.findViewById(R.id.equipment);
         mButtonRecord = (Button) recordHeader.findViewById(R.id.record);
 
-        mEditAmount =  (EditText) recordHeader.findViewById(R.id.amount);
+        mEditAmount =  (Button) recordHeader.findViewById(R.id.amount);
         mTotalCaloric = (TextView) recordHeader.findViewById(R.id.totalCaloric);
         mRecordList.addHeaderView(recordHeader);
 
@@ -173,9 +176,10 @@ public class ExerciseRecordActivity extends ActionBarActivity
 
     private void initListeners() {
         mButtonIntensity.setOnClickListener(this);
-        mButtonEquipment.setVisibility(View.GONE);
-        mButtonEquipment.setOnClickListener(this);
+//        mButtonEquipment.setVisibility(View.GONE);
+//        mButtonEquipment.setOnClickListener(this);
         mButtonRecord.setOnClickListener(this);
+        mEditAmount.setOnClickListener(this);
 
     }
 
@@ -215,10 +219,10 @@ public class ExerciseRecordActivity extends ActionBarActivity
 
                 mButtonType.setText( params[0].toString() );
                 mSportType = params[0].toString();
-                if (mButtonType.equals(
-                        dialog.getString(R.string.sport_type_runing) ) ) {
-                    mButtonEquipment.setVisibility(View.VISIBLE);
-                }
+//                if (mButtonType.equals(
+//                        dialog.getString(R.string.sport_type_runing) ) ) {
+//                    mButtonEquipment.setVisibility(View.VISIBLE);
+//                }
 
             }
         });
@@ -271,9 +275,8 @@ public class ExerciseRecordActivity extends ActionBarActivity
             mErrorInfo = getResources().getString(R.string.info_prompt)
                     + getResources().getString(R.string.exercise_intensity) ;
             bResult = false;
-        } else if (mEditAmount.getText().length() == 0) {
-            mErrorInfo = getResources().getString(R.string.info_prompt)
-                    + getResources().getString(R.string.edittext_hint_exercise_amount) ;
+        } else if (mHour == 0 && mMinite == 0 && mSecond == 0) {
+            mErrorInfo = getResources().getString(R.string.exercise_timer_notice) ;
             bResult = false;
         }
 
@@ -288,14 +291,14 @@ public class ExerciseRecordActivity extends ActionBarActivity
         }
 
         float calorie = obtainSportCalorie();
-        float totalCalorie = calorie * Integer.valueOf( mEditAmount.getText().toString() );
+        float totalCalorie = calorie * ((mHour * 60 + mMinite) * 60 + mSecond);
 
         ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
         ops.add(ContentProviderOperation.newInsert(HeatConsumptionRecord.CONTENT_URI)
                 .withValue(HeatConsumptionRecord.ACCOUNT_ID, mAccountId)
                 .withValue(HeatConsumptionRecord.SPORT_TYPE, mSportType)
                 .withValue(HeatConsumptionRecord.SPORT_INTENSITY, mSportIntensity)
-                .withValue(HeatConsumptionRecord.SPORT_QUANTITY, Integer.valueOf( mEditAmount.getText().toString() ) )
+                .withValue(HeatConsumptionRecord.SPORT_QUANTITY, (mHour * 60 + mMinite) * 60 + mSecond)
                 .withValue(HeatConsumptionRecord.SPORT_UNIT, mSportUnit)
                 .withValue(HeatConsumptionRecord.CALORIE, totalCalorie)
                 .build());
@@ -525,8 +528,37 @@ public class ExerciseRecordActivity extends ActionBarActivity
            if ( !appendIngestiveRecord() ) {
                Toast.makeText(this, mErrorInfo, Toast.LENGTH_SHORT).show();
            }
+        } else if (v == mEditAmount) {
+            showTimerPickerDialog();
         }
 
+    }
+    
+    private void showTimerPickerDialog() {
+        TimerPickerDialogFragment timerPicker = (TimerPickerDialogFragment)
+                getSupportFragmentManager().findFragmentByTag(EXERCISE_SPORT_TIMER);
+
+        if (timerPicker != null) {
+            getSupportFragmentManager().beginTransaction().remove(timerPicker);
+        }
+
+        getSupportFragmentManager().beginTransaction().addToBackStack(null);
+
+        timerPicker = TimerPickerDialogFragment.newInstance();
+        timerPicker.setTitle( getString(R.string.exercise_timer_notice) );
+
+        timerPicker.setPositiveClickListener(new DialogFragmentInterface.OnClickListener() {
+            @Override
+            public void onClick(BaseDialogFragment dialog,
+                    Object... params) {
+                mHour = Integer.parseInt(String.valueOf(params[0]));
+                mMinite = Integer.parseInt(String.valueOf(params[1]));
+                mSecond = Integer.parseInt(String.valueOf(params[2]));
+                mEditAmount.setText(getString(R.string.exercise_timer, mHour, mMinite, mSecond));
+            }
+        });
+
+        timerPicker.show(getSupportFragmentManager(), EXERCISE_SPORT_TIMER);
     }
 
     @Override
@@ -562,4 +594,6 @@ public class ExerciseRecordActivity extends ActionBarActivity
 
     private static final String EXERCISE_SPORT_TYPE = "sport_type_picker";
     private static final String EXERCISE_SPORT_INTENSITY = "sport_type_intensity";
+    private static final String EXERCISE_SPORT_TIMER = "sport_timer";
+    
 }

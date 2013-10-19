@@ -22,35 +22,16 @@
         android:singleLine="true"
         android:text="@string/exercise_intensity"
         android:background="@drawable/btn_spinner_selector" />
-
-    <LinearLayout
+    
+    <Button
+        android:id="@+id/amount"
+        style="@style/ButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="@dimen/information_cell_height"
         android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:orientation="horizontal">
-
-        <EditText
-            android:id="@+id/amount"
-            style="@style/ButtonStyle"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:hint="@string/edittext_hint_exercise_amount"
-            android:singleLine="true"
-            android:numeric="integer"
-            android:background="@drawable/bg_edittext_selector" />
-
-         <Button
-            android:id="@+id/equipment"
-            style="@style/ButtonStyle"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-             android:layout_weight="2"
-            android:text="@string/edittext_hint_exercise_amount"
-            android:singleLine="true"
-            android:background="@drawable/btn_spinner_selector" />
-
-    </LinearLayout>
+        android:singleLine="true"
+        android:text="@string/exercise_timer_hint"
+        android:background="@drawable/btn_spinner_selector" />
 
     <Button
         android:id="@+id/record"
