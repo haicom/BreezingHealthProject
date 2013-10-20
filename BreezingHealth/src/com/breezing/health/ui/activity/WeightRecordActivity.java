@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import android.content.ContentProviderOperation;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,12 +25,14 @@ import com.breezing.health.providers.Breezing.HeatConsumption;
 import com.breezing.health.providers.Breezing.Information;
 import com.breezing.health.providers.Breezing.UnitSettings;
 import com.breezing.health.providers.Breezing.WeightChange;
+import com.breezing.health.tools.IntentAction;
 import com.breezing.health.ui.fragment.BaseDialogFragment;
 import com.breezing.health.ui.fragment.DialogFragmentInterface;
 import com.breezing.health.ui.fragment.ExceptedWeightPickerDialogFragment;
 import com.breezing.health.ui.fragment.WeightPickerDialogFragment;
 import com.breezing.health.util.BLog;
 import com.breezing.health.util.DateFormatUtil;
+import com.breezing.health.util.ExtraName;
 import com.breezing.health.util.LocalSharedPrefsUtil;
 
 public class WeightRecordActivity extends ActionBarActivity implements OnClickListener {
@@ -140,6 +143,7 @@ public class WeightRecordActivity extends ActionBarActivity implements OnClickLi
         
         mExpectedWeight = (EditText) findViewById(R.id.expected_weight);
         mExpectedUnit = (TextView) findViewById(R.id.expected_weight_unit);
+        mExpectedWeight.setFocusable(false);
         
         mRecord = (Button) findViewById(R.id.record);
         mConnect = (Button) findViewById(R.id.connect);
@@ -256,6 +260,22 @@ public class WeightRecordActivity extends ActionBarActivity implements OnClickLi
         return mWeightUnit.getText().toString();
     }
     
+    @Override
+    public void onClickActionBarItems(ActionItem item, View v) {
+
+        switch( item.getActionId() ) {
+            case ActionItem.ACTION_HISTORY: {
+              
+                Intent intent = new Intent(IntentAction.ACTIVITY_WEIGHT_HISTORY);
+                     
+                startActivity(intent);
+                return ;
+            }                
+        
+        }
+        super.onClickActionBarItems(item, v);
+    }
+    
     private void refreshWeightInfo() {
         
         if (mWeightValue != 0 ) {
@@ -289,7 +309,7 @@ public class WeightRecordActivity extends ActionBarActivity implements OnClickLi
     
         
         final String differentValue = getString(R.string.different_weight_value_notice, 
-                weightFormat.format( Math.abs(mActualWeight - mActualHope) ), mWeightUnitValue);
+                weightFormat.format( Math.abs(mActualEvery - mActualHope) ), mWeightUnitValue);
         mDifferentValue.setText(differentValue);
         
         mSeekBar.setMax( (int) Math.abs( mActualWeight - mActualHope) );
@@ -378,6 +398,7 @@ public class WeightRecordActivity extends ActionBarActivity implements OnClickLi
         float weightText = Float.valueOf(mWeight.getText().toString() );
         float expectedText = Float.valueOf(mExpectedWeight.getText().toString() );
         
+        Log.d(TAG, "updateWeightData weightText = " + weightText + " expectedText = " + expectedText);
         float updateWeight = queryUnitUnifyData(weightText, 
                 getString(R.string.weight_type),
                 mWeightUnit.getText().toString() );

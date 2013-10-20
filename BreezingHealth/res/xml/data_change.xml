@@ -11,8 +11,8 @@
   
     <data
         breezing:name="settings"
-        breezing:type="insert"
-        breezing:version="4.0"
+        breezing:type="update"
+        breezing:version="9.0"
         breezing:object="com.breezing.health.transation.UnitSettingsUpdater"/>
     
     <data

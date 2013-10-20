@@ -78,20 +78,20 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
     @Override
     protected void onResume() {
         super.onResume();
-        
+        String weightString  = getBaseInfoViews(mAccountId);
+        mWeight.setText( weightString );
     }
 
     private void initValues() {
 
-        String weightString;
+        
         mAccountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this,
                 LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
         mDate = DateFormatUtil.simpleDateFormat("yyyyMMdd");
         String dateString = DateFormatUtil.getCurrentDateString(this, mDate);
         mCalendar.setText(dateString);
         mContentResolver = getContentResolver();
-        weightString = getBaseInfoViews(mAccountId);
-        mWeight.setText( weightString );
+       
 
     }
 
@@ -237,7 +237,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
      */
     private static final String[] PROJECTION_BASE_INFO = new String[] {
         Information.WEIGHT_UNIT ,     // 1
-        WeightChange.WEIGHT           // 2
+        WeightChange.EVERY_WEIGHT           // 2
 
     };
 
@@ -290,15 +290,11 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
         try {
             
-            if (cursor != null) {
-                
-                if ( cursor.getCount() > 0 ) {
-                    
+            if (cursor != null) {                
+                if ( cursor.getCount() > 0 ) {                    
                     cursor.moveToPosition(0);
-                    unit = cursor.getFloat(0);
-                    
-                }
-                
+                    unit = cursor.getFloat(0);                    
+                }                
             }
         } finally {
             cursor.close();

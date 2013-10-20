@@ -196,6 +196,15 @@
             </intent-filter>
         </activity>
         
+        <activity
+            android:name=".ui.activity.WeightHistoryActivity"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="action.intent.breezing.health.ACTIVITY_WEIGHT_HISTORY" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        
        <activity
             android:name=".ui.activity.HelperActivity"
             android:screenOrientation="portrait" >

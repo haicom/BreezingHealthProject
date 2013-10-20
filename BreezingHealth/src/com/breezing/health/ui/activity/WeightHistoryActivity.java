@@ -47,6 +47,9 @@ public class WeightHistoryActivity  extends ActionBarActivity implements OnClick
     private int mWeek;
     private int mAccountId;
     private ChartModel mBalanceChartModel = ChartModel.WEEK;
+    
+ 
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,7 +68,7 @@ public class WeightHistoryActivity  extends ActionBarActivity implements OnClick
         mMonth = CalendarUtil.getCurrentMonth();
         mSelectModelButton.setOnClickListener(this);
         mSelectIntervalButton.setOnClickListener(this);
-
+        refreshFragment();
     }
     
     @Override
