@@ -88,12 +88,12 @@
     <string name = "year_and_month" >%1$d年&#160;第%2$d月</string>
     <string name = "month_in_week">第%1$d周</string>
     <string name = "year_in_month">%1$d月</string>
-    <string name = "intensity_unit">%1$s&#160;&#160;%2$s</string>
+    <string name = "intensity_unit">%1$s</string>
 
     <string name = "exercise_calorie">%1$s千焦</string>
-    <string name = "exercise_hour_description">%1$s小时\n%2$s</string>
-    <string name = "exercise_minite_description">%1$s分钟\n%2$s</string>
-    <string name = "exercise_second_description">%1$s秒\n%2$s</string>
+    <string name = "exercise_hour_description">运动%1$s小时</string>
+    <string name = "exercise_minite_description">运动%1$s分钟</string>
+    <string name = "exercise_second_description">运动%1$s秒</string>
 
     <string name="modify">修改</string>
     <string name="settings">设置</string>
@@ -189,7 +189,7 @@
     <string name="weight_update_notice">%1$s年%2$s月%3$s日测试的体重为：%4$s%5$s</string>
     <string name="birthday">%1$s年%2$s月%3$s日</string>
     <string name="hope_weight_notice">◀%1$d斤</string>
-    <string name="different_weight_value_notice">距离目标体重：%1$s%2$s</string>
+    <string name="different_weight_value_notice">距离目标体重：%1$s/%2$s%3$s</string>
     <string name="click_to_select_expected_weight">点击选择期望体重</string>
     <string name="click_to_select_weight">点击选择体重</string>
     <string name="record_current_weight">记录当前体重</string>
@@ -259,8 +259,14 @@
     <string name="hour">时</string>
     <string name="minite">分</string>
     <string name="second">秒</string>
-    <string name="exercise_timer">%1$d时%2$d分%3$d秒</string>
+    <string name="exercise_timer">%1$d时%2$d分</string>
     <string name="exercise_timer_notice">请选择运动时长</string>
     <string name="exercise_timer_hint">运动时长</string>
+    <string name="default_password_notice">*默认登录密码为：888888</string>
+    <string name="more_than_standard_weight_notice">*高于标准体重</string>
+    <string name="less_than_standard_weight_notice">*低于标准体重</string>
+    
+    <string name="current_weight_title">当前体重:</string>
+   <string name="expected_weight_title">期望体重:</string>
     
 </resources>

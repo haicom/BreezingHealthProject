@@ -19,6 +19,15 @@
             android:hint="@string/edittext_hint_username"
             android:singleLine="true"
             android:background="@drawable/bg_edittext_selector" />
+        
+        <TextView
+            style="@style/TitleTextViewStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:singleLine="true"
+            android:textSize="@dimen/small_textsize"
+            android:textColor="@color/red"
+            android:text="@string/default_password_notice" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -153,6 +162,15 @@
                 android:paddingRight="@dimen/activity_horizontal_margin" />
 
         </RelativeLayout>
+        
+        <TextView
+            style="@style/TitleTextViewStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:singleLine="true"
+            android:textSize="@dimen/small_textsize"
+            android:textColor="@color/red"
+            android:text="@string/less_than_standard_weight_notice" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -181,6 +199,15 @@
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin" />
         </RelativeLayout>
+        
+        <TextView
+            style="@style/TitleTextViewStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:singleLine="true"
+            android:textSize="@dimen/small_textsize"
+            android:textColor="@color/red"
+            android:text="@string/more_than_standard_weight_notice" />
         
         <Button   
             android:id="@+id/modify"

@@ -4,20 +4,25 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <ListView
-        android:id="@+id/list"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_margin="@dimen/activity_vertical_margin"
-        android:background="@drawable/background_view_rounded_single"
-        android:cacheColorHint="@color/transparent"
-        android:divider="@drawable/divider_record_form"
-        android:dividerHeight="1dp"
-        android:footerDividersEnabled="false"
-        android:headerDividersEnabled="false"
-        android:listSelector="@color/transparent"
-        android:scrollbars="none" />
+        android:layout_weight="1" >
+
+        <ListView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/activity_vertical_margin"
+            android:background="@drawable/background_view_rounded_single"
+            android:cacheColorHint="@color/transparent"
+            android:divider="@drawable/divider_record_form"
+            android:dividerHeight="1dp"
+            android:footerDividersEnabled="false"
+            android:headerDividersEnabled="false"
+            android:listSelector="@color/transparent"
+            android:scrollbars="none" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/add_account"

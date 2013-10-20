@@ -123,7 +123,7 @@ public class AccountDetailActivity extends ActionBarActivity implements View.OnC
         }
         
         String heightString = heightFormat.format(height);
-        mHeightContent.setText( heightString + mBaseInformationOutput.getHeightUnit() );
+        mHeightContent.setText( heightString + "  "  + mBaseInformationOutput.getHeightUnit() );
         
         float  weight = queryUnitObtainData(mBaseInformationOutput.getWeight(), 
                 getString(R.string.weight_type),
@@ -132,7 +132,8 @@ public class AccountDetailActivity extends ActionBarActivity implements View.OnC
         DecimalFormat weightFormat = new DecimalFormat("#.0");
         String weightString = weightFormat.format(weight);
         
-        mWeightContent.setText( weightString + mBaseInformationOutput.getWeightUnit() );
+        mWeightContent.setText( weightString 
+                + "  " + mBaseInformationOutput.getWeightUnit() );
         
         float  hopeWeight = queryUnitObtainData( mBaseInformationOutput.getExpectedWeight(), 
                 getString(R.string.weight_type),
@@ -141,7 +142,7 @@ public class AccountDetailActivity extends ActionBarActivity implements View.OnC
         DecimalFormat hopeWeightFormat = new DecimalFormat("#.0");
         String hopeWeightString = hopeWeightFormat.format(hopeWeight);
         
-        mHopeWeightContent.setText( hopeWeightString + mBaseInformationOutput.getWeightUnit() );
+        mHopeWeightContent.setText( hopeWeightString + "  "  + mBaseInformationOutput.getWeightUnit() );
         
     }
     /**

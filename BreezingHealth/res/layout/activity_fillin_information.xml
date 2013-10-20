@@ -9,12 +9,13 @@
         android:orientation="vertical"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin" >
-        
-        <include android:layout_width="200dp"
+
+        <include
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            layout="@layout/step_header"
-            android:layout_marginTop="@dimen/activity_vertical_margin" />
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            layout="@layout/step_header" />
 
         <EditText
             android:id="@+id/user_name"
@@ -22,9 +23,18 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/information_cell_height"
             android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:background="@drawable/bg_edittext_selector"
             android:hint="@string/edittext_hint_username"
+            android:singleLine="true" />
+
+        <TextView
+            style="@style/TitleTextViewStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:singleLine="true"
-            android:background="@drawable/bg_edittext_selector" />
+            android:textSize="@dimen/small_textsize"
+            android:textColor="@color/red"
+            android:text="@string/default_password_notice" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -52,10 +62,10 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
-                    android:text="@string/male"
-                    android:textColor="@color/black"
+                    android:button="@drawable/btn_radio_selector"
                     android:checked="true"
-                    android:button="@drawable/btn_radio_selector" />
+                    android:text="@string/male"
+                    android:textColor="@color/black" />
 
                 <RadioButton
                     android:id="@+id/female"
@@ -63,21 +73,21 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
+                    android:button="@drawable/btn_radio_selector"
                     android:text="@string/female"
-                    android:textColor="@color/black"
-                    android:button="@drawable/btn_radio_selector" />
+                    android:textColor="@color/black" />
             </RadioGroup>
         </LinearLayout>
 
         <EditText
-                android:id="@+id/date"
-                style="@style/EditTextStyle"
-                android:layout_width="200dp"
-                android:layout_height="@dimen/information_cell_height"
-                android:hint="@string/edittext_hint_born_date"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:singleLine="true"
-                android:background="@drawable/btn_spinner_selector" />
+            android:id="@+id/date"
+            style="@style/EditTextStyle"
+            android:layout_width="200dp"
+            android:layout_height="@dimen/information_cell_height"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:background="@drawable/btn_spinner_selector"
+            android:hint="@string/edittext_hint_born_date"
+            android:singleLine="true" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -98,11 +108,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="@dimen/activity_horizontal_small_margin"
-                android:singleLine="true"
-                android:background="@drawable/btn_spinner_selector" />
+                android:background="@drawable/btn_spinner_selector"
+                android:singleLine="true" />
         </LinearLayout>
 
-       <RelativeLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/information_cell_height"
             android:layout_marginTop="@dimen/activity_vertical_margin" >
@@ -112,9 +122,9 @@
                 style="@style/EditTextStyle"
                 android:layout_width="200dp"
                 android:layout_height="match_parent"
+                android:background="@drawable/btn_spinner_selector"
                 android:hint="@string/edittext_hint_height"
-                android:singleLine="true"
-                android:background="@drawable/btn_spinner_selector" />
+                android:singleLine="true" />
 
             <TextView
                 android:id="@+id/height_unit"
@@ -123,13 +133,12 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
-                android:singleLine="true"
-                android:text="@string/textview_title_unit"
                 android:background="@drawable/btn_spinner_selector"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin" />
-       </RelativeLayout>
-
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:singleLine="true"
+                android:text="@string/textview_title_unit" />
+        </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -141,9 +150,9 @@
                 style="@style/EditTextStyle"
                 android:layout_width="200dp"
                 android:layout_height="match_parent"
+                android:background="@drawable/btn_spinner_selector"
                 android:hint="@string/edittext_hint_weight"
-                android:singleLine="true"
-                android:background="@drawable/btn_spinner_selector" />
+                android:singleLine="true" />
 
             <TextView
                 android:id="@+id/weight_unit"
@@ -152,13 +161,21 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
-                android:singleLine="true"
-                android:text="@string/textview_title_unit"
                 android:background="@drawable/btn_spinner_selector"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin" />
-
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:singleLine="true"
+                android:text="@string/textview_title_unit" />
         </RelativeLayout>
+        
+        <TextView
+            style="@style/TitleTextViewStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:singleLine="true"
+            android:textSize="@dimen/small_textsize"
+            android:textColor="@color/red"
+            android:text="@string/less_than_standard_weight_notice" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -170,9 +187,9 @@
                 style="@style/EditTextStyle"
                 android:layout_width="200dp"
                 android:layout_height="match_parent"
+                android:background="@drawable/btn_spinner_selector"
                 android:hint="@string/edittext_hint_hope_weight"
-                android:singleLine="true"
-                android:background="@drawable/btn_spinner_selector" />
+                android:singleLine="true" />
 
             <TextView
                 android:id="@+id/hope_weight_unit"
@@ -181,25 +198,33 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
-                android:singleLine="true"
-                android:text="@string/textview_title_unit"
                 android:background="@drawable/btn_spinner_selector"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin" />
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:singleLine="true"
+                android:text="@string/textview_title_unit" />
         </RelativeLayout>
+        
+        <TextView
+            style="@style/TitleTextViewStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:singleLine="true"
+            android:textSize="@dimen/small_textsize"
+            android:textColor="@color/red"
+            android:text="@string/more_than_standard_weight_notice" />
 
         <Button
             android:id="@+id/next"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:background="@drawable/btn_red_round_selector"
             android:singleLine="true"
             android:text="@string/next"
-            android:background="@drawable/btn_red_round_selector"
             android:textColor="@color/white"
             android:textSize="@dimen/normal_textsize" />
-
     </LinearLayout>
 
 </ScrollView>

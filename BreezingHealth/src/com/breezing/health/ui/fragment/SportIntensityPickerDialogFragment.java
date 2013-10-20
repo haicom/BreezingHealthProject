@@ -18,7 +18,6 @@ public class SportIntensityPickerDialogFragment extends BaseDialogFragment imple
 
     private View mFragmentView;
     private NumberPicker mIntensity;
-    private NumberPicker mUnit;
     private TextView mTitle;
     private Button mCancel;
     private Button mConfirm;
@@ -26,16 +25,15 @@ public class SportIntensityPickerDialogFragment extends BaseDialogFragment imple
     private DialogFragmentInterface.OnClickListener mNegativeClickListener;
 
     private String mTitleString;
-    private final String mType;
 
-    public static SportIntensityPickerDialogFragment newInstance(String sportType) {
+    public static SportIntensityPickerDialogFragment newInstance() {
         SportIntensityPickerDialogFragment fragment =
-                new SportIntensityPickerDialogFragment(sportType);
+                new SportIntensityPickerDialogFragment();
         return fragment;
     }
 
-    public SportIntensityPickerDialogFragment(String type) {
-        mType = type;
+    public SportIntensityPickerDialogFragment() {
+        
     }
 
     @Override
@@ -51,7 +49,6 @@ public class SportIntensityPickerDialogFragment extends BaseDialogFragment imple
         mFragmentView = inflater.inflate(R.layout.fragment_dialog_intensity_unit,
                     null);
         mIntensity = (NumberPicker) mFragmentView.findViewById(R.id.intensity);
-        mUnit = (NumberPicker) mFragmentView.findViewById(R.id.distance_unit);
 
         mTitle = (TextView) mFragmentView.findViewById(R.id.title);
         mCancel = (Button) mFragmentView.findViewById(R.id.cancel);
@@ -65,27 +62,6 @@ public class SportIntensityPickerDialogFragment extends BaseDialogFragment imple
         mIntensity.setMinValue(0);
         mIntensity.setFocusable(false);
         mIntensity.setFocusableInTouchMode(false);
-
-        String[] units;
-        if (mType == null) {
-            units = new String[] { getActivity().getResources().
-                    getString(R.string.sport_type_gengeral) };
-        } else {
-            if (mType.equals(getActivity().
-                    getResources().getString(R.string.sport_type_runing))) {
-                units = getActivity().getResources().
-                        getStringArray(R.array.distance_units);
-            } else {
-                units = new String[] { getActivity().getResources().
-                        getString(R.string.sport_type_gengeral) };
-            }
-        }
-
-        mUnit.setDisplayedValues(units);
-        mUnit.setMaxValue(units.length - 1);
-        mUnit.setMinValue(0);
-        mUnit.setFocusable(false);
-        mUnit.setFocusableInTouchMode(false);
 
         if (mTitleString != null) {
             mTitle.setText(mTitleString);
@@ -121,10 +97,7 @@ public class SportIntensityPickerDialogFragment extends BaseDialogFragment imple
                 String[] intensitys = mIntensity.getDisplayedValues();
                 String intensity = intensitys[ mIntensity.getValue() ];
 
-                String[] units = mUnit.getDisplayedValues();
-                String unit = units[ mUnit.getValue() ];
-
-                mPositiveClickListener.onClick(this, intensity, unit);
+                mPositiveClickListener.onClick(this, intensity);
             }
 
             dismiss();

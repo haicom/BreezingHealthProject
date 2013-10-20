@@ -7,6 +7,10 @@ import android.content.ContentProviderOperation;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -305,12 +309,33 @@ public class WeightRecordActivity extends ActionBarActivity implements OnClickLi
                 String.valueOf(mSelectedDate).subSequence(4, 6),
                 String.valueOf(mSelectedDate).subSequence(6, 8),
                 weightFormat.format(mActualEvery), mWeightUnitValue);
-        mNotice.setText(notice);
-    
         
+        SpannableString spannable = new SpannableString(notice);
+        spannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.red)),
+                notice.length() - (weightFormat.format(mActualEvery) + mWeightUnitValue).length(),
+                notice.length() - mWeightUnitValue.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(new RelativeSizeSpan(1.1f),
+                notice.length() - (weightFormat.format(mActualEvery) + mWeightUnitValue).length(),
+                notice.length() - mWeightUnitValue.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        
+        mNotice.setText(spannable);
+    
         final String differentValue = getString(R.string.different_weight_value_notice, 
-                weightFormat.format( Math.abs(mActualEvery - mActualHope) ), mWeightUnitValue);
-        mDifferentValue.setText(differentValue);
+                String.valueOf(mActualEvery), String.valueOf(mActualHope), mWeightUnitValue);
+        final int index = differentValue.indexOf(String.valueOf(mActualEvery));
+        SpannableString diffValueSpan = new SpannableString(differentValue);
+        diffValueSpan.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.green)),
+                index ,
+                index + String.valueOf(mActualEvery).length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        diffValueSpan.setSpan(new RelativeSizeSpan(1.2f),
+                index ,
+                index + String.valueOf(mActualEvery).length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        
+        mDifferentValue.setText(diffValueSpan);
         
         mSeekBar.setMax( (int) Math.abs( mActualWeight - mActualHope) );
         mSeekBar.setProgress( (int) Math.abs( mActualWeight - mActualEvery) );

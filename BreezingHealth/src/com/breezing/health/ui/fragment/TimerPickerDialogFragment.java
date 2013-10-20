@@ -20,7 +20,6 @@ public class TimerPickerDialogFragment extends BaseDialogFragment implements OnC
     
     private NumberPicker mHourPicker;
     private NumberPicker mMinitePicker;
-    private NumberPicker mSecondPicker;
     
     private TextView mTitle;
     
@@ -32,9 +31,8 @@ public class TimerPickerDialogFragment extends BaseDialogFragment implements OnC
     
     private String mTitleString;
     
-    private int mYear;
-    private int mMonth;
-    private int mDay;
+    private int mHour;
+    private int mMinite;
     
     public static TimerPickerDialogFragment newInstance() {
         TimerPickerDialogFragment fragment = new TimerPickerDialogFragment();
@@ -54,7 +52,6 @@ public class TimerPickerDialogFragment extends BaseDialogFragment implements OnC
         
         mHourPicker = (NumberPicker) mFragmentView.findViewById(R.id.hour);
         mMinitePicker = (NumberPicker) mFragmentView.findViewById(R.id.minite);
-        mSecondPicker = (NumberPicker) mFragmentView.findViewById(R.id.second);
         
         mTitle = (TextView) mFragmentView.findViewById(R.id.title);
         
@@ -63,21 +60,15 @@ public class TimerPickerDialogFragment extends BaseDialogFragment implements OnC
         
         mHourPicker.setMaxValue(SHOW_HOUR_MAX);
         mHourPicker.setMinValue(SHOW_HOUR_MIN);
-        mHourPicker.setValue(mYear);
+        mHourPicker.setValue(mHour);
         mHourPicker.setFocusable(false);
         mHourPicker.setFocusableInTouchMode(false);
         
         mMinitePicker.setMaxValue(SHOW_MINITE_MAX);
         mMinitePicker.setMinValue(SHOW_MINITE_MIN);
-        mMinitePicker.setValue(mMonth);
+        mMinitePicker.setValue(mMinite);
         mMinitePicker.setFocusable(false);
         mMinitePicker.setFocusableInTouchMode(false);
-        
-        mSecondPicker.setMaxValue(SHOW_SECOND_MAX);
-        mSecondPicker.setMinValue(SHOW_SECOND_MIN);
-        mSecondPicker.setValue(mDay);
-        mSecondPicker.setFocusable(true);
-        mSecondPicker.setFocusableInTouchMode(true);
         
         if (mTitleString != null) {
             mTitle.setText(mTitleString);
@@ -111,8 +102,7 @@ public class TimerPickerDialogFragment extends BaseDialogFragment implements OnC
             if (mPositiveClickListener != null) {
                 mPositiveClickListener.onClick( this, 
                         mHourPicker.getValue(), 
-                        mMinitePicker.getValue(), 
-                        mSecondPicker.getValue() );
+                        mMinitePicker.getValue());
             }
             
             dismiss();
@@ -134,8 +124,6 @@ public class TimerPickerDialogFragment extends BaseDialogFragment implements OnC
     private static final int SHOW_HOUR_MIN = 0;
     private static final int SHOW_MINITE_MAX = 60;
     private static final int SHOW_MINITE_MIN = 0;
-    private static final int SHOW_SECOND_MAX = 60;
-    private static final int SHOW_SECOND_MIN = 0;
     
 }
 

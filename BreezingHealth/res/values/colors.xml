@@ -9,6 +9,7 @@
     <color name="silver">#757575</color>
     <color name="transparent">#00000000</color>
     <color name="translucence">#88000000</color>
+    <color name="green">#56ae00</color>
     <!-- brun cloror -->
     <color name ="brun_green">#4cae03</color>
     <color name = "pale_green">#abda01</color>

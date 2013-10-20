@@ -61,7 +61,6 @@ public class ExerciseRecordActivity extends ActionBarActivity
 
     private String mSportType;
     private String mSportIntensity;
-    private String mSportUnit;
 
     private String mErrorInfo;
     private String[] mIntensitys;
@@ -74,7 +73,6 @@ public class ExerciseRecordActivity extends ActionBarActivity
     private float mTotalCalorie;
     private int mHour;
     private int mMinite;
-    private int mSecond;
 
 
     @Override
@@ -161,15 +159,11 @@ public class ExerciseRecordActivity extends ActionBarActivity
         mButtonType.setText(mSportType);
 
         mSportIntensity = mIntensitys[0];
-        mSportUnit = getResources().
-                getString(R.string.sport_type_gengeral);
         mButtonIntensity.setText( getString(R.string.intensity_unit,
-                                  mSportIntensity,
-                                  mSportUnit ) );
+                                  mSportIntensity ) );
         mRecordAdapter = new ExerciseRecordAdapter(this, null);
         mRecordAdapter.setOnDataSetChangedListener(mDataSetChangedListener);
         mRecordList.setAdapter(mRecordAdapter);
-        mEditAmount.setHint(mSportUnit);
         startMsgListQuery();
 
     }
@@ -241,7 +235,7 @@ public class ExerciseRecordActivity extends ActionBarActivity
 
         getSupportFragmentManager().beginTransaction().addToBackStack(null);
 
-        sportIntensity = SportIntensityPickerDialogFragment.newInstance(mSportType);
+        sportIntensity = SportIntensityPickerDialogFragment.newInstance();
         sportIntensity.setTitle( getString(R.string.exercise_type) );
 
         sportIntensity.setPositiveClickListener(new DialogFragmentInterface.OnClickListener() {
@@ -250,12 +244,9 @@ public class ExerciseRecordActivity extends ActionBarActivity
                     Object... params) {
 
                 mButtonIntensity.setText(dialog.getString(R.string.intensity_unit,
-                                                 params[0].toString(),
-                                                 params[1].toString() ) );
+                                                 params[0].toString() ) );
 
                 mSportIntensity = params[0].toString();
-                mSportUnit = params[1].toString();
-                mEditAmount.setHint(mSportUnit);
             }
         });
 
@@ -275,7 +266,7 @@ public class ExerciseRecordActivity extends ActionBarActivity
             mErrorInfo = getResources().getString(R.string.info_prompt)
                     + getResources().getString(R.string.exercise_intensity) ;
             bResult = false;
-        } else if (mHour == 0 && mMinite == 0 && mSecond == 0) {
+        } else if (mHour == 0 && mMinite == 0) {
             mErrorInfo = getResources().getString(R.string.exercise_timer_notice) ;
             bResult = false;
         }
@@ -291,15 +282,15 @@ public class ExerciseRecordActivity extends ActionBarActivity
         }
 
         float calorie = obtainSportCalorie();
-        float totalCalorie = calorie * ((mHour * 60 + mMinite) * 60 + mSecond);
+        float totalCalorie = calorie * (mHour * 60 + mMinite);
 
         ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
         ops.add(ContentProviderOperation.newInsert(HeatConsumptionRecord.CONTENT_URI)
                 .withValue(HeatConsumptionRecord.ACCOUNT_ID, mAccountId)
                 .withValue(HeatConsumptionRecord.SPORT_TYPE, mSportType)
                 .withValue(HeatConsumptionRecord.SPORT_INTENSITY, mSportIntensity)
-                .withValue(HeatConsumptionRecord.SPORT_QUANTITY, (mHour * 60 + mMinite) * 60 + mSecond)
-                .withValue(HeatConsumptionRecord.SPORT_UNIT, mSportUnit)
+                .withValue(HeatConsumptionRecord.SPORT_QUANTITY, (mHour * 60 + mMinite))
+                .withValue(HeatConsumptionRecord.SPORT_UNIT, "")
                 .withValue(HeatConsumptionRecord.CALORIE, totalCalorie)
                 .build());
 
@@ -321,8 +312,7 @@ public class ExerciseRecordActivity extends ActionBarActivity
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.setLength(0);
         stringBuilder.append(HeatConsumption.SPORT_TYPE + " = ? AND ");
-        stringBuilder.append(HeatConsumption.SPORT_INTENSITY + " = ? AND ");
-        stringBuilder.append(HeatConsumption.SPORT_UNIT + " = ? ");
+        stringBuilder.append(HeatConsumption.SPORT_INTENSITY + " = ? ");
 
         Cursor cursor = null;
 
@@ -330,7 +320,7 @@ public class ExerciseRecordActivity extends ActionBarActivity
             cursor = getContentResolver().query(HeatConsumption.CONTENT_URI,
                     new String[] { HeatConsumption.CALORIE },
                     stringBuilder.toString(),
-                    new String[] {mSportType, mSportIntensity, mSportUnit},
+                    new String[] {mSportType, mSportIntensity},
                     null);
 
             if (cursor != null) {
@@ -553,8 +543,7 @@ public class ExerciseRecordActivity extends ActionBarActivity
                     Object... params) {
                 mHour = Integer.parseInt(String.valueOf(params[0]));
                 mMinite = Integer.parseInt(String.valueOf(params[1]));
-                mSecond = Integer.parseInt(String.valueOf(params[2]));
-                mEditAmount.setText(getString(R.string.exercise_timer, mHour, mMinite, mSecond));
+                mEditAmount.setText(getString(R.string.exercise_timer, mHour, mMinite));
             }
         });
 

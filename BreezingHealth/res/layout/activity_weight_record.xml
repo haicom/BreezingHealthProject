@@ -15,33 +15,35 @@
         android:textColor="@color/gray"
         android:textSize="@dimen/small_textsize" />
 
-    <RelativeLayout android:id="@+id/seekbar_layout"
+    <RelativeLayout
+        android:id="@+id/seekbar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/notice"
         android:layout_marginTop="@dimen/activity_vertical_margin" >
-        
-        <ImageView android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/hopeWeight"
-            android:scaleType="centerInside"
-            android:src="@drawable/bg_seekbar"
-            android:contentDescription="@string/content_description"/>
 
-        <SeekBar
-            android:id="@+id/seekbar"
+        <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@+id/hopeWeight"
-            android:progressDrawable="@drawable/seekbar_style"
+            android:contentDescription="@string/content_description"
+            android:scaleType="centerInside"
+            android:src="@drawable/bg_seekbar" />
+
+        <SeekBar
+            android:id="@+id/seekbar"
             style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_toLeftOf="@+id/hopeWeight"
+            android:maxHeight="4dp"
+            android:minHeight="4dp"
             android:paddingLeft="11dp"
             android:paddingRight="11dp"
-            android:layout_marginTop="4dp"
-            android:thumb="@drawable/seekbar_thumb"
-            android:minHeight="4dp"
-            android:maxHeight="4dp"
-            android:progress="100" />
+            android:progress="100"
+            android:progressDrawable="@drawable/seekbar_style"
+            android:thumb="@drawable/seekbar_thumb" />
 
         <TextView
             android:id="@+id/hopeWeight"
@@ -55,23 +57,35 @@
             android:textSize="@dimen/middle_textsize"
             android:visibility="gone" />
     </RelativeLayout>
-    
+
     <TextView
         android:id="@+id/different_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/seekbar_layout"
+        android:background="@drawable/bg_up_forward_box"
         android:gravity="center_vertical"
         android:textColor="@color/gray"
-        android:textSize="@dimen/small_textsize"
-        android:layout_below="@+id/seekbar_layout"
-        android:layout_alignParentRight="true"
-        android:background="@drawable/bg_up_forward_box" />
-    
-    <RelativeLayout android:id="@+id/weight_layout"
+        android:textSize="@dimen/small_textsize" />
+
+    <TextView
+        android:id="@+id/weight_title"
+        style="@style/TitleTextViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/different_value"
+        android:layout_marginTop="30dp"
+        android:singleLine="true"
+        android:text="@string/current_weight_title"
+        android:textColor="@color/black"
+        android:textSize="@dimen/small_textsize" />
+
+    <RelativeLayout
+        android:id="@+id/weight_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/information_cell_height"
-        android:layout_marginTop="50dp"   
-        android:layout_below="@+id/different_value" >
+        android:layout_below="@+id/weight_title" >
 
         <EditText
             android:id="@+id/weight"
@@ -96,11 +110,25 @@
             android:text="@string/textview_title_unit" />
     </RelativeLayout>
     
-    <RelativeLayout android:id="@+id/expected_weight_layout"
+    <TextView
+        android:id="@+id/expected_weight_title"
+        style="@style/TitleTextViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/weight_layout"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:singleLine="true"
+        android:text="@string/expected_weight_title"
+        android:textColor="@color/black"
+        android:textSize="@dimen/small_textsize"
+         />
+
+    <RelativeLayout
+        android:id="@+id/expected_weight_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/information_cell_height"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:layout_below="@+id/weight_layout" >
+        android:layout_below="@+id/expected_weight_title"
+         >
 
         <EditText
             android:id="@+id/expected_weight"
@@ -124,9 +152,7 @@
             android:singleLine="true"
             android:text="@string/textview_title_unit" />
     </RelativeLayout>
-    
-    
-    
+
     <Button
         android:id="@+id/record"
         style="@style/ButtonStyle"
@@ -138,7 +164,7 @@
         android:singleLine="true"
         android:text="@string/record_current_weight"
         android:textColor="@color/white" />
-    
+
     <Button
         android:id="@+id/connect"
         style="@style/ButtonStyle"

@@ -49,22 +49,7 @@
                 android:gravity="center"
                 android:singleLine="true"
                 android:text="@string/minite" />
-
-            <net.simonvt.numberpicker.NumberPicker
-                android:id="@+id/second"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_weight="1" />
-
-            <TextView
-                style="@style/TitleTextViewStyle"
-                android:layout_width="25dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:singleLine="true"
-                android:text="@string/second" />
+            
         </LinearLayout>
         
         <ImageView android:layout_centerInParent="true"

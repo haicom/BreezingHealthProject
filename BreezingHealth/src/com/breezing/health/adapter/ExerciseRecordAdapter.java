@@ -1,6 +1,5 @@
 package com.breezing.health.adapter;
 
-import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
 import android.content.Context;
@@ -73,15 +72,10 @@ public class ExerciseRecordAdapter extends CursorAdapter {
             DecimalFormat df2 = new DecimalFormat("###.00");
             final double timer = sportQuantity / EXERCISE_TIMER_HOUR;
             holder.des.setText( context.getString(R.string.exercise_hour_description, 
-                    df2.format(timer), sportUnit, sportIntensity) );
-        } else if (sportQuantity >= EXERCISE_TIMER_MINITE) {
-            DecimalFormat df2 = new DecimalFormat("###.00");
-            final double timer = sportQuantity / EXERCISE_TIMER_MINITE;
-            holder.des.setText( context.getString(R.string.exercise_minite_description, 
-                    df2.format(timer), sportUnit, sportIntensity) );
+                    df2.format(timer)) );
         } else {
-            holder.des.setText( context.getString(R.string.exercise_second_description, 
-                    sportQuantity, sportUnit, sportIntensity) );
+            holder.des.setText( context.getString(R.string.exercise_minite_description, 
+                    sportQuantity) );
         }
         
         DecimalFormat fnum = new DecimalFormat("##0.0"); 
@@ -135,7 +129,6 @@ public class ExerciseRecordAdapter extends CursorAdapter {
     private static final int SPORT_UNIT_INDEX = 4;
     private static final int CALORIE_INDEX = 5;
     
-    private static final double EXERCISE_TIMER_HOUR = 60 * 60.00;
-    private static final double EXERCISE_TIMER_MINITE = 60.00;
+    private static final double EXERCISE_TIMER_HOUR = 60.00;
 
 }
