@@ -30,7 +30,6 @@ import com.breezing.health.util.BreezingQueryViews;
 import com.breezing.health.util.LocalSharedPrefsUtil;
 
 public class UnitSettingsActivity extends ActionBarActivity implements OnClickListener {
-
     private UITableView mTableView;
     private View mCaloricUnitView;
     private View mHeightUnitView;
@@ -40,6 +39,7 @@ public class UnitSettingsActivity extends ActionBarActivity implements OnClickLi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
         setContentFrame(R.layout.activity_unit_settings);
         initValues();
         initViews();
@@ -53,7 +53,7 @@ public class UnitSettingsActivity extends ActionBarActivity implements OnClickLi
 
     private void initViews() {
         setActionBarTitle(R.string.unit_settings);
-        addLeftActionItem(new ActionItem(ActionItem.ACTION_BACK));
+        addLeftActionItem( new ActionItem(ActionItem.ACTION_BACK) );
         
         mTableView = (UITableView) findViewById(R.id.tableView);
         createList();
@@ -91,7 +91,7 @@ public class UnitSettingsActivity extends ActionBarActivity implements OnClickLi
         TextView caloricUnitTitle = (TextView) mCaloricUnitView.findViewById(R.id.title);
         TextView caloricUnitContent = (TextView) mCaloricUnitView.findViewById(R.id.content);
         caloricUnitTitle.setText(R.string.caloric_unit);
-        caloricUnitContent.setText("");
+        caloricUnitContent.setText( account.getCaloricUnit() );
         mCaloricUnitView.setOnClickListener(this);
         ViewItem caloricUnitViewItem = new ViewItem(mCaloricUnitView);
         mTableView.addViewItem(caloricUnitViewItem);
@@ -100,7 +100,7 @@ public class UnitSettingsActivity extends ActionBarActivity implements OnClickLi
         TextView heightUnitTitle = (TextView) mHeightUnitView.findViewById(R.id.title);
         TextView heightUnitContent = (TextView) mHeightUnitView.findViewById(R.id.content);
         heightUnitTitle.setText(R.string.height_unit);
-        heightUnitContent.setText(account.getHeightUnit());
+        heightUnitContent.setText( account.getHeightUnit() );
         mHeightUnitView.setOnClickListener(this);
         ViewItem heightUnitViewItem = new ViewItem(mHeightUnitView);
         mTableView.addViewItem(heightUnitViewItem);
@@ -109,7 +109,7 @@ public class UnitSettingsActivity extends ActionBarActivity implements OnClickLi
         TextView weightUnitTitle = (TextView) mWeightUnitView.findViewById(R.id.title);
         TextView weightUnitContent = (TextView) mWeightUnitView.findViewById(R.id.content);
         weightUnitTitle.setText(R.string.weight_unit);
-        weightUnitContent.setText(account.getWeightUnit());
+        weightUnitContent.setText( account.getWeightUnit() );
         mWeightUnitView.setOnClickListener(this);
         ViewItem weightUnitViewItem = new ViewItem(mWeightUnitView);
         mTableView.addViewItem(weightUnitViewItem);
@@ -118,7 +118,7 @@ public class UnitSettingsActivity extends ActionBarActivity implements OnClickLi
         TextView distanceUnitTitle = (TextView) mDistanceUnitView.findViewById(R.id.title);
         TextView distanceUnitContent = (TextView) mDistanceUnitView.findViewById(R.id.content);
         distanceUnitTitle.setText(R.string.distance_unit);
-        distanceUnitContent.setText(account.getDistanceUnit());
+        distanceUnitContent.setText( account.getDistanceUnit() );
         mDistanceUnitView.setOnClickListener(this);
         ViewItem distanceUnitViewItem = new ViewItem(mDistanceUnitView);
         mTableView.addViewItem(distanceUnitViewItem);
@@ -126,7 +126,10 @@ public class UnitSettingsActivity extends ActionBarActivity implements OnClickLi
     }
     
     private void showHopeWeightPicker(UnitType unitType) {
-        UnitPickerDialogFragment weightPicker = (UnitPickerDialogFragment) getSupportFragmentManager().findFragmentByTag("hopeWeightPicker");
+        
+        UnitPickerDialogFragment weightPicker = (UnitPickerDialogFragment) getSupportFragmentManager().
+                findFragmentByTag("hopeWeightPicker");
+        
         if (weightPicker != null) {
             getSupportFragmentManager().beginTransaction().remove(weightPicker);
         }
@@ -142,22 +145,26 @@ public class UnitSettingsActivity extends ActionBarActivity implements OnClickLi
                 UnitType unitType = (UnitType) params[0];
                 UnitEntity unit = (UnitEntity) params[1];
                 switch(unitType) {
-                case CALORIC:
-                    ((TextView)mCaloricUnitView.findViewById(R.id.content)).setText(unit.getUnitName());
-//                    updateUnit(Information.)
-                    break;
-                case HEIGHT:
-                    ((TextView)mHeightUnitView.findViewById(R.id.content)).setText(unit.getUnitName());
-                    updateUnit(Information.HEIGHT_UNIT, unit);
-                    break;
-                case WEIGHT:
-                    ((TextView)mWeightUnitView.findViewById(R.id.content)).setText(unit.getUnitName());
-                    updateUnit(Information.WEIGHT_UNIT, unit);
-                    break;
-                case DISTANCE:
-                    ((TextView)mDistanceUnitView.findViewById(R.id.content)).setText(unit.getUnitName());
-                    updateUnit(Information.DISTANCE_UNIT, unit);
-                    break;
+                
+                    case CALORIC:
+                        ( (TextView)mCaloricUnitView.findViewById( R.id.content) ).setText( unit.getUnitName() );
+                        updateUnit(Information.CALORIC_UNIT, unit);
+                        break;
+                        
+                    case HEIGHT:
+                        ( (TextView)mHeightUnitView.findViewById(R.id.content) ).setText( unit.getUnitName() );
+                        updateUnit(Information.HEIGHT_UNIT, unit);
+                        break;
+                        
+                    case WEIGHT:
+                        ( (TextView)mWeightUnitView.findViewById(R.id.content) ).setText( unit.getUnitName() );
+                        updateUnit(Information.WEIGHT_UNIT, unit);
+                        break;
+                        
+                    case DISTANCE:
+                        ( (TextView)mDistanceUnitView.findViewById(R.id.content) ).setText( unit.getUnitName() );
+                        updateUnit(Information.DISTANCE_UNIT, unit);
+                        break;
                 }
             }
 

@@ -24,39 +24,49 @@ public class AccountEntity {
     public String getHeightUnit() {
         return heightUnit;
     }
+    
     public void setHeightUnit(String heightUnit) {
         this.heightUnit = heightUnit;
     }
+    
     public String getWeightUnit() {
         return weightUnit;
     }
+    
     public void setWeightUnit(String weightUnit) {
         this.weightUnit = weightUnit;
     }
+    
     public String getDistanceUnit() {
         return distanceUnit;
     }
+    
     public void setDistanceUnit(String distanceUnit) {
         this.distanceUnit = distanceUnit;
     }
+    
     public String getCaloricUnit() {
         return caloricUnit;
     }
+    
     public void setCaloricUnit(String caloricUnit) {
         this.caloricUnit = caloricUnit;
     }
+    
     public int getAccountId() {
 		return accountId;
 	}
+    
     
     public void setAccountId(int accountId) {
 		this.accountId = accountId;
 	}
     
+    
     public String getAccountName() {
         return accountName;
     }
-    
+        
     public void setAccountName(String accountName) {
         this.accountName = accountName;
     }

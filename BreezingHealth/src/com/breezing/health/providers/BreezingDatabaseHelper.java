@@ -1,5 +1,6 @@
 package com.breezing.health.providers;
 
+import com.breezing.health.R;
 import com.breezing.health.providers.Breezing.Account;
 import com.breezing.health.providers.Breezing.EnergyCost;
 import com.breezing.health.providers.Breezing.FoodClassify;
@@ -21,7 +22,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
     private final static String TAG = "BreezingDatabaseHelper";
     private static BreezingDatabaseHelper sInstance = null;
     static final String DATABASE_NAME = "breezing.db";
-    static final int DATABASE_VERSION = 8;
+    static final int DATABASE_VERSION = 9;
     private final Context mContext;
 
     public interface Views {
@@ -101,6 +102,8 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
      * @param db
      */
     private void createInformationTables(SQLiteDatabase db) {
+        String[] caloricUnits = mContext.getResources().getStringArray(R.array.caloric_unit);
+        
         db.execSQL("CREATE TABLE " + BreezingProvider.TABLE_INFORMATION  + " ("
               +   Information._ID + " INTEGER PRIMARY KEY, "
               +   Information.ACCOUNT_ID + " INTEGER NOT NULL , "
@@ -111,6 +114,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
               +   Information.HEIGHT_UNIT + " TEXT NOT NULL , "
               +   Information.WEIGHT_UNIT + " TEXT NOT NULL , "
               +   Information.DISTANCE_UNIT + " TEXT NOT NULL , "
+              +   Information.CALORIC_UNIT + " TEXT DEFAULT "+ caloricUnits[0] +  " , "
               +   Information.ACCOUNT_PICTURE + " TEXT  " +
                    ");");
     }
@@ -523,6 +527,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
                 + Information.INFO_HEIGHT_UNIT + " , "
                 + Information.INFO_WEIGHT_UNIT + " , "
                 + Information.INFO_DISTANCE_UNIT + " , "
+                + Information.INFO_CALORIC_UNIT + " , "
                 + Information.INFO_ACCOUNT_PICTURE + " , "
                 + WeightChange.INFO_WEIGHT + " , "
                 + WeightChange.INFO_EVERY_WEIGHT + " , "
@@ -553,6 +558,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
             upgradeToVersion6(db);
             upgradeToVersion7(db);
             upgradeToVersion8(db);
+            upgradeToVersion9(db);
         } else if (oldVersion == 2) {
             upgradeToVersion3(db);
             upgradeToVersion4(db);
@@ -560,26 +566,34 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
             upgradeToVersion6(db);
             upgradeToVersion7(db);
             upgradeToVersion8(db);
+            upgradeToVersion9(db);
         } else if (oldVersion ==3 ){
             upgradeToVersion4(db);
             upgradeToVersion5(db);
             upgradeToVersion6(db);
             upgradeToVersion7(db);
             upgradeToVersion8(db);
+            upgradeToVersion9(db);
         } else if (oldVersion == 4 ) {
             upgradeToVersion5(db);
             upgradeToVersion6(db);
             upgradeToVersion7(db);
             upgradeToVersion8(db);
+            upgradeToVersion9(db);
         } else if (oldVersion == 5) {
             upgradeToVersion6(db);
             upgradeToVersion7(db);
             upgradeToVersion8(db);
+            upgradeToVersion9(db);
         } else if (oldVersion == 6 ) {
             upgradeToVersion7(db);
             upgradeToVersion8(db);
-        } else {
+            upgradeToVersion9(db);
+        } else if (oldVersion == 7) {
             upgradeToVersion8(db);
+            upgradeToVersion9(db);
+        } else {
+            upgradeToVersion9(db);
         }
     }
 
@@ -640,6 +654,16 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
 
         createIngestionCompareViews(db);
 
+    }
+    
+    private void upgradeToVersion9(SQLiteDatabase db) {
+        String[] caloricUnits = mContext.getResources().getStringArray(R.array.caloric_unit);
+        
+        db.execSQL(
+                "ALTER TABLE " + BreezingProvider.TABLE_INFORMATION  +
+                        " ADD " +  Information.CALORIC_UNIT + " TEXT DEFAULT "+ caloricUnits[0] );
+
+        createBaseInfomationViews(db);
     }
 
 }

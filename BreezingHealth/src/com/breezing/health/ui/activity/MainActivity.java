@@ -65,14 +65,12 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setSlidingMenuEnable(true);
-
         super.onCreate(savedInstanceState);
         setContentFrame(R.layout.activity_main);
         initViews();        
         initListeners();
         initValues();
         valueToView();
-
     }
 
     @Override
@@ -82,9 +80,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         mWeight.setText( weightString );
     }
 
-    private void initValues() {
-
-        
+    private void initValues() {        
         mAccountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this,
                 LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
         mDate = DateFormatUtil.simpleDateFormat("yyyyMMdd");
@@ -185,8 +181,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
     }
 
     @Override
-    public void onClick(View v) {
-        
+    public void onClick(View v) {        
         if ( v == mCalendar ) {
             showCalendar();
             return ;
@@ -206,7 +201,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 //        }
 //        getSupportFragmentManager().beginTransaction().addToBackStack(null);
         calendar = CalendarDialogFragment.getInstance();
-        calendar.setTitle(getString(R.string.title_select_date));
+        calendar.setTitle( getString(R.string.title_select_date) );
         calendar.setPositiveClickListener(new DialogFragmentInterface.OnClickListener() {
             @Override
             public void onClick(BaseDialogFragment dialog,
@@ -337,12 +332,21 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                 LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
         
         String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            mTempFile = new File(Environment.getExternalStorageDirectory(), String.valueOf(accountId) + InternalStorageContentProvider.PHOTO_FILE_NAME);
+        if ( Environment.MEDIA_MOUNTED.equals(state) ) {
+            mTempFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), 
+                    String.valueOf(accountId) + InternalStorageContentProvider.PHOTO_FILE_NAME);
         } else {
-            mTempFile = new File(getFilesDir(), String.valueOf(accountId) + InternalStorageContentProvider.PHOTO_FILE_NAME);
+            mTempFile = new File(getFilesDir().getAbsolutePath(), String.valueOf(accountId) + InternalStorageContentProvider.PHOTO_FILE_NAME);
         }
         
+        if (! mTempFile.exists()){
+            if (! mTempFile.mkdirs()){
+                Log.e(TAG, "failed to create directory");
+                return;
+            }
+        }
+        
+        Log.d(TAG, "showImagePickerDialog mTempFile = " + mTempFile.toString() );
         ImagePickerDialogFragment imagePicker = (ImagePickerDialogFragment) getSupportFragmentManager().findFragmentByTag("imagePicker");
         if (imagePicker != null) {
             getSupportFragmentManager().beginTransaction().remove(imagePicker);
@@ -360,19 +364,19 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         if (resultCode != Activity.RESULT_OK) {
             return;
         }
-
+        Log.d(TAG, "onActivityResult requestCode = " + requestCode + " data = " + data + " resultCode = " + resultCode);
         Bitmap bitmap;
         switch (requestCode) {
             case ImagePickerDialogFragment.REQUEST_CODE_GALLERY:
                 try {
-                    InputStream inputStream = getContentResolver().openInputStream(data.getData());
+                    InputStream inputStream = getContentResolver().openInputStream( data.getData() );
                     FileOutputStream fileOutputStream = new FileOutputStream(mTempFile);
                     Tools.copyStream(inputStream, fileOutputStream);
                     fileOutputStream.close();
                     inputStream.close();
                     startCropImage();
                 } catch (Exception e) {
-                    Log.e(TAG, "Error while creating temp file", e);
+                    Log.e(TAG, "Error while creating temp file", e);  
                 }
                 break;
                 
@@ -392,6 +396,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
     }
     
     private void startCropImage() {
+        Log.d(TAG, " startCropImage mTempFile.getPath() = " + mTempFile.getPath() );
+        
         Intent intent = new Intent(this, CropImage.class);
         intent.putExtra(CropImage.IMAGE_PATH, mTempFile.getPath());
         intent.putExtra(CropImage.SCALE, true);

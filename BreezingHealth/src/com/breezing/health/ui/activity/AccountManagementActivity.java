@@ -38,7 +38,7 @@ public class AccountManagementActivity extends ActionBarActivity implements OnCl
     private void initViews() {
         setActionBarTitle(R.string.account_management);
         addLeftActionItem(new ActionItem(ActionItem.ACTION_BACK));
-//        addRightActionItem(new ActionItem(ActionItem.ACTION_ADD_ACCOUNT));
+
         
         mListView = (ListView) findViewById(R.id.list);
         mAddAccount = (Button) findViewById(R.id.add_account);
@@ -66,17 +66,15 @@ public class AccountManagementActivity extends ActionBarActivity implements OnCl
     }
     
     @Override
-    public void onClickActionBarItems(ActionItem item, View v) {
-    	
-    	switch(item.getActionId()) {
-    	case ActionItem.ACTION_ADD_ACCOUNT: {
-    		Intent intent = new Intent(IntentAction.ACTIVITY_FILLIN_INFORMATION);
-    		startActivity(intent);
-    		finish();
-    		return ;
-    	}
-    	}
-    	
+    public void onClickActionBarItems(ActionItem item, View v) {    	
+        	switch(item.getActionId()) {
+        	case ActionItem.ACTION_ADD_ACCOUNT: {
+        		Intent intent = new Intent(IntentAction.ACTIVITY_FILLIN_INFORMATION);
+        		startActivity(intent);
+        		finish();
+        		return ;
+        	}
+    	}    	
     	super.onClickActionBarItems(item, v);
     }
 

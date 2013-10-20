@@ -74,6 +74,7 @@ public class Breezing {
         public static final String HEIGHT_UNIT = "height_unit";
         public static final String WEIGHT_UNIT = "weight_unit";
         public static final String DISTANCE_UNIT = "distance_unit";
+        public static final String CALORIC_UNIT = "caloric_unit";
         public static final String ACCOUNT_PICTURE = "account_picture";
 
         public static final String INFO_GENDER = BreezingProvider.TABLE_INFORMATION + "." + GENDER;
@@ -83,6 +84,7 @@ public class Breezing {
         public static final String INFO_HEIGHT_UNIT = BreezingProvider.TABLE_INFORMATION + "." + HEIGHT_UNIT;
         public static final String INFO_WEIGHT_UNIT = BreezingProvider.TABLE_INFORMATION + "." + WEIGHT_UNIT;
         public static final String INFO_DISTANCE_UNIT = BreezingProvider.TABLE_INFORMATION + "." + DISTANCE_UNIT;
+        public static final String INFO_CALORIC_UNIT = BreezingProvider.TABLE_INFORMATION + "." + CALORIC_UNIT;
         public static final String INFO_ACCOUNT_PICTURE = BreezingProvider.TABLE_INFORMATION + "." + ACCOUNT_PICTURE;
        
         /**

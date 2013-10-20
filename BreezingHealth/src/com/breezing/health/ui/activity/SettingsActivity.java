@@ -57,8 +57,7 @@ public class SettingsActivity extends ActionBarActivity implements View.OnClickL
     }
 
     private void initValues() {
-        mAccountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this,
-                LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
+       
         mStringBuilder = new StringBuilder();
     }
 
@@ -82,7 +81,9 @@ public class SettingsActivity extends ActionBarActivity implements View.OnClickL
     }
 
     private void valueToView() {
-        String accountName = queryAccountName();
+        int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this,
+                LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
+        String accountName = queryAccountName(accountId);
         mTableView.clear();
         createList();
         mNameItem.setTitle(accountName);
@@ -219,7 +220,7 @@ public class SettingsActivity extends ActionBarActivity implements View.OnClickL
      * @param accountName
      * @param accountPass
      */
-    private String queryAccountName( ) {
+    private String queryAccountName(int accountId ) {
 
         String accountName = null;
 
@@ -232,7 +233,7 @@ public class SettingsActivity extends ActionBarActivity implements View.OnClickL
             cursor = getContentResolver().query(Account.CONTENT_URI,
                     new String[] {Account.ACCOUNT_NAME},
                     mStringBuilder.toString(),
-                    new String[] { String.valueOf(mAccountId) },
+                    new String[] { String.valueOf(accountId) },
                     null);
 
             if (cursor != null) {

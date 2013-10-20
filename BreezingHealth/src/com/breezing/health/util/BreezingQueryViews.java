@@ -46,7 +46,8 @@ public class BreezingQueryViews {
         WeightChange.DATE,              //8
         Information.HEIGHT_UNIT,
         Information.WEIGHT_UNIT,
-        Information.DISTANCE_UNIT
+        Information.DISTANCE_UNIT,
+        Information.CALORIC_UNIT
     };
     
     private static final int INFO_ACCOUNT_NAME_INDEX = 0;
@@ -61,7 +62,7 @@ public class BreezingQueryViews {
     private static final int INFO_HEIGHT_UNIT_INDEX = 9;
     private static final int INFO_WEIGHT_UNIT_INDEX = 10;
     private static final int INFO_DISTANCE_UNIT_INDEX = 11;
-    
+    private static final int INFO_CALORIC_UNIT_INDEX = 12;
     /**
      * 根据某一个帐户id查询基本信息视图
      */
@@ -97,7 +98,7 @@ public class BreezingQueryViews {
                 String heightUnit = cursor.getString(INFO_HEIGHT_UNIT_INDEX);
                 String weightUnit = cursor.getString(INFO_WEIGHT_UNIT_INDEX);
                 String distanceUnit = cursor.getString(INFO_DISTANCE_UNIT_INDEX);
-                
+                String caloricUnit = cursor.getString(INFO_CALORIC_UNIT_INDEX);
                 account.setAccountName(accountName);
                 account.setAccountPass(accountPass);
                 account.setGender(gender);
@@ -110,7 +111,7 @@ public class BreezingQueryViews {
                 account.setHeightUnit(heightUnit);
                 account.setWeightUnit(weightUnit);
                 account.setDistanceUnit(distanceUnit);
-                
+                account.setCaloricUnit(caloricUnit);
                 Log.d(TAG, " testCostWeeklyAndAccount accountName = " + accountName + " accountPass = " + accountPass
                         + " gender = " + gender + " height = " + height
                         + " birthday = " + birthday + " birthday = " + birthday 
@@ -119,9 +120,10 @@ public class BreezingQueryViews {
                         + " date = " + date);
             }
         } finally {
-            cursor.close();
-            return account;
+            cursor.close();            
         }
+        
+        return account;
     }
     
     /**
@@ -697,6 +699,91 @@ public class BreezingQueryViews {
          return result;
      }
      
+     
+     /***
+      * 查询统计信息换算单位，把单位改为统计信息取得数据，比如 重量 输入 磅 换算成斤存储，然后根据磅获取    
+      * @param unitType
+      * @param unitName
+      * @return
+      */
+     public float queryUnitObtainData(String unitType, String unitName) {
+         
+         float unifyUnit = 0;
+         
+         BLog.d(TAG, " queryUnitObtainData unitType = " + unitType + " unitName = " + unitName);
+         
+         StringBuilder stringBuilder = new StringBuilder();
+         stringBuilder.setLength(0);
+         stringBuilder.append(UnitSettings.UNIT_TYPE + " = ? AND ");
+         stringBuilder.append(UnitSettings.UNIT_NAME + "= ?");
+         
+         Cursor cursor = null;
+         try {
+             cursor = mContentResolver.query( UnitSettings.CONTENT_URI,
+                     new String[] { UnitSettings.UNIT_OBTAIN_DATA },
+                     stringBuilder.toString(),
+                     new String[] { unitType, unitName },
+                     null);
+
+             if (cursor != null) {
+                 if ( cursor.getCount() > 0 ) {
+                     cursor.moveToPosition(0);
+                     unifyUnit = cursor.getFloat(0);
+                 }
+                 
+             }
+         } finally {
+             if (cursor != null) {
+                 cursor.close();
+             }
+         }
+
+         BLog.d(TAG, " queryUnitObtainData  unitType = " + unitType + " unitName = " + unitName);
+
+         return  unifyUnit;
+     }
+     
+     
+     /***
+      * 查询统计信息换算单位，把单位改为统计信息存储，比如 重量 输入 磅 换算成斤存储
+      * @param data
+      * @param unitType
+      * @param unitName
+      * @return
+      */
+     public float queryUnitUnifyData(String unitType, String unitName) {
+         float unifyUnit = 0;
+         Log.d(TAG, " queryUnitUnifyData unitType = " + unitType + " unitName = " + unitName);
+         StringBuilder stringBuilder = new StringBuilder();
+         stringBuilder.setLength(0);
+         stringBuilder.append(UnitSettings.UNIT_TYPE + " = ? AND ");
+         stringBuilder.append(UnitSettings.UNIT_NAME + "= ?");
+         Cursor cursor = null;
+         try {
+             cursor = mContentResolver.query(UnitSettings.CONTENT_URI,
+                     new String[] {UnitSettings.UNIT_UNIFY_DATA},
+                     stringBuilder.toString(),
+                     new String[] {unitType, unitName},
+                     null);
+
+             if (cursor != null) {
+                 if ( cursor.getCount() > 0 ) {
+                     cursor.moveToPosition(0);
+                     unifyUnit = cursor.getFloat(0);
+                 }
+                 
+             }
+         } finally {
+             if (cursor != null) {
+                 cursor.close();
+             }
+         }
+
+         Log.d(TAG, " queryUnitUnifyData  unifyUnit = " + unifyUnit);
+
+         return unifyUnit;
+     }
+     
      /**
       * 食物记录查询表
       */
@@ -724,7 +811,7 @@ public class BreezingQueryViews {
       * @param accountId
       * @param date
       */
-         private void queryIngestiveRecord(int accountId, int date) {
+         public void queryIngestiveRecord(int accountId, int date) {
      
              StringBuilder stringBuilder = new StringBuilder();
              stringBuilder.setLength(0);

@@ -527,7 +527,7 @@ public class WeightRecordActivity extends ActionBarActivity implements OnClickLi
     }
     
     /***
-     * 查询统计信息换算单位，把单位改为统计信息获得，比如 重量 输入 磅 换算成斤存储
+     * 查询统计信息换算单位，把单位改为统计信息取得数据，比如 重量 输入 磅 换算成斤存储，然后根据磅获取
      * @param data
      * @param unitType
      * @param unitName
@@ -545,6 +545,7 @@ public class WeightRecordActivity extends ActionBarActivity implements OnClickLi
         stringBuilder.append(UnitSettings.UNIT_NAME + "= ?");
         
         Cursor cursor = null;
+        
         try {
             cursor = getContentResolver().query( UnitSettings.CONTENT_URI,
                     new String[] { UnitSettings.UNIT_OBTAIN_DATA },
@@ -567,7 +568,7 @@ public class WeightRecordActivity extends ActionBarActivity implements OnClickLi
 
         BLog.d(TAG, " queryUnitObtainData  unitType = " + unitType + " unitName = " + unitName);
 
-        return data * unifyUnit;
+        return unifyUnit;
     }
     
     

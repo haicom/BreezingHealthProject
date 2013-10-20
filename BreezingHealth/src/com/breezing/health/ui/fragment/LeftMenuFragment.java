@@ -3,6 +3,7 @@ package com.breezing.health.ui.fragment;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
+import java.text.DecimalFormat;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -10,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,10 +33,10 @@ import com.breezing.health.util.InternalStorageContentProvider;
 import com.breezing.health.util.LocalSharedPrefsUtil;
 
 public class LeftMenuFragment extends BaseFragment implements android.view.View.OnClickListener {
-    
+    private static final String TAG = "LeftMenuFragment";
     private View mFragmentView;
     private TextView mName;
-    private TextView mSex;
+    private TextView mCaloric;
     private ListView mListView;
     private LeftMenuAdapter mAdapter;
     private View mHeaderView;
@@ -59,35 +61,28 @@ public class LeftMenuFragment extends BaseFragment implements android.view.View.
         
         mHeaderView = inflater.inflate(R.layout.left_menu_header, null);
         mName = (TextView) mHeaderView.findViewById(R.id.name);
-        mSex = (TextView) mHeaderView.findViewById(R.id.sex);
+        mCaloric = (TextView) mHeaderView.findViewById(R.id.caloric);
         mAvatar = (ImageView) mHeaderView.findViewById(R.id.icon);
         mAvatar.setOnClickListener(this);
         mListView.addHeaderView(mHeaderView);
         
-        int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(getActivity(),
-                LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
-        BreezingQueryViews query = new BreezingQueryViews(getActivity());
-        final AccountEntity account = query.queryBaseInfoViews(accountId);
-        if (account != null) {
-            mName.setText(account.getAccountName());
-            mSex.setText(ChangeUnitUtil.changeGenderUtil(getActivity(), account.getGender()));
-        }
+       
         
         mAdapter = new LeftMenuAdapter(getActivity());
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(new OnItemClickListener() {
 
             @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int position,
-                    long arg3) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //check click position is headerView
-                if (position < mListView.getHeaderViewsCount()) {
+                if ( position < mListView.getHeaderViewsCount() ) {
                     return ;
                 }
+                
                 final int menuPosition = position - mListView.getHeaderViewsCount();
-                if (mAdapter.getItem(menuPosition).intent != null) {
-                    ((BaseActivity) getActivity()).toggle();
-                    getActivity().startActivity(new Intent(mAdapter.getItem(menuPosition).intent));
+                if ( mAdapter.getItem(menuPosition).intent != null ) {
+                    ( (BaseActivity) getActivity() ).toggle();
+                    getActivity().startActivity( new Intent(mAdapter.getItem(menuPosition).intent) );
                 }
             }
         });
@@ -99,17 +94,28 @@ public class LeftMenuFragment extends BaseFragment implements android.view.View.
     public void onClick(View v) {
         
         if (v == mAvatar) {
-            ((BaseActivity) getActivity()).toggle();
-            ((MainActivity) getActivity()).showImagePickerDialog();
+            ( (BaseActivity) getActivity() ).toggle();
+            ( (MainActivity) getActivity() ).showImagePickerDialog();
             return ;
         }
         
     }
     
     @Override
-    public void onResume() {
+    public void onResume() {        
         super.onResume();
-        queryEnergyCost();
+        Log.d(TAG, "onResume");
+        int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(getActivity(),
+                LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
+        BreezingQueryViews query = new BreezingQueryViews( getActivity() );
+        final AccountEntity account = query.queryBaseInfoViews(accountId);
+        if (account != null) {
+            mName.setText( account.getAccountName() );            
+        }
+        int caloric = queryEnergyCost();
+        float unifyUnit = query.queryUnitObtainData(this.getString(R.string.caloric_type), account.getCaloricUnit() );
+        DecimalFormat weightFormat = new DecimalFormat("#0.0");
+        mCaloric.setText(weightFormat.format(caloric * unifyUnit) + account.getCaloricUnit() );
         setAvatar();
     }
     
@@ -132,11 +138,12 @@ public class LeftMenuFragment extends BaseFragment implements android.view.View.
     }
     
     private final static int ENERGY_COST_TOTAL_ENERGY = 0;
+    
     /*** 
      * 查询能量消耗值
      */
-    private void queryEnergyCost() {
-
+    private int queryEnergyCost() {
+        int caloric = 0;
         int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(getActivity(),
                 LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
         String sortOrder = EnergyCost.ENERGY_COST_DATE + " DESC";
@@ -154,9 +161,8 @@ public class LeftMenuFragment extends BaseFragment implements android.view.View.
 
             if (cursor != null) {
                 if ( cursor.getCount() > 0 ) {
-                    cursor.moveToPosition(0);
-                    final String unit = getString(R.string.kilojoule);
-                    mSex.setText(String.valueOf(cursor.getInt(ENERGY_COST_TOTAL_ENERGY)) + unit);
+                    cursor.moveToPosition(0);                    
+                    caloric = cursor.getInt(ENERGY_COST_TOTAL_ENERGY);
                 }
 
 
@@ -166,6 +172,8 @@ public class LeftMenuFragment extends BaseFragment implements android.view.View.
                 cursor.close();
             }
         }
+        
+        return caloric;
     }
     
 }

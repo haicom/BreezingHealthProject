@@ -55,7 +55,7 @@ public class WeightHistoryActivity  extends ActionBarActivity implements OnClick
         super.onCreate(savedInstanceState);
         setContentFrame(R.layout.activity_weight_history);
         mContentResolver = getContentResolver();
-
+        setActionBarTitle(R.string.caloric_weight_history);
         mAccountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this,
                 LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
         

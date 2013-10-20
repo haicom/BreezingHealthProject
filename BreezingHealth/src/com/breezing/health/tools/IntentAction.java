@@ -24,8 +24,9 @@ public class IntentAction {
     public final static String ACTIVITY_OTHER_CALORIC_BURN = "action.intent.breezing.health.ACTIVITY_OTHER_CALORIC_BURN";
     public final static String ACTIVITY_LOGIN = "action.intent.breezing.health.ACTIVITY_LOGIN";
     public final static String ACTIVITY_WEIGHT_HISTORY ="action.intent.breezing.health.ACTIVITY_WEIGHT_HISTORY";
+    public final static String ACTIVITY_BURN_HISTORY = "action.intent.breezing.health.ACTIVITY_BURN_HISTORY";
     public final static String INTENT_IMAGE_CROP = "action.intent.breezing.health.IMAGE_CROP";
-
+    
     public final static String BROADCAST_TASK_SERVICE = "android.intent.breezing.health.DATA_TASK";
 
 }

@@ -1,6 +1,7 @@
 package com.breezing.health.ui.activity;
 
 import android.bluetooth.BluetoothDevice;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -17,6 +18,7 @@ import com.breezing.health.adapter.BreezingTestPagerAdapter;
 import com.breezing.health.entity.ActionItem;
 import com.breezing.health.providers.Breezing.Account;
 import com.breezing.health.providers.Breezing.EnergyCost;
+import com.breezing.health.tools.IntentAction;
 import com.breezing.health.tools.Tools;
 import com.breezing.health.ui.fragment.BreezingTestResultFragment;
 import com.breezing.health.util.ExtraName;
@@ -94,6 +96,7 @@ public class BreezingTestActivity extends ActionBarActivity {
             int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this,
                     LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
             final boolean isTested = queryEnergyCost(accountId);
+            
             if (isTested) {
                 Tools.refreshVane(mMetabolism, mEnergyVane);
                 
@@ -114,13 +117,25 @@ public class BreezingTestActivity extends ActionBarActivity {
                         14,
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 mLastTestNotice.setText(spannable);
-            }
-            
-            
-            
+            }            
         }
         
         mViewPager = (CustomViewPager) findViewById(R.id.viewPager);
+    }
+    
+    @Override
+    public void onClickActionBarItems(ActionItem item, View v) {
+        switch( item.getActionId() ) {
+            case ActionItem.ACTION_BREEZING_TEST_HISTORY: {               
+                Intent intent = new Intent(IntentAction.ACTIVITY_BURN_HISTORY);                          
+                startActivity(intent);
+                return ;
+            }
+                
+            
+        }
+        
+        super.onClickActionBarItems(item, v);
     }
     
     /***
