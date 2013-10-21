@@ -133,7 +133,7 @@ public class LauncherActivity extends BaseActivity {
             action = IntentAction.ACTIVITY_FILLIN_INFORMATION;
         }
         
-        appenAllEnergyCost();
+       
         
         int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this,
                 LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
@@ -145,7 +145,8 @@ public class LauncherActivity extends BaseActivity {
             int count = queryAccountInfo(accountId, accountPass);
             if (count == 1) {
                 action = IntentAction.ACTIVITY_BREEZING_TEST;
-                if ( queryEnergyCost(accountId) ) {                    
+                if ( queryEnergyCost(accountId) ) {
+                    appenAllEnergyCost();
                     action = IntentAction.ACTIVITY_MAIN;
                 }
             }

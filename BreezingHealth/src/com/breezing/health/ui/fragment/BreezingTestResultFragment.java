@@ -15,9 +15,12 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.breezing.health.R;
+import com.breezing.health.entity.AccountEntity;
 import com.breezing.health.providers.Breezing.EnergyCost;
 import com.breezing.health.tools.IntentAction;
 import com.breezing.health.tools.Tools;
+import com.breezing.health.ui.activity.BreezingTestActivity;
+import com.breezing.health.util.BreezingQueryViews;
 import com.breezing.health.util.ExtraName;
 import com.breezing.health.util.LocalSharedPrefsUtil;
 
@@ -26,10 +29,15 @@ public class BreezingTestResultFragment extends BaseFragment implements OnClickL
     private View mFragmentView;
     private Button mNext;
     private TextView   mTextView;
-    private int mTotalEnergy = 0;
+    private float mTotalEnergy = 0;
     private int mEnergyCostDate = 0;
     private static BreezingTestResultFragment mFragment;
     private View mTotalVane;
+    
+    private float mUnifyUnit;
+    private String mCaloricUnit;
+    
+    private AccountEntity mAccount;
 
     public static BreezingTestResultFragment newInstance() {
         
@@ -57,6 +65,8 @@ public class BreezingTestResultFragment extends BaseFragment implements OnClickL
             mNext.setVisibility(View.INVISIBLE);
         }
         mNext.setOnClickListener(this);
+        
+       
         return mFragmentView;
     }
     
@@ -64,6 +74,11 @@ public class BreezingTestResultFragment extends BaseFragment implements OnClickL
     public void onResume() {
         Log.d(TAG, " onResume ");
         super.onResume();
+        int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this.getActivity(),
+                LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
+        BreezingQueryViews query = new BreezingQueryViews(this.getActivity());
+        mAccount = query.queryBaseInfoViews(accountId);
+        mUnifyUnit = query.queryUnitObtainData( this.getString(R.string.caloric_type), mAccount.getCaloricUnit() );
     }
     
     @Override
@@ -94,10 +109,10 @@ public class BreezingTestResultFragment extends BaseFragment implements OnClickL
             mTextView.setText(spannable);
         }
         
-        Tools.refreshVane(mTotalEnergy, mTotalVane);
+        Tools.refreshVane( (int) mTotalEnergy, mTotalVane);
     }
 
-    private final static int ENERGY_COST_TOTAL_ENERGY = 0;
+    private final static int ENERGY_COST_METABOLISML_ENERGY = 0;
     private final static int ENERGY_COST_ENERGY_COST_DATE = 1;
     /*** 
      * 查询能量消耗值
@@ -115,7 +130,7 @@ public class BreezingTestResultFragment extends BaseFragment implements OnClickL
         Cursor cursor = null;
         try {
             cursor = getActivity().getContentResolver().query(EnergyCost.CONTENT_URI,
-                    new String[] {EnergyCost.TOTAL_ENERGY, EnergyCost.ENERGY_COST_DATE},
+                    new String[] { EnergyCost.METABOLISM, EnergyCost.ENERGY_COST_DATE },
                     stringBuilder.toString(),
                     new String[] { String.valueOf(accountId) },
                     sortOrder);
@@ -123,7 +138,7 @@ public class BreezingTestResultFragment extends BaseFragment implements OnClickL
             if (cursor != null) {
                 if ( cursor.getCount() > 0 ) {
                     cursor.moveToPosition(0);
-                    mTotalEnergy =  cursor.getInt(ENERGY_COST_TOTAL_ENERGY);
+                    mTotalEnergy =  cursor.getFloat(ENERGY_COST_METABOLISML_ENERGY) * mUnifyUnit;
                     mEnergyCostDate = cursor.getInt(ENERGY_COST_ENERGY_COST_DATE);
                 }
 

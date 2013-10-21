@@ -114,8 +114,8 @@ public class LeftMenuFragment extends BaseFragment implements android.view.View.
         }
         int caloric = queryEnergyCost();
         float unifyUnit = query.queryUnitObtainData(this.getString(R.string.caloric_type), account.getCaloricUnit() );
-        DecimalFormat weightFormat = new DecimalFormat("#0.0");
-        mCaloric.setText(weightFormat.format(caloric * unifyUnit) + account.getCaloricUnit() );
+        DecimalFormat caloricFormat = new DecimalFormat("#0.0");
+        mCaloric.setText(caloricFormat.format(caloric * unifyUnit) + account.getCaloricUnit() );
         setAvatar();
     }
     
@@ -137,7 +137,7 @@ public class LeftMenuFragment extends BaseFragment implements android.view.View.
         }
     }
     
-    private final static int ENERGY_COST_TOTAL_ENERGY = 0;
+ 
     
     /*** 
      * 查询能量消耗值
@@ -154,7 +154,7 @@ public class LeftMenuFragment extends BaseFragment implements android.view.View.
         Cursor cursor = null;
         try {
             cursor = getActivity().getContentResolver().query(EnergyCost.CONTENT_URI,
-                    new String[] {EnergyCost.TOTAL_ENERGY},
+                    new String[] {EnergyCost.METABOLISM},
                     stringBuilder.toString(),
                     new String[] { String.valueOf(accountId) },
                     sortOrder);
@@ -162,7 +162,7 @@ public class LeftMenuFragment extends BaseFragment implements android.view.View.
             if (cursor != null) {
                 if ( cursor.getCount() > 0 ) {
                     cursor.moveToPosition(0);                    
-                    caloric = cursor.getInt(ENERGY_COST_TOTAL_ENERGY);
+                    caloric = cursor.getInt(0);
                 }
 
 

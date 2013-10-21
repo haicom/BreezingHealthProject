@@ -72,7 +72,7 @@ public class ExerciseRecordActivity extends ActionBarActivity
 
     private int mAccountId;
     private int mDate;
-
+    //取出需要保存的总的值
     private float mTotalCalorie;
     private int mHour;
     private int mMinite;
@@ -297,8 +297,9 @@ public class ExerciseRecordActivity extends ActionBarActivity
         }
 
         float calorie = obtainSportCalorie();
-        float totalCalorie = calorie * (mHour * 60 + mMinite);
-
+        //取出的既为需要保存的值千卡
+        float totalCalorie = calorie * (mHour * 60 + mMinite) ;
+        
         ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
         ops.add(ContentProviderOperation.newInsert(HeatConsumptionRecord.CONTENT_URI)
                 .withValue(HeatConsumptionRecord.ACCOUNT_ID, mAccountId)
@@ -461,65 +462,24 @@ public class ExerciseRecordActivity extends ActionBarActivity
     /**
      * 查询基本信息视图列表
      */
-    private static final String[] PROJECTION_CONSUMPTION_RECORD = new String[] {
-        HeatConsumptionRecord._ID,
-        HeatConsumptionRecord.SPORT_TYPE,          // 0
-        HeatConsumptionRecord.SPORT_INTENSITY,      // 1
-        HeatConsumptionRecord.SPORT_QUANTITY,    // 2
-        HeatConsumptionRecord.SPORT_UNIT ,     //3
-        HeatConsumptionRecord.CALORIE   //4
+   private static final String[] PROJECTION_CONSUMPTION_RECORD = new String[] {
+       HeatConsumptionRecord._ID,
+       HeatConsumptionRecord.SPORT_TYPE,          // 0
+       HeatConsumptionRecord.SPORT_INTENSITY,      // 1
+       HeatConsumptionRecord.SPORT_QUANTITY,    // 2
+       HeatConsumptionRecord.SPORT_UNIT ,     //3
+       HeatConsumptionRecord.CALORIE   //4
 
-    };
+   };
 
-    private static final int SPORT_ID_INDEX = 0;
-    private static final int SPORT_TYPE_INDEX = 1;
-    private static final int SPORT_INTENSITY_INDEX = 2;
-    private static final int SPORT_QUANTITY_INDEX = 3;
-    private static final int SPORT_UNIT_INDEX = 4;
-    private static final int CALORIE_INDEX = 5;
+   public static final int SPORT_ID_INDEX = 0;
+   public static final int SPORT_TYPE_INDEX = 1;
+   public static final int SPORT_INTENSITY_INDEX = 2;
+   public static final int SPORT_QUANTITY_INDEX = 3;
+   public static final int SPORT_UNIT_INDEX = 4;
+   public static final int CALORIE_INDEX = 5;
 //
-//
-//    private void queryHeatConsumptionRecord(int accountId, int date) {
-//
-//        StringBuilder stringBuilder = new StringBuilder();
-//        stringBuilder.setLength(0);
-//        stringBuilder.append(HeatConsumptionRecord.ACCOUNT_ID + " = ? AND ");
-//        stringBuilder.append(HeatConsumptionRecord.DATE + " = ? ");
-//
-//
-//        Cursor cursor = null;
-//
-//
-//        cursor = getContentResolver().query(HeatConsumptionRecord.CONTENT_URI,
-//                    PROJECTION_CONSUMPTION_RECORD,
-//                    stringBuilder.toString(),
-//                    new String[] {String.valueOf(accountId), String.valueOf(date) },
-//                    null);
-//
-//        if (cursor == null) {
-//            Log.d(TAG, " testBaseInfoView cursor = " + cursor);
-//        }
-//
-//
-//        try {
-//
-//            cursor.moveToPosition(-1);
-//            while (cursor.moveToNext() ) {
-//                ExerciseRecordEntity exerciseRecord = new ExerciseRecordEntity();
-//                String  sportType = cursor.getString(SPORT_TYPE_INDEX);
-//                String  sportIntensity = cursor.getString(SPORT_INTENSITY_INDEX);
-//                int     sportQuantity = cursor.getInt(SPORT_QUANTITY_INDEX);
-//                String  sportUnit = cursor.getString(SPORT_UNIT_INDEX);
-//                float    calorie = cursor.getFloat(CALORIE_INDEX);
-//                exerciseRecord.setName(sportType);
-//                exerciseRecord.setDes(sportIntensity);
-//                exerciseRecord.setCaloric(calorie);
-//            }
-//
-//        } finally {
-//            cursor.close();
-//        }
-//    }
+
 
 
     @Override
@@ -567,14 +527,11 @@ public class ExerciseRecordActivity extends ActionBarActivity
 
     @Override
     public void onClickActionBarItems(ActionItem item, View v) {
-
         switch( item.getActionId() ) {
-
             case ActionItem.ACTION_BACK: {
                 updateEnergyCost();
             }
         }
-
         super.onClickActionBarItems(item, v);
     }
     
@@ -585,24 +542,23 @@ public class ExerciseRecordActivity extends ActionBarActivity
     private static final String[] PROJECTION_ENERGY_COST_SORT = new String[] {
         EnergyCost.METABOLISM,        
         EnergyCost.DIGEST,
-        EnergyCost.TRAIN
+        EnergyCost.SPORT
     };
 
 
     private static final int ENERGY_COST_METABOLISM_INDEX = 0;
     private static final int ENERGY_COST_DIGEST_INDEX = 1;
-    private static final int ENERGY_COST_TRAIN_INDEX = 2;
+    private static final int ENERGY_COST_SPORT_INDEX = 2;
   
 
     private void updateEnergyCost() {
-        StringBuilder stringBuilder = new StringBuilder();
-        
+        StringBuilder stringBuilder = new StringBuilder();        
         Cursor cursor = null;
+        
         int count = 0;
         float metabolism = 0;
         float digest = 0;
-        float train = 0;
-         
+        float sport = 0;         
         float total = 0;
         
         
@@ -610,13 +566,14 @@ public class ExerciseRecordActivity extends ActionBarActivity
         stringBuilder.append(Ingestion.ACCOUNT_ID + " = ? "  + " AND ");     
         stringBuilder.append(Ingestion.DATE + "= ? " );
         
+        String sortOrder = EnergyCost.DATE + " DESC";
         try {
             cursor = getContentResolver().query(EnergyCost.CONTENT_URI,
                     PROJECTION_ENERGY_COST_SORT,
                     stringBuilder.toString(),
                     new String[] { String.valueOf(mAccountId),                                
                                    String.valueOf(mDate) },
-                    null);
+                                   sortOrder);
 
             if (cursor != null) {
                 count =  cursor.getCount();
@@ -624,8 +581,7 @@ public class ExerciseRecordActivity extends ActionBarActivity
                     cursor.moveToPosition(0);
                     metabolism =  cursor.getFloat(ENERGY_COST_METABOLISM_INDEX);
                     digest =  cursor.getFloat(ENERGY_COST_DIGEST_INDEX);
-                    train =  cursor.getFloat(ENERGY_COST_TRAIN_INDEX);
-                 
+                    sport =  cursor.getFloat(ENERGY_COST_SPORT_INDEX);                 
                 }
             }
         } finally {
@@ -634,14 +590,16 @@ public class ExerciseRecordActivity extends ActionBarActivity
             }
         }
         
-        total = metabolism + digest + train + mTotalCalorie * mSaveUnit;
+        total = metabolism + digest + sport + mTotalCalorie;
         stringBuilder.setLength(0);
         stringBuilder.append(HeatConsumptionRecord.ACCOUNT_ID + " = ? AND ");
         stringBuilder.append(HeatConsumptionRecord.DATE + " = ? ");
 
         ContentValues values = new ContentValues();
-        values.put(EnergyCost.TRAIN, mTotalCalorie * mSaveUnit);
+        values.put(EnergyCost.TRAIN, mTotalCalorie);
         values.put(EnergyCost.TOTAL_ENERGY, total);
+        Log.d(TAG, "updateEnergyCost total = " + total + " metabolism = " + metabolism + " digest = " + digest
+                + " train = " + sport + " mTotalCalorie = " + mTotalCalorie + " mSaveUnit = " + mSaveUnit);
         mContentResolver.update(EnergyCost.CONTENT_URI,
                 values, stringBuilder.toString(),
                 new String[] {

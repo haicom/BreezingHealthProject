@@ -62,9 +62,9 @@ public class AddCaloricRecordAdapter extends BaseAdapter {
         }
 
         final RecordFunctionEntity fun = (RecordFunctionEntity) getItem(position);
-        viewHolder.title.setText(fun.getTitleRes());
-        viewHolder.icon.setImageResource(fun.getIconRes());
-        viewHolder.seekBar.setCircleSeekBar(fun.getMax(), fun.getValue(), fun.getColorRes());
+        viewHolder.title.setText( fun.getTitleRes() );
+        viewHolder.icon.setImageResource( fun.getIconRes() );
+        viewHolder.seekBar.setCircleSeekBar( (int)fun.getMax(), (int)fun.getValue(), fun.getColorRes() );
 
         if (position == getCount() - 1) {
             viewHolder.divider.setVisibility(View.INVISIBLE);

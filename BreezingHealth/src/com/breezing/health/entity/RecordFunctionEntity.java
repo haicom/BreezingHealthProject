@@ -2,12 +2,12 @@ package com.breezing.health.entity;
 
 public class RecordFunctionEntity {
     private int titleRes;
-    private int value;
-    private int max;
+    private float value;
+    private float max;
     private int colorRes;
     private int iconRes;
 
-    public RecordFunctionEntity(int titleRes, int value, int max, int colorRes, int iconRes) {
+    public RecordFunctionEntity(int titleRes, float value, float max, int colorRes, int iconRes) {
         this.titleRes = titleRes;
         this.value = value;
         this.max = max;
@@ -23,19 +23,19 @@ public class RecordFunctionEntity {
         this.titleRes = titleRes;
     }
 
-    public int getValue() {
+    public float getValue() {
         return value;
     }
 
-    public void setValue(int value) {
+    public void setValue(float value) {
         this.value = value;
     }
 
-    public int getMax() {
+    public float getMax() {
         return max;
     }
 
-    public void setMax(int max) {
+    public void setMax(float max) {
         this.max = max;
     }
 

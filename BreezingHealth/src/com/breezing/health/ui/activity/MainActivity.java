@@ -22,6 +22,7 @@ import android.widget.Button;
 
 import com.breezing.health.R;
 import com.breezing.health.adapter.CaloricPagerAdapter;
+import com.breezing.health.entity.AccountEntity;
 import com.breezing.health.entity.ActionItem;
 import com.breezing.health.providers.Breezing.Account;
 import com.breezing.health.providers.Breezing.Information;
@@ -37,6 +38,7 @@ import com.breezing.health.ui.fragment.CaloricIntakeFragment;
 import com.breezing.health.ui.fragment.DialogFragmentInterface;
 import com.breezing.health.ui.fragment.ImagePickerDialogFragment;
 import com.breezing.health.util.BLog;
+import com.breezing.health.util.BreezingQueryViews;
 import com.breezing.health.util.DateFormatUtil;
 import com.breezing.health.util.ExtraName;
 import com.breezing.health.util.InternalStorageContentProvider;
@@ -60,6 +62,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
     private int mAccountId;
     private CaloricHistoryType mPosition = CaloricHistoryType.BURN;
     
+
+    
     private File mTempFile = null;
 
     @Override
@@ -71,6 +75,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         initListeners();
         initValues();
         valueToView();
+       
     }
 
     @Override
@@ -78,6 +83,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         super.onResume();
         String weightString  = getBaseInfoViews(mAccountId);
         mWeight.setText( weightString );
+       
+        
     }
 
     private void initValues() {        
@@ -87,13 +94,13 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         String dateString = DateFormatUtil.getCurrentDateString(this, mDate);
         mCalendar.setText(dateString);
         mContentResolver = getContentResolver();
-       
+        
 
     }
 
     private void initViews() {
-        addRightActionItem(new ActionItem(ActionItem.ACTION_HISTORY));
-        addLeftActionItem(new ActionItem(ActionItem.ACTION_MENU));
+        addRightActionItem( new ActionItem(ActionItem.ACTION_HISTORY) );
+        addLeftActionItem( new ActionItem(ActionItem.ACTION_MENU) );
         mWeight = (Button) findViewById(R.id.weight);
         mCalendar = (Button) findViewById(R.id.calendar);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
@@ -111,11 +118,24 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         CaloricBurnFragment caloricBurnFragment  = (CaloricBurnFragment) mCaloricPagerAdapter.
                 getItem(CaloricHistoryType.BURN.ordinal());
         
-        Bundle bundle = new Bundle();
-        bundle.putInt(MAIN_ACCOUNT_ID, mAccountId);
-        bundle.putInt(MAIN_DATE, mDate);
-        caloricIntakeFragment.setArguments(bundle);
-        caloricBurnFragment.setArguments(bundle);
+        Bundle IntakeBundle = caloricIntakeFragment.getArguments();
+        if (IntakeBundle == null) {
+            IntakeBundle = new Bundle();
+        }
+       
+        IntakeBundle.putInt(MAIN_ACCOUNT_ID, mAccountId);
+        IntakeBundle.putInt(MAIN_DATE, mDate);
+        caloricIntakeFragment.setArguments(IntakeBundle);
+        
+        
+        Bundle burnBundle = caloricBurnFragment.getArguments();
+        if (burnBundle == null) {
+            burnBundle = new Bundle();
+        }
+        
+        burnBundle.putInt(MAIN_ACCOUNT_ID, mAccountId);
+        burnBundle.putInt(MAIN_DATE, mDate);      
+        caloricBurnFragment.setArguments(burnBundle);
         mLinePageIndicator.setViewPager(mViewPager);
     }
 
@@ -323,8 +343,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         super.onClickActionBarItems(item, v);
     }
     
-    public static final String MAIN_ACCOUNT_ID = "account_id";
-    public static final String MAIN_DATE = "date";
+   
     
     public void showImagePickerDialog() {
         
@@ -406,5 +425,10 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
         startActivityForResult(intent, ImagePickerDialogFragment.REQUEST_CODE_CROP_IMAGE);
     }
+    
+    public static final String MAIN_ACCOUNT_ID = "account_id";
+    public static final String MAIN_DATE = "date";
+    public static final String MAIN_UNIFY_UNIT = "unify_unit";
+    public static final String MAIN_CALORIC_UNIT = "caloric_unit";
     
 }

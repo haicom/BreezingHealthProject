@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.breezing.health.R;
+import com.breezing.health.ui.activity.ExerciseRecordActivity;
 
 public class ExerciseRecordAdapter extends CursorAdapter {
     private static final String TAG = "ExerciseRecordAdapter";
@@ -63,14 +64,14 @@ public class ExerciseRecordAdapter extends CursorAdapter {
         holder.des.setTextColor(contentColor);
         holder.calorie.setTextColor(contentColor);
         
-        String  sportType = cursor.getString(SPORT_TYPE_INDEX);
-        String  sportIntensity = cursor.getString(SPORT_INTENSITY_INDEX);
-        int     sportQuantity = cursor.getInt(SPORT_QUANTITY_INDEX);
-        String  sportUnit = cursor.getString(SPORT_UNIT_INDEX);
-        float   calorie = cursor.getFloat(CALORIE_INDEX);
+        String  sportType = cursor.getString(ExerciseRecordActivity.SPORT_TYPE_INDEX);
+        String  sportIntensity = cursor.getString(ExerciseRecordActivity.SPORT_INTENSITY_INDEX);
+        int     sportQuantity = cursor.getInt(ExerciseRecordActivity.SPORT_QUANTITY_INDEX);
+        String  sportUnit = cursor.getString(ExerciseRecordActivity.SPORT_UNIT_INDEX);
+        float   calorie = cursor.getFloat(ExerciseRecordActivity.CALORIE_INDEX);
         
         holder.type.setText(sportType);
-        if (sportQuantity >= EXERCISE_TIMER_HOUR) {
+        if ( sportQuantity >= EXERCISE_TIMER_HOUR ) {
             DecimalFormat df2 = new DecimalFormat("###.00");
             final double timer = sportQuantity / EXERCISE_TIMER_HOUR;
             holder.des.setText( context.getString(R.string.exercise_hour_description, 
@@ -82,7 +83,7 @@ public class ExerciseRecordAdapter extends CursorAdapter {
         
         DecimalFormat fnum = new DecimalFormat("##0.0"); 
         holder.calorie.setText( context.getString(R.string.exercise_calorie, 
-                fnum.format(calorie * mUnifyUnit) , mCaloricUnit));
+                fnum.format(calorie * mUnifyUnit) , mCaloricUnit) );
         
     }
 
@@ -124,12 +125,7 @@ public class ExerciseRecordAdapter extends CursorAdapter {
         }
     }
     
-    private static final int SPORT_ID_INDEX = 0;
-    private static final int SPORT_TYPE_INDEX = 1;
-    private static final int SPORT_INTENSITY_INDEX = 2;
-    private static final int SPORT_QUANTITY_INDEX = 3;
-    private static final int SPORT_UNIT_INDEX = 4;
-    private static final int CALORIE_INDEX = 5;
+  
     
     private static final double EXERCISE_TIMER_HOUR = 60.00;
 

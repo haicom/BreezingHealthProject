@@ -1,5 +1,6 @@
 package com.breezing.health.ui.fragment;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import android.app.Activity;
@@ -17,11 +18,14 @@ import android.widget.TextView;
 
 import com.breezing.health.R;
 import com.breezing.health.adapter.AddCaloricRecordAdapter;
+import com.breezing.health.entity.AccountEntity;
 import com.breezing.health.entity.RecordFunctionEntity;
 import com.breezing.health.providers.Breezing.EnergyCost;
 import com.breezing.health.tools.IntentAction;
 import com.breezing.health.ui.activity.MainActivity;
+import com.breezing.health.util.BreezingQueryViews;
 import com.breezing.health.util.ExtraName;
+import com.breezing.health.util.LocalSharedPrefsUtil;
 import com.breezing.health.widget.PieGraph;
 import com.breezing.health.widget.PieSlice;
 
@@ -33,10 +37,16 @@ public class CaloricBurnFragment extends BaseFragment implements OnItemClickList
     private GridView mGridView;
     private PieGraph mPieGraph;
     private TextView mBurnCaloric;
+    private TextView mMetabolism;
     private AddCaloricRecordAdapter mAdapter;
     private static CaloricBurnFragment mCaloricBurnFragment;
     private int mAccountId;
     private int mDate;
+    
+    private float mUnifyUnit;
+    private String mCaloricUnit;
+    
+    private AccountEntity mAccount;
 
     public static CaloricBurnFragment newInstance() {
         CaloricBurnFragment fragment = new CaloricBurnFragment();
@@ -74,11 +84,8 @@ public class CaloricBurnFragment extends BaseFragment implements OnItemClickList
         mGridView = (GridView) mFragmentView.findViewById(R.id.gridView);
         mPieGraph = (PieGraph) mFragmentView.findViewById(R.id.pie_graph);
         mBurnCaloric = (TextView)mFragmentView.findViewById(R.id.burn_caloric);
-        
-        Bundle bundel = this.getArguments();
-        
-        mAccountId = bundel.getInt(MainActivity.MAIN_ACCOUNT_ID);
-        mDate = bundel.getInt(MainActivity.MAIN_DATE);
+        mMetabolism = (TextView)mFragmentView.findViewById(R.id.metabolism);
+      
 
 
         return mFragmentView;
@@ -88,7 +95,16 @@ public class CaloricBurnFragment extends BaseFragment implements OnItemClickList
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume");
-      
+        Bundle bundel = this.getArguments();
+        int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this.getActivity(),
+                LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
+        BreezingQueryViews query = new BreezingQueryViews(this.getActivity());
+        mAccount = query.queryBaseInfoViews(accountId);
+        mUnifyUnit = query.queryUnitObtainData( this.getString(R.string.caloric_type), mAccount.getCaloricUnit() );
+        mAccountId = bundel.getInt(MainActivity.MAIN_ACCOUNT_ID);
+        mDate = bundel.getInt(MainActivity.MAIN_DATE);
+        mCaloricUnit = mAccount.getCaloricUnit();
+        mMetabolism.setText(mCaloricUnit);
         
         if ( ( mAccountId !=0 ) || ( mDate != 0 ) ) {
             drawPieChar(mAccountId, mDate);
@@ -115,11 +131,11 @@ public class CaloricBurnFragment extends BaseFragment implements OnItemClickList
 
     public void drawPieChar(int accountId, int date) {
         int count = 0;
-        int metabolism = 0;
-        int sport = 0;
-        int digest = 0;
-        int train = 0;
-        int totalEnergy = 0;
+        float metabolism = 0;
+        float sport = 0;
+        float digest = 0;
+        float train = 0;
+        float totalEnergy = 0;
         int energyDate = 0;
 
         String sortOrder = EnergyCost.ENERGY_COST_DATE + " DESC";
@@ -147,11 +163,11 @@ public class CaloricBurnFragment extends BaseFragment implements OnItemClickList
             if (cursor != null) {
                 if ( cursor.getCount() > 0 ) {
                     cursor.moveToPosition(0);
-                    metabolism = cursor.getInt(ENERGY_COST_METABOLISM_INDEX);
-                    sport = cursor.getInt(ENERGY_COST_SPORT_INDEX);
-                    digest = cursor.getInt(ENERGY_COST_DIGEST_INDEX);
-                    train = cursor.getInt(ENERGY_COST_TRAIN_INDEX);
-                    totalEnergy =  cursor.getInt(ENERGY_COST_TOTAL_ENERGY_INDEX);
+                    metabolism = cursor.getFloat(ENERGY_COST_METABOLISM_INDEX) * mUnifyUnit;
+                    sport = cursor.getFloat(ENERGY_COST_SPORT_INDEX) * mUnifyUnit;
+                    digest = cursor.getFloat(ENERGY_COST_DIGEST_INDEX) * mUnifyUnit;
+                    train = cursor.getFloat(ENERGY_COST_TRAIN_INDEX) * mUnifyUnit;
+                    totalEnergy =  cursor.getFloat(ENERGY_COST_TOTAL_ENERGY_INDEX) * mUnifyUnit;
                     energyDate = cursor.getInt(ENERGY_COST_ENERGY_COST_DATE_INDEX);
                 }
             }
@@ -217,7 +233,8 @@ public class CaloricBurnFragment extends BaseFragment implements OnItemClickList
         mAdapter = new AddCaloricRecordAdapter(getActivity(), funs);
         mGridView.setAdapter(mAdapter);
         mGridView.setOnItemClickListener(this);
-        mBurnCaloric.setText(String.valueOf(totalEnergy));
+        DecimalFormat weightFormat = new DecimalFormat("#0.0");
+        mBurnCaloric.setText( weightFormat.format(totalEnergy) );
     }
 
     @Override

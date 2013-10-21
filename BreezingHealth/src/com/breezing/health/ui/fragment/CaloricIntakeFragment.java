@@ -1,5 +1,6 @@
 package com.breezing.health.ui.fragment;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import android.content.Intent;
@@ -17,12 +18,15 @@ import android.widget.TextView;
 import com.breezing.health.R;
 import com.breezing.health.adapter.AddCaloricRecordAdapter;
 import com.breezing.health.adapter.CaloricPagerAdapter;
+import com.breezing.health.entity.AccountEntity;
 import com.breezing.health.entity.RecordFunctionEntity;
 import com.breezing.health.providers.Breezing.Ingestion;
 import com.breezing.health.tools.IntentAction;
 import com.breezing.health.ui.activity.MainActivity;
 import com.breezing.health.ui.activity.CaloricIntakeActivity.CaloricIntakeType;
+import com.breezing.health.util.BreezingQueryViews;
 import com.breezing.health.util.ExtraName;
+import com.breezing.health.util.LocalSharedPrefsUtil;
 import com.breezing.health.widget.PieGraph;
 import com.breezing.health.widget.PieSlice;
 
@@ -35,11 +39,16 @@ public class CaloricIntakeFragment extends BaseFragment implements OnItemClickLi
     private GridView mGridView;
     private PieGraph mPieGraph;
     private TextView mUptakeCaloric;
+    private TextView mMetabolism;
     private AddCaloricRecordAdapter mAdapter;
     
     private int mAccountId;
     private int mDate;
-
+    
+    private float mUnifyUnit;
+    private String mCaloricUnit;
+    
+    private AccountEntity mAccount;
     public static CaloricIntakeFragment newInstance(int accountId, int date) {
         CaloricIntakeFragment fragment = new CaloricIntakeFragment( );
         return fragment;
@@ -69,12 +78,7 @@ public class CaloricIntakeFragment extends BaseFragment implements OnItemClickLi
         mGridView = (GridView) mFragmentView.findViewById(R.id.gridView);
         mPieGraph = (PieGraph) mFragmentView.findViewById(R.id.pie_graph);
         mUptakeCaloric = (TextView)mFragmentView.findViewById(R.id.uptake_caloric);
-        
-        Bundle bundel = this.getArguments();
-        
-        mAccountId = bundel.getInt(MainActivity.MAIN_ACCOUNT_ID);
-        mDate = bundel.getInt(MainActivity.MAIN_DATE);
-       
+        mMetabolism = (TextView)mFragmentView.findViewById(R.id.metabolism);
        
        return mFragmentView;
     }
@@ -83,8 +87,17 @@ public class CaloricIntakeFragment extends BaseFragment implements OnItemClickLi
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume");
-       
-        if ( (mAccountId !=0) && (mDate != 0) ) {
+        Bundle bundel = this.getArguments();
+        int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this.getActivity(),
+                LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
+        BreezingQueryViews query = new BreezingQueryViews(this.getActivity());
+        mAccount = query.queryBaseInfoViews(accountId);
+        mUnifyUnit = query.queryUnitObtainData( this.getString(R.string.caloric_type), mAccount.getCaloricUnit() );
+        mAccountId = bundel.getInt(MainActivity.MAIN_ACCOUNT_ID);
+        mDate = bundel.getInt(MainActivity.MAIN_DATE);      
+        mCaloricUnit = mAccount.getCaloricUnit();
+        mMetabolism.setText(mCaloricUnit);
+        if ( (mAccountId !=0 ) && ( mDate != 0 ) ) {
             drawPieChar(mAccountId, mDate);
         }        
     }
@@ -108,11 +121,11 @@ public class CaloricIntakeFragment extends BaseFragment implements OnItemClickLi
     public void drawPieChar(int accountId, int date) {
         
         int count = 0;        
-        int breakfast = 0;
-        int lunch = 0;
-        int dinner = 0;
-        int etc = 0;
-        int totalIngestion = 0;
+        float breakfast = 0;
+        float lunch = 0;
+        float dinner = 0;
+        float etc = 0;
+        float totalIngestion = 0;
         
         String sortOrder = Ingestion.DATE + " DESC";
 
@@ -139,11 +152,11 @@ public class CaloricIntakeFragment extends BaseFragment implements OnItemClickLi
             if (cursor != null) {
                 if ( cursor.getCount() > 0 ) {
                     cursor.moveToPosition(0);
-                    breakfast = cursor.getInt(INGESTION_BREAKFAST_INDEX);
-                    lunch = cursor.getInt(INGESTION_LUNCH_INDEX);
-                    dinner = cursor.getInt(INGESTION_DINNER_INDEX);
-                    etc = cursor.getInt(INGESTION_ETC_INDEX);
-                    totalIngestion =  cursor.getInt(INGESTION_TOTAL_ENERGY_INDEX);                    
+                    breakfast = cursor.getFloat(INGESTION_BREAKFAST_INDEX) * mUnifyUnit;
+                    lunch = cursor.getFloat(INGESTION_LUNCH_INDEX) * mUnifyUnit;
+                    dinner = cursor.getFloat(INGESTION_DINNER_INDEX) * mUnifyUnit;
+                    etc = cursor.getFloat(INGESTION_ETC_INDEX) * mUnifyUnit;
+                    totalIngestion =  cursor.getFloat(INGESTION_TOTAL_ENERGY_INDEX) * mUnifyUnit;                    
                 }
             }
         } finally {
@@ -221,7 +234,8 @@ public class CaloricIntakeFragment extends BaseFragment implements OnItemClickLi
         mAdapter = new AddCaloricRecordAdapter(getActivity(), funs);
         mGridView.setAdapter(mAdapter);
         mGridView.setOnItemClickListener(this);
-        mUptakeCaloric.setText(String.valueOf(totalIngestion));
+        DecimalFormat weightFormat = new DecimalFormat("#0.0");
+        mUptakeCaloric.setText(weightFormat.format(totalIngestion));
     }
 
     @Override
@@ -232,19 +246,19 @@ public class CaloricIntakeFragment extends BaseFragment implements OnItemClickLi
         Intent intent = new Intent(IntentAction.ACTIVITY_CALORIC_INTAKE);
         intent.putExtra(ExtraName.EXTRA_DATE, mDate);
         intent.putExtra(ExtraName.EXTRA_ACCOUNT_ID, mAccountId);
-        switch(fun.getTitleRes()) {
-        case R.string.breakfast:
-            intent.putExtra(ExtraName.EXTRA_TYPE, CaloricIntakeType.BREAKFAST.ordinal());
-            break;
-        case R.string.lunch:
-            intent.putExtra(ExtraName.EXTRA_TYPE, CaloricIntakeType.LUNCH.ordinal());
-            break;
-        case R.string.dinner:
-            intent.putExtra(ExtraName.EXTRA_TYPE, CaloricIntakeType.DINNER.ordinal());
-            break;
-        case R.string.other:
-            intent.putExtra(ExtraName.EXTRA_TYPE, CaloricIntakeType.OTHER.ordinal());
-            break;
+        switch( fun.getTitleRes() ) {
+            case R.string.breakfast:
+                intent.putExtra(ExtraName.EXTRA_TYPE, CaloricIntakeType.BREAKFAST.ordinal());
+                break;
+            case R.string.lunch:
+                intent.putExtra(ExtraName.EXTRA_TYPE, CaloricIntakeType.LUNCH.ordinal());
+                break;
+            case R.string.dinner:
+                intent.putExtra(ExtraName.EXTRA_TYPE, CaloricIntakeType.DINNER.ordinal());
+                break;
+            case R.string.other:
+                intent.putExtra(ExtraName.EXTRA_TYPE, CaloricIntakeType.OTHER.ordinal());
+                break;
         }
         startActivity(intent);
         

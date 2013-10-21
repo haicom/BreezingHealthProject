@@ -35,10 +35,11 @@ public class FoodAdapter extends BaseAdapter implements OnClickListener {
     private FoodCatagoryAdapter mCatagoryAdapter;
     private int mAccountId;
     private int mDate;
+    private float mUnifyUnit;
     private CaloricIntakeType mCaloricIntakeType;
     
     public FoodAdapter(Context context, FoodCatagoryAdapter catagoryAdapter, 
-            int accountId, int date, CaloricIntakeType caloricIntakeType) {
+            int accountId, int date, CaloricIntakeType caloricIntakeType, float unifyUnit) {
         this.mContext = context;
         this.mCatagoryAdapter = catagoryAdapter;
         mFoods = new ArrayList<FoodEntity>();
@@ -46,6 +47,7 @@ public class FoodAdapter extends BaseAdapter implements OnClickListener {
         mAccountId = accountId;
         mDate = date;
         mCaloricIntakeType = caloricIntakeType;
+        mUnifyUnit = unifyUnit;
         refreshCatagoryItems(null);        
     }
 
@@ -112,7 +114,7 @@ public class FoodAdapter extends BaseAdapter implements OnClickListener {
         return -1;
     }
     
-    public int getTotalCaloric() {
+    public float getTotalCaloric() {
         int total = 0;
         
         for ( FoodEntity food : mSelectedFoods ) {
@@ -380,9 +382,7 @@ public class FoodAdapter extends BaseAdapter implements OnClickListener {
             if (cursor != null) {
                 cursor.close();
             }
-        }
-        
-       
+        }       
         
         return;
     }

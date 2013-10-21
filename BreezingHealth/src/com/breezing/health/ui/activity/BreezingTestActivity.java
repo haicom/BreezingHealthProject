@@ -22,6 +22,7 @@ import com.breezing.health.providers.Breezing.EnergyCost;
 import com.breezing.health.tools.IntentAction;
 import com.breezing.health.tools.Tools;
 import com.breezing.health.ui.fragment.BreezingTestResultFragment;
+import com.breezing.health.ui.fragment.BreezingTestSecondStepFragment;
 import com.breezing.health.util.BreezingQueryViews;
 import com.breezing.health.util.ExtraName;
 import com.breezing.health.util.LocalSharedPrefsUtil;
@@ -56,19 +57,16 @@ public class BreezingTestActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentFrame(R.layout.activity_breezing_test);
         initValues();
-        initViews();
         valueToView();
+        initViews();       
         initListeners();
+        
     }
     
     @Override
     protected void onResume() {       
         super.onResume();
-        int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this,
-                LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
-        BreezingQueryViews query = new BreezingQueryViews(this);
-        mAccount = query.queryBaseInfoViews(accountId);
-        mUnifyUnit = query.queryUnitObtainData( this.getString(R.string.caloric_type), mAccount.getCaloricUnit() );
+        
     }
     
     private void initValues() {
@@ -77,18 +75,22 @@ public class BreezingTestActivity extends ActionBarActivity {
 
     private void initViews() {
         setActionBarTitle(R.string.my_energy_metabolism);
-
+        int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this,
+                LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
+        BreezingQueryViews query = new BreezingQueryViews(this);
+        mAccount = query.queryBaseInfoViews(accountId);
+        mUnifyUnit = query.queryUnitObtainData( this.getString(R.string.caloric_type), mAccount.getCaloricUnit() );
+        
+       
+        
         if (!mIsUpdate) {
-            int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this,
-                    LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
+           
             String accountPass = null;
             accountPass = LocalSharedPrefsUtil.getSharedPrefsValueString(this, String.valueOf(accountId) );
             if ( (accountId != 0) && (accountPass != null) ) {
                 int count = queryAccountInfo(accountId, accountPass);
                 if (count == 1) {
-                    if ( queryEnergyCost(accountId) ) {
-                        
-                    }
+                    queryEnergyCost(accountId);
                 }
             }
             
@@ -100,6 +102,8 @@ public class BreezingTestActivity extends ActionBarActivity {
             mStepTwo.setSelected(true);
             
         } else {
+            mViewPager.setCurrentItem(BreezingTestPagerAdapter.BREEZING_TEST_SECOND_STEP);
+            
             addLeftActionItem(new ActionItem(ActionItem.ACTION_BACK));
             addRightActionItem(new ActionItem(ActionItem.ACTION_BREEZING_TEST_HISTORY));
             
@@ -108,12 +112,12 @@ public class BreezingTestActivity extends ActionBarActivity {
             mLastTestNotice = (TextView) findViewById(R.id.energyResult);
             mEnergyVane = findViewById(R.id.energy_vane);
             
-            int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this,
-                    LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
+          
             final boolean isTested = queryEnergyCost(accountId);
             
             if (isTested) {
                 Float showMetabolism = mMetabolism * mUnifyUnit;
+                Log.d(TAG, "BreezingTestActivity showMetabolism = " + showMetabolism);
                 Tools.refreshVane( showMetabolism.intValue(), mEnergyVane);
                 
                 String year = String.valueOf(mLastTestDate).subSequence(0, ENERGY_COST_YEAR).toString();
@@ -136,7 +140,7 @@ public class BreezingTestActivity extends ActionBarActivity {
             }            
         }
         
-        mViewPager = (CustomViewPager) findViewById(R.id.viewPager);
+        
     }
     
     @Override
@@ -234,11 +238,10 @@ public class BreezingTestActivity extends ActionBarActivity {
     }
 
     private void valueToView() {
+        mViewPager = (CustomViewPager) findViewById(R.id.viewPager);
         mBreezingTestPagerAdapter = new BreezingTestPagerAdapter( getSupportFragmentManager() );
         mViewPager.setAdapter(mBreezingTestPagerAdapter);
-        if (mIsUpdate) {
-            mViewPager.setCurrentItem(BreezingTestPagerAdapter.BREEZING_TEST_SECOND_STEP);
-        }
+      
     }
 
     public void setBluetooth(BluetoothDevice device) {
@@ -286,4 +289,9 @@ public class BreezingTestActivity extends ActionBarActivity {
     private static final int ENERGY_COST_YEAR = 4;
     private static final int ENERGY_COST_MONTH = 2;
     private static final int ENERGY_COST_DAY = 2;
+    
+    
+    public static final String TEST_UNIFY_UNIT = "unify_unit";
+    public static final String TEST_CALORIC_UNIT = "caloric_unit";
+    public static final String TEST_ = "date";
 }
