@@ -15,12 +15,14 @@ import android.widget.TextView;
 
 import com.breezing.health.R;
 import com.breezing.health.adapter.BreezingTestPagerAdapter;
+import com.breezing.health.entity.AccountEntity;
 import com.breezing.health.entity.ActionItem;
 import com.breezing.health.providers.Breezing.Account;
 import com.breezing.health.providers.Breezing.EnergyCost;
 import com.breezing.health.tools.IntentAction;
 import com.breezing.health.tools.Tools;
 import com.breezing.health.ui.fragment.BreezingTestResultFragment;
+import com.breezing.health.util.BreezingQueryViews;
 import com.breezing.health.util.ExtraName;
 import com.breezing.health.util.LocalSharedPrefsUtil;
 import com.breezing.health.widget.CustomViewPager;
@@ -44,7 +46,10 @@ public class BreezingTestActivity extends ActionBarActivity {
     private int mLastTestDate;
     
     private boolean mIsUpdate;
-    private int mMetabolism;
+    private Float mMetabolism;
+    
+    private AccountEntity mAccount;
+    private float mUnifyUnit;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,7 +60,17 @@ public class BreezingTestActivity extends ActionBarActivity {
         valueToView();
         initListeners();
     }
-
+    
+    @Override
+    protected void onResume() {       
+        super.onResume();
+        int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this,
+                LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
+        BreezingQueryViews query = new BreezingQueryViews(this);
+        mAccount = query.queryBaseInfoViews(accountId);
+        mUnifyUnit = query.queryUnitObtainData( this.getString(R.string.caloric_type), mAccount.getCaloricUnit() );
+    }
+    
     private void initValues() {
         mIsUpdate = getIntent().getBooleanExtra(ExtraName.EXTRA_DATE, false);
     }
@@ -98,7 +113,8 @@ public class BreezingTestActivity extends ActionBarActivity {
             final boolean isTested = queryEnergyCost(accountId);
             
             if (isTested) {
-                Tools.refreshVane(mMetabolism, mEnergyVane);
+                Float showMetabolism = mMetabolism * mUnifyUnit;
+                Tools.refreshVane( showMetabolism.intValue(), mEnergyVane);
                 
                 String year = String.valueOf(mLastTestDate).subSequence(0, ENERGY_COST_YEAR).toString();
                 String month =  String.valueOf(mLastTestDate).subSequence(ENERGY_COST_YEAR ,
@@ -126,12 +142,15 @@ public class BreezingTestActivity extends ActionBarActivity {
     @Override
     public void onClickActionBarItems(ActionItem item, View v) {
         switch( item.getActionId() ) {
+        
             case ActionItem.ACTION_BREEZING_TEST_HISTORY: {               
                 Intent intent = new Intent(IntentAction.ACTIVITY_BURN_HISTORY);                          
                 startActivity(intent);
                 return ;
             }
+            case ActionItem.ACTION_BACK: {
                 
+            }
             
         }
         
@@ -153,7 +172,7 @@ public class BreezingTestActivity extends ActionBarActivity {
         Cursor cursor = null;
         try {
             cursor = getContentResolver().query(Account.CONTENT_URI,
-                    new String[] {Account.ACCOUNT_ID},
+                    new String[] { Account.ACCOUNT_ID },
                     stringBuilder.toString(),
                     new String[] { accountPass},
                     null);
@@ -189,7 +208,8 @@ public class BreezingTestActivity extends ActionBarActivity {
         Cursor cursor = null;
         try {
             cursor = getContentResolver().query(EnergyCost.CONTENT_URI,
-                    new String[] {EnergyCost.METABOLISM, EnergyCost.ENERGY_COST_DATE},
+                    new String[] { EnergyCost.METABOLISM, 
+                                   EnergyCost.ENERGY_COST_DATE },
                     stringBuilder.toString(),
                     new String[] { String.valueOf(accountId) },
                     sortOrder);
@@ -197,7 +217,7 @@ public class BreezingTestActivity extends ActionBarActivity {
             if (cursor != null) {
                 if ( cursor.getCount() > 0 ) {
                     cursor.moveToPosition(0);
-                    mMetabolism = cursor.getInt(ENERGY_COST_METABOLISM_ENERGY);
+                    mMetabolism = cursor.getFloat(ENERGY_COST_METABOLISM_ENERGY);
                     mLastTestDate = cursor.getInt(ENERGY_COST_ENERGY_COST_DATE);
                     result = true;
                 }
@@ -227,6 +247,7 @@ public class BreezingTestActivity extends ActionBarActivity {
     
 
     public void setTestResult() {
+        
         if (!mIsUpdate) {
             mStepLayout.setVisibility(View.GONE);
         } else {

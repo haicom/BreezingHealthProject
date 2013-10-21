@@ -27,10 +27,7 @@ public class BreezingDialogFragment extends BaseDialogFragment  implements OnCli
         mPositiveClickListener = listener;
     }
     
-    public void setNegativeClickListener(DialogFragmentInterface.OnClickListener listener) {
-        mNegativeClickListener = listener;
-    }
-    
+   
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         String title = getArguments().getString("title");
@@ -46,8 +43,7 @@ public class BreezingDialogFragment extends BaseDialogFragment  implements OnCli
         )
         .setNegativeButton(R.string.alert_dialog_cancel,
             new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    mNegativeClickListener.onClick(BreezingDialogFragment.this);
+                public void onClick(DialogInterface dialog, int whichButton) {                    
                     BreezingDialogFragment.this.dismiss();
                 }
             }

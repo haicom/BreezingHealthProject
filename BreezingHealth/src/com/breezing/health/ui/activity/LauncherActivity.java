@@ -348,9 +348,9 @@ public class LauncherActivity extends BaseActivity {
      * 添加每个帐户每天能量消耗值数量
      */
     private void appendEnergyCostById(ArrayList<ContentProviderOperation> ops, int accountId) {
-        int metabolism = 0;
-        int sport = 0;
-        int digest = 0;
+        float metabolism = 0;
+        float sport = 0;
+        float digest = 0;
         int energyDate = 0;
         
         Log.d(TAG, " appendEnergyCostById mMetabolism " + mMetabolism + " mSport = " + mSport + " mDigest = " + mDigest
@@ -370,9 +370,9 @@ public class LauncherActivity extends BaseActivity {
             if (cursor != null) {
                 if ( cursor.getCount() > 0 ) {
                     cursor.moveToPosition(0);
-                    metabolism = cursor.getInt(ENERGY_COST_METABOLISM_INDEX);
-                    sport = cursor.getInt(ENERGY_COST_SPORT_INDEX);
-                    digest = cursor.getInt(ENERGY_COST_DIGEST_INDEX);
+                    metabolism = cursor.getFloat(ENERGY_COST_METABOLISM_INDEX);
+                    sport = cursor.getFloat(ENERGY_COST_SPORT_INDEX);
+                    digest = cursor.getFloat(ENERGY_COST_DIGEST_INDEX);
                     energyDate = cursor.getInt(ENERGY_COST_ENERGY_COST_DATE_INDEX);                    
                 }
             }

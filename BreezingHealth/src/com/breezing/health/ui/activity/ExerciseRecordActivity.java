@@ -25,17 +25,20 @@ import android.widget.Toast;
 
 import com.breezing.health.R;
 import com.breezing.health.adapter.ExerciseRecordAdapter;
+import com.breezing.health.entity.AccountEntity;
 import com.breezing.health.entity.ActionItem;
 import com.breezing.health.providers.Breezing;
 import com.breezing.health.providers.Breezing.EnergyCost;
 import com.breezing.health.providers.Breezing.HeatConsumption;
 import com.breezing.health.providers.Breezing.HeatConsumptionRecord;
+import com.breezing.health.providers.Breezing.Ingestion;
 import com.breezing.health.ui.fragment.BaseDialogFragment;
 import com.breezing.health.ui.fragment.DialogFragmentInterface;
 import com.breezing.health.ui.fragment.SportIntensityPickerDialogFragment;
 import com.breezing.health.ui.fragment.SportTypePickerDialogFragment;
 import com.breezing.health.ui.fragment.TimerPickerDialogFragment;
 import com.breezing.health.util.BLog;
+import com.breezing.health.util.BreezingQueryViews;
 import com.breezing.health.util.DateFormatUtil;
 import com.breezing.health.util.ExtraName;
 import com.breezing.health.util.LocalSharedPrefsUtil;
@@ -73,7 +76,10 @@ public class ExerciseRecordActivity extends ActionBarActivity
     private float mTotalCalorie;
     private int mHour;
     private int mMinite;
-
+    
+    private AccountEntity mAccount;
+    private float mUnifyUnit;
+    private float mSaveUnit;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -96,6 +102,17 @@ public class ExerciseRecordActivity extends ActionBarActivity
     @Override
     protected void onResume() {
         super.onResume();
+        int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this,
+                LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
+        BreezingQueryViews query = new BreezingQueryViews( this );
+        mAccount = query.queryBaseInfoViews(accountId);
+        mUnifyUnit = query.queryUnitObtainData( this.getString(R.string.caloric_type), mAccount.getCaloricUnit() );
+        mSaveUnit = query.queryUnitUnifyData( this.getString(R.string.caloric_type), mAccount.getCaloricUnit() );
+        
+        mRecordAdapter = new ExerciseRecordAdapter(this, null, mAccount.getCaloricUnit(), mUnifyUnit);
+        mRecordAdapter.setOnDataSetChangedListener(mDataSetChangedListener);
+        mRecordList.setAdapter(mRecordAdapter);
+        startMsgListQuery();
         Log.d(TAG, "onResume");
     }
 
@@ -161,10 +178,8 @@ public class ExerciseRecordActivity extends ActionBarActivity
         mSportIntensity = mIntensitys[0];
         mButtonIntensity.setText( getString(R.string.intensity_unit,
                                   mSportIntensity ) );
-        mRecordAdapter = new ExerciseRecordAdapter(this, null);
-        mRecordAdapter.setOnDataSetChangedListener(mDataSetChangedListener);
-        mRecordList.setAdapter(mRecordAdapter);
-        startMsgListQuery();
+       
+       
 
     }
 
@@ -179,9 +194,9 @@ public class ExerciseRecordActivity extends ActionBarActivity
 
     private void updateTotalCaloric(float count) {
         final String title = getString(R.string.title_total_exercise_caloric);
-        final String unit = getString(R.string.kilojoule);
+       
 
-        SpannableString span = new SpannableString(title + String.valueOf(count) + unit);
+        SpannableString span = new SpannableString(title + String.valueOf(count) + mAccount.getCaloricUnit() );
         span.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.red)),
                 title.length(),
                 title.length() + String.valueOf(count).length(),
@@ -405,7 +420,7 @@ public class ExerciseRecordActivity extends ActionBarActivity
                        }
                    }
 
-                   updateTotalCaloric(mTotalCalorie);
+                   updateTotalCaloric(mTotalCalorie * mUnifyUnit );
 
                    mRecordAdapter.changeCursor(cursor);
                    return;
@@ -562,16 +577,71 @@ public class ExerciseRecordActivity extends ActionBarActivity
 
         super.onClickActionBarItems(item, v);
     }
+    
+    
+    /**
+     * 获取食物种类
+     */
+    private static final String[] PROJECTION_ENERGY_COST_SORT = new String[] {
+        EnergyCost.METABOLISM,        
+        EnergyCost.DIGEST,
+        EnergyCost.TRAIN
+    };
+
+
+    private static final int ENERGY_COST_METABOLISM_INDEX = 0;
+    private static final int ENERGY_COST_DIGEST_INDEX = 1;
+    private static final int ENERGY_COST_TRAIN_INDEX = 2;
+  
 
     private void updateEnergyCost() {
         StringBuilder stringBuilder = new StringBuilder();
+        
+        Cursor cursor = null;
+        int count = 0;
+        float metabolism = 0;
+        float digest = 0;
+        float train = 0;
+         
+        float total = 0;
+        
+        
+        stringBuilder.setLength(0);
+        stringBuilder.append(Ingestion.ACCOUNT_ID + " = ? "  + " AND ");     
+        stringBuilder.append(Ingestion.DATE + "= ? " );
+        
+        try {
+            cursor = getContentResolver().query(EnergyCost.CONTENT_URI,
+                    PROJECTION_ENERGY_COST_SORT,
+                    stringBuilder.toString(),
+                    new String[] { String.valueOf(mAccountId),                                
+                                   String.valueOf(mDate) },
+                    null);
+
+            if (cursor != null) {
+                count =  cursor.getCount();
+                if (count > 0) {
+                    cursor.moveToPosition(0);
+                    metabolism =  cursor.getFloat(ENERGY_COST_METABOLISM_INDEX);
+                    digest =  cursor.getFloat(ENERGY_COST_DIGEST_INDEX);
+                    train =  cursor.getFloat(ENERGY_COST_TRAIN_INDEX);
+                 
+                }
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        
+        total = metabolism + digest + train + mTotalCalorie * mSaveUnit;
         stringBuilder.setLength(0);
         stringBuilder.append(HeatConsumptionRecord.ACCOUNT_ID + " = ? AND ");
         stringBuilder.append(HeatConsumptionRecord.DATE + " = ? ");
 
         ContentValues values = new ContentValues();
-        values.put(EnergyCost.TRAIN, mTotalCalorie);
-
+        values.put(EnergyCost.TRAIN, mTotalCalorie * mSaveUnit);
+        values.put(EnergyCost.TOTAL_ENERGY, total);
         mContentResolver.update(EnergyCost.CONTENT_URI,
                 values, stringBuilder.toString(),
                 new String[] {

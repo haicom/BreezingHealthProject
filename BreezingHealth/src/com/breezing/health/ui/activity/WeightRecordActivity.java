@@ -35,6 +35,7 @@ import com.breezing.health.ui.fragment.DialogFragmentInterface;
 import com.breezing.health.ui.fragment.ExceptedWeightPickerDialogFragment;
 import com.breezing.health.ui.fragment.WeightPickerDialogFragment;
 import com.breezing.health.util.BLog;
+import com.breezing.health.util.BreezingQueryViews;
 import com.breezing.health.util.DateFormatUtil;
 import com.breezing.health.util.ExtraName;
 import com.breezing.health.util.LocalSharedPrefsUtil;
@@ -281,24 +282,12 @@ public class WeightRecordActivity extends ActionBarActivity implements OnClickLi
     }
     
     private void refreshWeightInfo() {
-        
-        if (mWeightValue != 0 ) {
-            mActualWeight = queryUnitObtainData(mWeightValue, 
-                    getString(R.string.weight_type),
-                    mWeightUnitValue );
-        }
-        
-        if (mHopeWeightValue !=0 ) {
-            mActualHope = queryUnitObtainData(mHopeWeightValue, 
-                    getString(R.string.weight_type),
-                    mWeightUnitValue );
-        }
-        
-        if (mEveryWeight !=0 ) {
-            mActualEvery = queryUnitObtainData(mEveryWeight, 
-                    getString(R.string.weight_type),
-                    mWeightUnitValue );
-        }
+        BreezingQueryViews query = new BreezingQueryViews(this);
+        float unifyUnit =  query.queryUnitObtainData(getString(R.string.weight_type), mWeightUnitValue);
+        mActualWeight = unifyUnit * mWeightValue;
+        mActualHope = unifyUnit * mHopeWeightValue;
+        mActualEvery = unifyUnit * mEveryWeight;
+      
        
         Log.d(TAG, "refreshWeightInfo mWeightValue = " + mWeightValue + " mHopeWeightValue =  " + mHopeWeightValue
                 + " mEveryWeight = " + mEveryWeight);
@@ -340,7 +329,7 @@ public class WeightRecordActivity extends ActionBarActivity implements OnClickLi
         mSeekBar.setMax( (int) Math.abs( mActualWeight - mActualHope) );
         mSeekBar.setProgress( (int) Math.abs( mActualWeight - mActualEvery) );
         
-        
+        Log.d(TAG, " refreshWeightInfo mActualEvery = " + mActualEvery + " mActualHope = " + mActualHope);
         mWeight.setText( weightFormat.format(mActualEvery) );
         mExpectedWeight.setText( weightFormat.format(mActualHope) );
         mWeightUnit.setText(mWeightUnitValue);

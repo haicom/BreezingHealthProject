@@ -14,27 +14,29 @@ import android.widget.TextView;
 import com.breezing.health.R;
 
 public class ExerciseRecordAdapter extends CursorAdapter {
-
-    private Context context;
-   // private ArrayList<ExerciseRecordEntity> records;
+    private static final String TAG = "ExerciseRecordAdapter";
+    private Context context; 
     private int titleColor;
     private int contentColor;
     
-    private static final String TAG = "ExerciseRecordAdapter";
+    private String mCaloricUnit;
+    private  float mUnifyUnit;
+    
+    
     
     
     private OnDataSetChangedListener mOnDataSetChangedListener;
     protected LayoutInflater mInflater;
     
-    public ExerciseRecordAdapter(Context context, Cursor c) {
+    public ExerciseRecordAdapter(Context context, Cursor c, String caloriUnit, float unitfyUnit) {
         super(context, c, FLAG_REGISTER_CONTENT_OBSERVER);      
         this.context = context;
         this.titleColor = context.getResources().getColor(R.color.black);
         this.contentColor = context.getResources().getColor(R.color.gray);
-        
+        mCaloricUnit = caloriUnit;
+        mUnifyUnit = unitfyUnit;
         mInflater = (LayoutInflater) context.getSystemService(
-                Context.LAYOUT_INFLATER_SERVICE);
-       // initRecords();
+                Context.LAYOUT_INFLATER_SERVICE);       
     }
     
    
@@ -80,7 +82,7 @@ public class ExerciseRecordAdapter extends CursorAdapter {
         
         DecimalFormat fnum = new DecimalFormat("##0.0"); 
         holder.calorie.setText( context.getString(R.string.exercise_calorie, 
-                fnum.format(calorie)));
+                fnum.format(calorie * mUnifyUnit) , mCaloricUnit));
         
     }
 

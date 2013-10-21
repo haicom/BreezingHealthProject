@@ -22,7 +22,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
     private final static String TAG = "BreezingDatabaseHelper";
     private static BreezingDatabaseHelper sInstance = null;
     static final String DATABASE_NAME = "breezing.db";
-    static final int DATABASE_VERSION = 9;
+    static final int DATABASE_VERSION = 10;
     private final Context mContext;
 
     public interface Views {
@@ -127,11 +127,11 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + BreezingProvider.TABLE_COST  + " ("
                 +  EnergyCost._ID + " INTEGER PRIMARY KEY, "
                 +  EnergyCost.ACCOUNT_ID + " INTEGER NOT NULL , "
-                +  EnergyCost.METABOLISM + " INTEGER NOT NULL , "
-                +  EnergyCost.SPORT + " INTEGER NOT NULL , "
-                +  EnergyCost.DIGEST + " INTEGER NOT NULL , "
-                +  EnergyCost.TRAIN + " INTEGER NOT NULL , "
-                +  EnergyCost.TOTAL_ENERGY + " INTEGER NOT NULL , "
+                +  EnergyCost.METABOLISM + " FLOAT NOT NULL , "
+                +  EnergyCost.SPORT + " FLOAT NOT NULL , "
+                +  EnergyCost.DIGEST + " FLOAT NOT NULL , "
+                +  EnergyCost.TRAIN + " FLOAT NOT NULL , "
+                +  EnergyCost.TOTAL_ENERGY + " FLOAT NOT NULL , "
                 +  EnergyCost.ENERGY_COST_DATE + " INTEGER NOT NULL , "
                 +  EnergyCost.DATE + " INTEGER NOT NULL , "
                 +  EnergyCost.YEAR + " INTEGER NOT NULL , "
@@ -197,12 +197,12 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + BreezingProvider.TABLE_INGESTION  + " ("
                   + Ingestion._ID + " INTEGER PRIMARY KEY, "
                   + Ingestion.ACCOUNT_ID + " INTEGER NOT NULL , "
-                  + Ingestion.BREAKFAST + " INTEGER NOT NULL , "
-                  + Ingestion.LUNCH + " INTEGER NOT NULL , "
-                  + Ingestion.DINNER + " INTEGER NOT NULL , "
-                  + Ingestion.ETC + " INTEGER NOT NULL , "
+                  + Ingestion.BREAKFAST + " FLOAT NOT NULL , "
+                  + Ingestion.LUNCH + " FLOAT NOT NULL , "
+                  + Ingestion.DINNER + " FLOAT NOT NULL , "
+                  + Ingestion.ETC + " FLOAT NOT NULL , "
                   + Ingestion.FOOD_QTY + " INTEGER DEFAULT 0 , "
-                  + Ingestion.TOTAL_INGESTION + " INTEGER NOT NULL , "
+                  + Ingestion.TOTAL_INGESTION + " FLOAT NOT NULL , "
                   + Ingestion.DATE + " INTEGER NOT NULL , "
                   + Ingestion.YEAR + " INTEGER NOT NULL , "
                   + Ingestion.YEAR_MONTH + " INTEGER NOT NULL , "
@@ -559,6 +559,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
             upgradeToVersion7(db);
             upgradeToVersion8(db);
             upgradeToVersion9(db);
+            upgradeToVersion10(db);
         } else if (oldVersion == 2) {
             upgradeToVersion3(db);
             upgradeToVersion4(db);
@@ -567,6 +568,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
             upgradeToVersion7(db);
             upgradeToVersion8(db);
             upgradeToVersion9(db);
+            upgradeToVersion10(db);
         } else if (oldVersion ==3 ){
             upgradeToVersion4(db);
             upgradeToVersion5(db);
@@ -574,26 +576,35 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
             upgradeToVersion7(db);
             upgradeToVersion8(db);
             upgradeToVersion9(db);
+            upgradeToVersion10(db);
         } else if (oldVersion == 4 ) {
             upgradeToVersion5(db);
             upgradeToVersion6(db);
             upgradeToVersion7(db);
             upgradeToVersion8(db);
             upgradeToVersion9(db);
+            upgradeToVersion10(db);
         } else if (oldVersion == 5) {
             upgradeToVersion6(db);
             upgradeToVersion7(db);
             upgradeToVersion8(db);
             upgradeToVersion9(db);
+            upgradeToVersion10(db);
         } else if (oldVersion == 6 ) {
             upgradeToVersion7(db);
             upgradeToVersion8(db);
             upgradeToVersion9(db);
+            upgradeToVersion10(db);
         } else if (oldVersion == 7) {
             upgradeToVersion8(db);
             upgradeToVersion9(db);
-        } else {
+            upgradeToVersion10(db);
+        } else if (oldVersion == 8) {
             upgradeToVersion9(db);
+            upgradeToVersion10(db);
+            
+        } else {
+            upgradeToVersion10(db);
         }
     }
 
@@ -664,6 +675,13 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
                         " ADD " +  Information.CALORIC_UNIT + " TEXT DEFAULT "+ caloricUnits[0] );
 
         createBaseInfomationViews(db);
+    }
+    
+    private void upgradeToVersion10(SQLiteDatabase db) {
+        db.execSQL("DROP TABLE " + BreezingProvider.TABLE_COST); 
+        db.execSQL("DROP TABLE " + BreezingProvider.TABLE_INGESTION); 
+        createEnergyCostTables(db);
+        createIngestionTables(db);
     }
 
 }

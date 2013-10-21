@@ -90,7 +90,7 @@
     <string name = "year_in_month">%1$d月</string>
     <string name = "intensity_unit">%1$s</string>
 
-    <string name = "exercise_calorie">%1$s千焦</string>
+    <string name = "exercise_calorie">%1$s%2$s</string>
     <string name = "exercise_hour_description">运动%1$s小时</string>
     <string name = "exercise_minite_description">运动%1$s分钟</string>
     <string name = "exercise_second_description">运动%1$s秒</string>

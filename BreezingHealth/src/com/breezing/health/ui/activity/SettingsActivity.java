@@ -285,6 +285,8 @@ public class SettingsActivity extends ActionBarActivity implements View.OnClickL
 
             }
         });
+        
+     
 
         dialog.show(getSupportFragmentManager(), ACCOUNT_LOGIN_DIALOG);
     }
