@@ -1,5 +1,6 @@
 package com.breezing.health.entity;
 
+import com.breezing.health.R;
 
 public class AccountEntity {
 
@@ -17,7 +18,6 @@ public class AccountEntity {
     private String weightUnit;
     private String distanceUnit;
     private String caloricUnit;
-    private String avatar;
     
     
     
@@ -136,12 +136,6 @@ public class AccountEntity {
         this.date = date;
     }
     
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
     
-    public String getAvatar() {
-        return avatar;
-    }
     
 }

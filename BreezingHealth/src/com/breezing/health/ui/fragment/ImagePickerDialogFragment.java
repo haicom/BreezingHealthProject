@@ -30,7 +30,6 @@ public class ImagePickerDialogFragment extends BaseDialogFragment implements
 	public static final int REQUEST_CODE_GALLERY = 0x101;
 	public static final int REQUEST_CODE_TAKE_PICTURE = 0x201;
 	public static final int REQUEST_CODE_CROP_IMAGE = 0x301;
-	public static final int PHOTO_PICKED_WITH_DATA = 0x401;
 
 	private View mFragmentView;
 	private Button mTakeAPhoto;
@@ -40,6 +39,8 @@ public class ImagePickerDialogFragment extends BaseDialogFragment implements
 	private Button mCancel;
     private Button mConfirm;
 
+	private File mFileTemp;
+	
 	private String mTitleString;
 
 	public static ImagePickerDialogFragment newInstance() {
@@ -94,19 +95,26 @@ public class ImagePickerDialogFragment extends BaseDialogFragment implements
 	public void setTitle(String titleString) {
         mTitleString = titleString;
     }
+	
+	public void setFileTemp(File fileTemp) {
+		mFileTemp = fileTemp;
+	}
 
 	private void takePicture() {
 		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
 		try {
-//			intent.putExtra("return-data", true);
-//			getActivity().startActivityForResult(intent, PHOTO_PICKED_WITH_DATA);
-//			
-//			Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            File f = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
-            intent.putExtra("return-data", true);
-            getActivity().startActivityForResult(intent, REQUEST_CODE_TAKE_PICTURE);
-			
+			Uri mImageCaptureUri = null;
+			String state = Environment.getExternalStorageState();
+			if (Environment.MEDIA_MOUNTED.equals(state)) {
+				mImageCaptureUri = Uri.fromFile(mFileTemp);
+			} else {
+				mImageCaptureUri = InternalStorageContentProvider.CONTENT_URI;
+			}
+			intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT,
+					mImageCaptureUri);
+			intent.putExtra("return-data", true);
+			getActivity().startActivityForResult(intent, REQUEST_CODE_TAKE_PICTURE);
 		} catch (ActivityNotFoundException e) {
 			BLog.d(TAG, "cannot take picture", e);
 		}
@@ -117,8 +125,7 @@ public class ImagePickerDialogFragment extends BaseDialogFragment implements
 	private void openGallery() {
 		Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
 		photoPickerIntent.setType("image/*");
-		photoPickerIntent.putExtra("return-data", true);
-		getActivity().startActivityForResult(photoPickerIntent, PHOTO_PICKED_WITH_DATA);
+		getActivity().startActivityForResult(photoPickerIntent, REQUEST_CODE_GALLERY);
 		dismiss();
 	}
 

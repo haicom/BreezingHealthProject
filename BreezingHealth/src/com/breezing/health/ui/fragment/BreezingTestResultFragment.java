@@ -19,6 +19,7 @@ import com.breezing.health.entity.AccountEntity;
 import com.breezing.health.providers.Breezing.EnergyCost;
 import com.breezing.health.tools.IntentAction;
 import com.breezing.health.tools.Tools;
+import com.breezing.health.ui.activity.BreezingTestActivity;
 import com.breezing.health.util.BreezingQueryViews;
 import com.breezing.health.util.ExtraName;
 import com.breezing.health.util.LocalSharedPrefsUtil;
@@ -37,8 +38,6 @@ public class BreezingTestResultFragment extends BaseFragment implements OnClickL
     private String mCaloricUnit;
     
     private AccountEntity mAccount;
-    
-    private boolean mIsUpdate;
 
     public static BreezingTestResultFragment newInstance() {
         
@@ -61,12 +60,12 @@ public class BreezingTestResultFragment extends BaseFragment implements OnClickL
         mTotalVane = mFragmentView.findViewById(R.id.total_vane);
         mTextView = (TextView) mFragmentView.findViewById(R.id.result);
         mNext = (Button) mFragmentView.findViewById(R.id.next);
+        final boolean isUpdate = getActivity().getIntent().getBooleanExtra(ExtraName.EXTRA_DATE, false);
+        if (isUpdate) {
+            mNext.setVisibility(View.INVISIBLE);
+        }
         mNext.setOnClickListener(this);
         
-        mIsUpdate = getActivity().getIntent().getBooleanExtra(ExtraName.EXTRA_DATE, false);
-        if (mIsUpdate) {
-            mNext.setText(R.string.confirm);
-        }
        
         return mFragmentView;
     }
@@ -85,11 +84,6 @@ public class BreezingTestResultFragment extends BaseFragment implements OnClickL
     @Override
     public void onClick(View v) {
         if ( v == mNext ) {
-            if (mIsUpdate) {
-                getActivity().finish();
-                return ;
-            }
-            
             Intent intent = new Intent(IntentAction.ACTIVITY_MAIN);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
@@ -111,7 +105,6 @@ public class BreezingTestResultFragment extends BaseFragment implements OnClickL
             final String result = getActivity().getString(R.string.breezing_result,
                     year, month , day, mTotalEnergy);
             SpannableString spannable = new SpannableString(result);
-            spannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.red)), result.length() - 7, result.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             spannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.black)), 2, 13, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             mTextView.setText(spannable);
         }
