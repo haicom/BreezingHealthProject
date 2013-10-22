@@ -47,7 +47,8 @@ public class BreezingQueryViews {
         Information.HEIGHT_UNIT,
         Information.WEIGHT_UNIT,
         Information.DISTANCE_UNIT,
-        Information.CALORIC_UNIT
+        Information.CALORIC_UNIT,
+        Information.ACCOUNT_PICTURE
     };
     
     private static final int INFO_ACCOUNT_NAME_INDEX = 0;
@@ -63,6 +64,7 @@ public class BreezingQueryViews {
     private static final int INFO_WEIGHT_UNIT_INDEX = 10;
     private static final int INFO_DISTANCE_UNIT_INDEX = 11;
     private static final int INFO_CALORIC_UNIT_INDEX = 12;
+    private static final int INFO_ACCOUNT_PICTURE_INDEX = 13;
     /**
      * 根据某一个帐户id查询基本信息视图
      */
@@ -99,6 +101,7 @@ public class BreezingQueryViews {
                 String weightUnit = cursor.getString(INFO_WEIGHT_UNIT_INDEX);
                 String distanceUnit = cursor.getString(INFO_DISTANCE_UNIT_INDEX);
                 String caloricUnit = cursor.getString(INFO_CALORIC_UNIT_INDEX);
+                final String avatar = cursor.getString(INFO_ACCOUNT_PICTURE_INDEX);
                 account.setAccountName(accountName);
                 account.setAccountPass(accountPass);
                 account.setGender(gender);
@@ -112,6 +115,7 @@ public class BreezingQueryViews {
                 account.setWeightUnit(weightUnit);
                 account.setDistanceUnit(distanceUnit);
                 account.setCaloricUnit(caloricUnit);
+                account.setAvatar(avatar);
                 Log.d(TAG, " testCostWeeklyAndAccount accountName = " + accountName + " accountPass = " + accountPass
                         + " gender = " + gender + " height = " + height
                         + " birthday = " + birthday + " birthday = " + birthday 

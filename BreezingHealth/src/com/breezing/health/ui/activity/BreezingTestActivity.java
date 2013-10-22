@@ -22,7 +22,6 @@ import com.breezing.health.providers.Breezing.EnergyCost;
 import com.breezing.health.tools.IntentAction;
 import com.breezing.health.tools.Tools;
 import com.breezing.health.ui.fragment.BreezingTestResultFragment;
-import com.breezing.health.ui.fragment.BreezingTestSecondStepFragment;
 import com.breezing.health.util.BreezingQueryViews;
 import com.breezing.health.util.ExtraName;
 import com.breezing.health.util.LocalSharedPrefsUtil;
@@ -128,6 +127,10 @@ public class BreezingTestActivity extends ActionBarActivity {
                 final String result = getString(R.string.last_breezing_test_result,
                         year, month , day);
                 SpannableString spannable = new SpannableString(result);
+                spannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.red)),
+                        result.length() - 7,
+                        result.length(),
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 spannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.black)),
                         1,
                         14,

@@ -1,16 +1,13 @@
 package com.breezing.health.ui.fragment;
 
-import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileNotFoundException;
+import java.lang.ref.WeakReference;
 import java.text.DecimalFormat;
 
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,9 +25,8 @@ import com.breezing.health.providers.Breezing.EnergyCost;
 import com.breezing.health.ui.activity.BaseActivity;
 import com.breezing.health.ui.activity.MainActivity;
 import com.breezing.health.util.BreezingQueryViews;
-import com.breezing.health.util.ChangeUnitUtil;
-import com.breezing.health.util.InternalStorageContentProvider;
 import com.breezing.health.util.LocalSharedPrefsUtil;
+import com.breezing.health.widget.imagecrop.ImageUtil;
 
 public class LeftMenuFragment extends BaseFragment implements android.view.View.OnClickListener {
     private static final String TAG = "LeftMenuFragment";
@@ -116,25 +112,15 @@ public class LeftMenuFragment extends BaseFragment implements android.view.View.
         float unifyUnit = query.queryUnitObtainData(this.getString(R.string.caloric_type), account.getCaloricUnit() );
         DecimalFormat caloricFormat = new DecimalFormat("#0.0");
         mCaloric.setText(caloricFormat.format(caloric * unifyUnit) + account.getCaloricUnit() );
-        setAvatar();
+        setAvatar(account.getAvatar());
     }
     
-    private void setAvatar() {
-        final int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(getActivity(),
-                LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
-        try {
-            File f = new File(getActivity().getFilesDir(), String.valueOf(accountId) + InternalStorageContentProvider.PHOTO_FILE_NAME);
-            if (f.exists()) {
-                ParcelFileDescriptor pfd =  (ParcelFileDescriptor.open(f, ParcelFileDescriptor.MODE_READ_WRITE));
-                if (pfd != null) {
-                    FileDescriptor fd = pfd.getFileDescriptor();
-                    Bitmap bm = BitmapFactory.decodeFileDescriptor(fd);
-                    mAvatar.setImageBitmap(bm);
-                }
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+    private void setAvatar(String filePath) {
+        if (filePath == null || filePath.equals("")) {
+            return ;
         }
+        BitmapWorkerTask task = new BitmapWorkerTask(mAvatar);
+        task.execute(filePath);
     }
     
  
@@ -174,6 +160,37 @@ public class LeftMenuFragment extends BaseFragment implements android.view.View.
         }
         
         return caloric;
+    }
+    
+    class BitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
+
+        private final WeakReference<ImageView> imageViewReference;
+
+        // for define to close avoid warning leak.
+        // AlertDialog ImageDialog;
+        public BitmapWorkerTask(ImageView imageView) {
+            // Use a WeakReference to ensure the ImageView can be garbage
+            // collected
+            imageViewReference = new WeakReference<ImageView>(imageView);
+        }
+
+        // Decode image in background.
+        @Override
+        protected Bitmap doInBackground(String... params) {
+            final Bitmap bitmap = ImageUtil.decodeBitmapFromFile(params[0], 300, 300);
+            return bitmap;
+        }
+
+        // Once complete, see if ImageView is still around and set bitmap.
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            if (imageViewReference != null && bitmap != null) {
+                final ImageView imageView = imageViewReference.get();
+                if (imageView != null) {
+                    imageView.setImageBitmap(bitmap);
+                }
+            }
+        }
     }
     
 }
