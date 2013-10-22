@@ -1,17 +1,19 @@
 package com.breezing.health.ui.activity;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
+import java.util.ArrayList;
 
+import android.app.Activity;
+import android.content.ContentProviderOperation;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 import br.com.dina.ui.model.BasicItem;
 import br.com.dina.ui.model.GroupIndex;
 import br.com.dina.ui.widget.UITableView;
@@ -20,33 +22,25 @@ import br.com.dina.ui.widget.UITableView.OnItemClickListener;
 import com.breezing.health.R;
 import com.breezing.health.application.SysApplication;
 import com.breezing.health.entity.ActionItem;
+import com.breezing.health.providers.Breezing;
 import com.breezing.health.providers.Breezing.Account;
+import com.breezing.health.providers.Breezing.Information;
 import com.breezing.health.tools.IntentAction;
-import com.breezing.health.tools.Tools;
 import com.breezing.health.ui.fragment.BaseDialogFragment;
 import com.breezing.health.ui.fragment.BreezingDialogFragment;
 import com.breezing.health.ui.fragment.DialogFragmentInterface;
 import com.breezing.health.ui.fragment.ImagePickerDialogFragment;
-import com.breezing.health.util.InternalStorageContentProvider;
+import com.breezing.health.util.BLog;
 import com.breezing.health.util.LocalSharedPrefsUtil;
-import com.breezing.health.widget.imagecrop.CropImage;
 
 public class SettingsActivity extends ActionBarActivity implements View.OnClickListener {
 
     private static final String TAG = "SettingsActivity";
-
     private UITableView mTableView;
-
     private StringBuilder mStringBuilder;
-
-    private int mAccountId;
-
     private BasicItem mNameItem;
-
     private Button mButton;
     
-    private File mTempFile = null;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,75 +106,87 @@ public class SettingsActivity extends ActionBarActivity implements View.OnClickL
         });
     }
     
-    private void showImagePickerDialog() {
-        
-        int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this,
-                LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
-        
-    	String state = Environment.getExternalStorageState();
-    	if (Environment.MEDIA_MOUNTED.equals(state)) {
-    		mTempFile = new File(Environment.getExternalStorageDirectory(), String.valueOf(accountId) + InternalStorageContentProvider.PHOTO_FILE_NAME);
-    	} else {
-    		mTempFile = new File(getFilesDir(), String.valueOf(accountId) + InternalStorageContentProvider.PHOTO_FILE_NAME);
-    	}
-    	
-    	ImagePickerDialogFragment imagePicker = (ImagePickerDialogFragment) getSupportFragmentManager().findFragmentByTag("imagePicker");
+    public void showImagePickerDialog() {
+        ImagePickerDialogFragment imagePicker = (ImagePickerDialogFragment) getSupportFragmentManager().findFragmentByTag("imagePicker");
         if (imagePicker != null) {
             getSupportFragmentManager().beginTransaction().remove(imagePicker);
         }
         getSupportFragmentManager().beginTransaction().addToBackStack(null);
         
         imagePicker = ImagePickerDialogFragment.newInstance();
-        imagePicker.setFileTemp(mTempFile);
         imagePicker.setTitle(getString(R.string.please_pick_image_resource));
         imagePicker.show(getSupportFragmentManager(), "imagePicker");
     }
+
     
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if (resultCode != RESULT_OK) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
             return;
         }
-
-//        Bitmap bitmap;
+        BLog.d(TAG, "onActivityResult requestCode = " + requestCode + " data = " + data + " resultCode = " + resultCode);
         switch (requestCode) {
-            case ImagePickerDialogFragment.REQUEST_CODE_GALLERY:
-                try {
-                    InputStream inputStream = getContentResolver().openInputStream(data.getData());
-                    FileOutputStream fileOutputStream = new FileOutputStream(mTempFile);
-                    Tools.copyStream(inputStream, fileOutputStream);
-                    fileOutputStream.close();
-                    inputStream.close();
-                    startCropImage();
-                } catch (Exception e) {
-                    Log.e(TAG, "Error while creating temp file", e);
-                }
+            case ImagePickerDialogFragment.PHOTO_PICKED_WITH_DATA: {
+                Uri uri = data.getData();
+                BLog.v(TAG, "IMAGE DATA URI = " + uri.toString());
+                Intent intent = new Intent(this, com.breezing.health.widget.imagecrop.CropImage.class);
+                Bundle extras = new Bundle();
+                extras.putString("circleCrop", "true");
+                extras.putInt("aspectX", 200);
+                extras.putInt("aspectY", 200);
+                intent.setDataAndType(uri, "image/jpeg");
+                intent.putExtras(extras);
+                startActivityForResult(intent, ImagePickerDialogFragment.REQUEST_CODE_CROP_IMAGE);
                 break;
-                
-            case ImagePickerDialogFragment.REQUEST_CODE_TAKE_PICTURE:
-                startCropImage();
+            }
+            
+            case ImagePickerDialogFragment.REQUEST_CODE_CROP_IMAGE: {
+                final String srcData = data.getExtras().getString("data-src");
+                updateAvatar(srcData);
                 break;
-                
-            case ImagePickerDialogFragment.REQUEST_CODE_CROP_IMAGE:
-//            	String path = data.getStringExtra(CropImage.IMAGE_PATH);
-//                if (path == null) {
-//                    return;
-//                }
-//                bitmap = BitmapFactory.decodeFile(mTempFile.getPath());
+            }
+            
+            case ImagePickerDialogFragment.REQUEST_CODE_TAKE_PICTURE: {
+                File f = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
+                Uri uri = Uri.fromFile(f);
+                BLog.v(TAG, "IMAGE DATA URI = " + uri.toString());
+                Intent intent = new Intent(this, com.breezing.health.widget.imagecrop.CropImage.class);
+                Bundle extras = new Bundle();
+                extras.putString("circleCrop", "true");
+                extras.putInt("aspectX", 200);
+                extras.putInt("aspectY", 200);
+                intent.setDataAndType(uri, "image/jpeg");
+                intent.putExtras(extras);
+                startActivityForResult(intent, ImagePickerDialogFragment.REQUEST_CODE_CROP_IMAGE);
                 break;
+            }
+            
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
     
-    private void startCropImage() {
-        Intent intent = new Intent(this, CropImage.class);
-        intent.putExtra(CropImage.IMAGE_PATH, mTempFile.getPath());
-        intent.putExtra(CropImage.SCALE, true);
-        intent.putExtra(CropImage.ASPECT_X, 2);
-        intent.putExtra(CropImage.ASPECT_Y, 2);
-
-        startActivityForResult(intent, ImagePickerDialogFragment.REQUEST_CODE_CROP_IMAGE);
+    private void updateAvatar(String srcData) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.setLength(0);
+        stringBuilder.append(Information.ACCOUNT_ID + " = ? ");
+     
+        ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
+        final int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this,
+                LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
+        ops.add(ContentProviderOperation.newUpdate(Information.CONTENT_URI)
+                .withSelection(stringBuilder.toString(),  
+                        new String[] { String.valueOf(accountId) } )
+                .withValue(Information.ACCOUNT_PICTURE, srcData)
+                .build());
+        
+        try {
+            getContentResolver().applyBatch(Breezing.AUTHORITY, ops);
+        } catch (Exception e) {
+            Toast.makeText(this, getString(R.string.modify_avatar_failure), Toast.LENGTH_LONG).show();
+            return ;
+        }
+        
+        Toast.makeText(this, getString(R.string.modify_avatar_success), Toast.LENGTH_LONG).show();
     }
 
     /**

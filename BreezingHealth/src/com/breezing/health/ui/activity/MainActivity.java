@@ -2,34 +2,37 @@ package com.breezing.health.ui.activity;
 
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 import android.app.Activity;
+import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.breezing.health.R;
 import com.breezing.health.adapter.CaloricPagerAdapter;
-import com.breezing.health.entity.AccountEntity;
 import com.breezing.health.entity.ActionItem;
+import com.breezing.health.providers.Breezing;
 import com.breezing.health.providers.Breezing.Account;
 import com.breezing.health.providers.Breezing.Information;
 import com.breezing.health.providers.Breezing.UnitSettings;
 import com.breezing.health.providers.Breezing.WeightChange;
 import com.breezing.health.tools.IntentAction;
-import com.breezing.health.tools.Tools;
 import com.breezing.health.ui.activity.CaloricHistoryActivity.CaloricHistoryType;
 import com.breezing.health.ui.fragment.BaseDialogFragment;
 import com.breezing.health.ui.fragment.CalendarDialogFragment;
@@ -38,12 +41,10 @@ import com.breezing.health.ui.fragment.CaloricIntakeFragment;
 import com.breezing.health.ui.fragment.DialogFragmentInterface;
 import com.breezing.health.ui.fragment.ImagePickerDialogFragment;
 import com.breezing.health.util.BLog;
-import com.breezing.health.util.BreezingQueryViews;
 import com.breezing.health.util.DateFormatUtil;
 import com.breezing.health.util.ExtraName;
-import com.breezing.health.util.InternalStorageContentProvider;
 import com.breezing.health.util.LocalSharedPrefsUtil;
-import com.breezing.health.widget.imagecrop.CropImage;
+import com.breezing.health.widget.imagecrop.ImageUtil;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnClosedListener;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnOpenedListener;
 import com.viewpagerindicator.LinePageIndicator;
@@ -61,10 +62,6 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
     private int mDate;
     private int mAccountId;
     private CaloricHistoryType mPosition = CaloricHistoryType.BURN;
-    
-
-    
-    private File mTempFile = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -343,29 +340,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         super.onClickActionBarItems(item, v);
     }
     
-   
-    
     public void showImagePickerDialog() {
-        
-        int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this,
-                LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
-        
-        String state = Environment.getExternalStorageState();
-        if ( Environment.MEDIA_MOUNTED.equals(state) ) {
-            mTempFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), 
-                    String.valueOf(accountId) + InternalStorageContentProvider.PHOTO_FILE_NAME);
-        } else {
-            mTempFile = new File(getFilesDir().getAbsolutePath(), String.valueOf(accountId) + InternalStorageContentProvider.PHOTO_FILE_NAME);
-        }
-        
-        if (! mTempFile.exists()){
-            if (! mTempFile.mkdirs()){
-                Log.e(TAG, "failed to create directory");
-                return;
-            }
-        }
-        
-        Log.d(TAG, "showImagePickerDialog mTempFile = " + mTempFile.toString() );
         ImagePickerDialogFragment imagePicker = (ImagePickerDialogFragment) getSupportFragmentManager().findFragmentByTag("imagePicker");
         if (imagePicker != null) {
             getSupportFragmentManager().beginTransaction().remove(imagePicker);
@@ -373,58 +348,112 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         getSupportFragmentManager().beginTransaction().addToBackStack(null);
         
         imagePicker = ImagePickerDialogFragment.newInstance();
-        imagePicker.setFileTemp(mTempFile);
         imagePicker.setTitle(getString(R.string.please_pick_image_resource));
         imagePicker.show(getSupportFragmentManager(), "imagePicker");
     }
+
     
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode != Activity.RESULT_OK) {
             return;
         }
-        Log.d(TAG, "onActivityResult requestCode = " + requestCode + " data = " + data + " resultCode = " + resultCode);
-        Bitmap bitmap;
+        BLog.d(TAG, "onActivityResult requestCode = " + requestCode + " data = " + data + " resultCode = " + resultCode);
         switch (requestCode) {
-            case ImagePickerDialogFragment.REQUEST_CODE_GALLERY:
-                try {
-                    InputStream inputStream = getContentResolver().openInputStream( data.getData() );
-                    FileOutputStream fileOutputStream = new FileOutputStream(mTempFile);
-                    Tools.copyStream(inputStream, fileOutputStream);
-                    fileOutputStream.close();
-                    inputStream.close();
-                    startCropImage();
-                } catch (Exception e) {
-                    Log.e(TAG, "Error while creating temp file", e);  
-                }
+        	case ImagePickerDialogFragment.PHOTO_PICKED_WITH_DATA: {
+        		Uri uri = data.getData();
+        		BLog.v(TAG, "IMAGE DATA URI = " + uri.toString());
+    			Intent intent = new Intent(this, com.breezing.health.widget.imagecrop.CropImage.class);
+    			Bundle extras = new Bundle();
+    			extras.putString("circleCrop", "true");
+    			extras.putInt("aspectX", 200);
+    			extras.putInt("aspectY", 200);
+    			intent.setDataAndType(uri, "image/jpeg");
+    			intent.putExtras(extras);
+    			startActivityForResult(intent, ImagePickerDialogFragment.REQUEST_CODE_CROP_IMAGE);
+    			break;
+        	}
+        	
+        	case ImagePickerDialogFragment.REQUEST_CODE_CROP_IMAGE: {
+        		final String srcData = data.getExtras().getString("data-src");
+        		updateAvatar(srcData);
+				break;
+        	}
+        	
+        	case ImagePickerDialogFragment.REQUEST_CODE_TAKE_PICTURE: {
+        	    File f = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
+        	    Uri uri = Uri.fromFile(f);
+                BLog.v(TAG, "IMAGE DATA URI = " + uri.toString());
+                Intent intent = new Intent(this, com.breezing.health.widget.imagecrop.CropImage.class);
+                Bundle extras = new Bundle();
+                extras.putString("circleCrop", "true");
+                extras.putInt("aspectX", 200);
+                extras.putInt("aspectY", 200);
+                intent.setDataAndType(uri, "image/jpeg");
+                intent.putExtras(extras);
+                startActivityForResult(intent, ImagePickerDialogFragment.REQUEST_CODE_CROP_IMAGE);
                 break;
-                
-            case ImagePickerDialogFragment.REQUEST_CODE_TAKE_PICTURE:
-                startCropImage();
-                break;
-                
-            case ImagePickerDialogFragment.REQUEST_CODE_CROP_IMAGE:
-//              String path = data.getStringExtra(CropImage.IMAGE_PATH);
-//                if (path == null) {
-//                    return;
-//                }
-//                bitmap = BitmapFactory.decodeFile(mTempFile.getPath());
-                break;
+        	}
+        	
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
     
-    private void startCropImage() {
-        Log.d(TAG, " startCropImage mTempFile.getPath() = " + mTempFile.getPath() );
+    private void updateAvatar(String srcData) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.setLength(0);
+        stringBuilder.append(Information.ACCOUNT_ID + " = ? ");
+     
+        ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
+        final int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this,
+                LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
+        ops.add(ContentProviderOperation.newUpdate(Information.CONTENT_URI)
+                .withSelection(stringBuilder.toString(),  
+                        new String[] { String.valueOf(accountId) } )
+                .withValue(Information.ACCOUNT_PICTURE, srcData)
+                .build());
         
-        Intent intent = new Intent(this, CropImage.class);
-        intent.putExtra(CropImage.IMAGE_PATH, mTempFile.getPath());
-        intent.putExtra(CropImage.SCALE, true);
-        intent.putExtra(CropImage.ASPECT_X, 2);
-        intent.putExtra(CropImage.ASPECT_Y, 2);
-
-        startActivityForResult(intent, ImagePickerDialogFragment.REQUEST_CODE_CROP_IMAGE);
+        try {
+            getContentResolver().applyBatch(Breezing.AUTHORITY, ops);
+        } catch (Exception e) {
+            Toast.makeText(this, getString(R.string.modify_avatar_failure), Toast.LENGTH_LONG).show();
+            return ;
+        }
+        
+        Toast.makeText(this, getString(R.string.modify_avatar_success), Toast.LENGTH_LONG).show();
     }
+    
+    class BitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
+
+		private final WeakReference<ImageView> imageViewReference;
+		// for define to close avoid warning leak.
+		// AlertDialog ImageDialog;
+		public BitmapWorkerTask(ImageView imageView) {
+			// Use a WeakReference to ensure the ImageView can be garbage
+			// collected
+			imageViewReference = new WeakReference<ImageView>(imageView);
+		}
+
+		// Decode image in background.
+		@Override
+		protected Bitmap doInBackground(String... params) {
+			final Bitmap bitmap = ImageUtil.decodeBitmapFromFile(params[0], 300, 300);
+			return bitmap;
+
+		}
+
+		// Once complete, see if ImageView is still around and set bitmap.
+		@Override
+		protected void onPostExecute(Bitmap bitmap) {
+			if (imageViewReference != null && bitmap != null) {
+
+				final ImageView imageView = imageViewReference.get();
+				if (imageView != null) {
+					imageView.setImageBitmap(bitmap);
+				}
+			}
+		}
+	}
     
     public static final String MAIN_ACCOUNT_ID = "account_id";
     public static final String MAIN_DATE = "date";
