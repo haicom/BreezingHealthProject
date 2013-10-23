@@ -165,7 +165,10 @@ public class FoodAdapter extends BaseAdapter implements OnClickListener {
         }
         
         final FoodEntity food = getItem(position);
-        Log.d(TAG, "getView food.getImageRes() = " + food.getImageRes() + " position = " + position + " food.getSelectedNumber() = " + food.getSelectedNumber() );
+       
+        Log.d(TAG, "getView food.getImageRes() = " + food.getImageRes()
+                + " position = " + position + " food.getSelectedNumber() = " + food.getSelectedNumber() );
+       
         int iconRes = mContext.getResources().getIdentifier( food.getImageRes(), "drawable", mContext.getPackageName() );
         holder.image.setImageResource(iconRes);
         holder.name.setText( food.getFoodName() );
@@ -184,11 +187,17 @@ public class FoodAdapter extends BaseAdapter implements OnClickListener {
 //        	final int total = mSelectedFoods.get(selectedIndex).getSelectedNumber() * mSelectedFoods.get(selectedIndex).getFoodQuantity();
 //        	holder.number.setText( String.valueOf(total) );
 //        }
+        int total = 0;
+        for (FoodEntity selectFoodEntity: mSelectedFoods) {
+             if (selectFoodEntity.getFoodId() ==  food.getFoodId() ) {
+                 total = selectFoodEntity.getSelectedNumber() * selectFoodEntity.getFoodQuantity();
+                 break;
+             }
+        }
         
-        if ( food.getSelectedNumber() == 0 ) {
+        if ( total == 0 ) {
             holder.number.setText("");
-        } else {
-            final int total = food.getSelectedNumber() * food.getFoodQuantity();
+        } else {           
             holder.number.setText( String.valueOf(total) );
         }
         return convertView;
