@@ -33,7 +33,7 @@
                 android:id="@+id/burn_caloric"
                 style="@style/TitleTextViewStyle"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:gravity="center" />
@@ -42,10 +42,11 @@
                 android:id = "@+id/metabolism"
                 style="@style/TitleTextViewStyle"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:text="@string/kilo_metabolism" />
+                android:text="@string/kilo_metabolism"
+                android:gravity="center" />
         </LinearLayout>
     </FrameLayout>
 

@@ -180,7 +180,6 @@ public class CaloricBurnFragment extends BaseFragment implements OnItemClickList
         Log.d(TAG, " queryEnergyCostEveryDay count = " + count + " metabolism = " + metabolism
                 + " sport = " + sport + " digest = " + digest + " train = " + train);
         mPieGraph.removeSlices();
-        mPieGraph.setPadding(2);
         PieSlice slice;
 
         if (metabolism != 0) {

@@ -102,6 +102,7 @@ public class BreezingTestActivity extends ActionBarActivity {
             
         } else {
             mViewPager.setCurrentItem(BreezingTestPagerAdapter.BREEZING_TEST_SECOND_STEP);
+            mViewPager.setPagingEnabled(false);
             
             addLeftActionItem(new ActionItem(ActionItem.ACTION_BACK));
             addRightActionItem(new ActionItem(ActionItem.ACTION_BREEZING_TEST_HISTORY));

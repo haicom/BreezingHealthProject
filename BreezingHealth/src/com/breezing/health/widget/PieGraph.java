@@ -23,16 +23,23 @@
 
 package com.breezing.health.widget;
 
-import android.annotation.SuppressLint;
+import java.util.ArrayList;
+
 import android.content.Context;
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Path.Direction;
+import android.graphics.Point;
+import android.graphics.RectF;
+import android.graphics.Region;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import java.util.ArrayList;
+import com.breezing.health.tools.Tools;
+import com.breezing.health.util.BLog;
 
 
 public class PieGraph extends View {
@@ -76,7 +83,7 @@ public class PieGraph extends View {
 			radius = midY;
 		}
 		radius -= mPadding;
-		innerRadius = radius - thickness;
+		innerRadius = radius - Tools.dip2px(getContext(), thickness);
 
 		for (PieSlice slice : slices){
 			totalValue += slice.getValue();
@@ -89,8 +96,13 @@ public class PieGraph extends View {
 			Path p = new Path();
 			paint.setColor(slice.getColor());
 			currentSweep = (slice.getValue()/totalValue)*(360);
-			p.arcTo(new RectF(midX-radius, midY-radius, midX+radius, midY+radius), currentAngle + mPadding, currentSweep - mPadding);
-			p.arcTo(new RectF(midX-innerRadius, midY-innerRadius, midX+innerRadius, midY+innerRadius ), ( currentAngle + mPadding ) + ( currentSweep - mPadding ), -( currentSweep - mPadding ) );
+			BLog.v(TAG, "currentSweep = " + currentSweep + "currentAngle = " + currentAngle);
+			if (slices.size() != 1) {
+			    p.arcTo(new RectF(midX-radius, midY-radius, midX+radius, midY+radius), currentAngle + mPadding, currentSweep - mPadding);
+	            p.arcTo(new RectF(midX-innerRadius, midY-innerRadius, midX+innerRadius, midY+innerRadius ), ( currentAngle + mPadding ) + ( currentSweep - mPadding ), -( currentSweep - mPadding ) );
+			} else {
+			    p.arcTo(new RectF(midX-radius, midY-radius, midX+radius, midY+radius), 0, 359.9f, true);
+			}
 			p.close();
             
 			//Log.d(TAG, " onDraw currentAngle = " + currentAngle + " mPadding = " + mPadding + " midX = " + midX + " midY = " + midY);

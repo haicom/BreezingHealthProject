@@ -170,7 +170,6 @@ public class CaloricIntakeFragment extends BaseFragment implements OnItemClickLi
                 + " lunch = " + lunch + " dinner = " + dinner + " etc = " + etc);
         
         mPieGraph.removeSlices();
-        mPieGraph.setPadding(2);
         PieSlice slice;
         
 
