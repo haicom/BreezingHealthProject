@@ -90,15 +90,16 @@ public class CaloricIntakeFragment extends BaseFragment implements OnItemClickLi
         Bundle bundel = this.getArguments();
         int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this.getActivity(),
                 LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
-        BreezingQueryViews query = new BreezingQueryViews(this.getActivity());
+        BreezingQueryViews query = new BreezingQueryViews( this.getActivity() );
         mAccount = query.queryBaseInfoViews(accountId);
-        mUnifyUnit = query.queryUnitObtainData( this.getString(R.string.caloric_type), mAccount.getCaloricUnit() );
-        mAccountId = bundel.getInt(MainActivity.MAIN_ACCOUNT_ID);
-        mDate = bundel.getInt(MainActivity.MAIN_DATE);      
+        mUnifyUnit = query.queryUnitObtainData( this.getString(R.string.caloric_type), mAccount.getCaloricUnit() );      
+        //mDate = bundel.getInt(MainActivity.MAIN_DATE);
+        mDate = ( (MainActivity)this.getActivity() ).getDate();
         mCaloricUnit = mAccount.getCaloricUnit();
         mMetabolism.setText(mCaloricUnit);
-        if ( (mAccountId !=0 ) && ( mDate != 0 ) ) {
-            drawPieChar(mAccountId, mDate);
+        Log.d(TAG, "onResume accountId = " + accountId + " mDate = " + mDate);
+        if ( (accountId !=0 ) && ( mDate != 0 ) ) {
+            drawPieChar(accountId, mDate);
         }        
     }
     
@@ -242,10 +243,13 @@ public class CaloricIntakeFragment extends BaseFragment implements OnItemClickLi
     public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
         
         final RecordFunctionEntity fun = (RecordFunctionEntity) mAdapter.getItem(arg2);
-        
+        mDate = ( (MainActivity)this.getActivity() ).getDate();
+        int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this.getActivity(),
+                LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
         Intent intent = new Intent(IntentAction.ACTIVITY_CALORIC_INTAKE);
         intent.putExtra(ExtraName.EXTRA_DATE, mDate);
-        intent.putExtra(ExtraName.EXTRA_ACCOUNT_ID, mAccountId);
+        intent.putExtra(ExtraName.EXTRA_ACCOUNT_ID, accountId);
+        
         switch( fun.getTitleRes() ) {
             case R.string.breakfast:
                 intent.putExtra(ExtraName.EXTRA_TYPE, CaloricIntakeType.BREAKFAST.ordinal());

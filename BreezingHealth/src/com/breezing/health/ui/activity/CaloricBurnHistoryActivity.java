@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.breezing.health.R;
+import com.breezing.health.entity.AccountEntity;
 import com.breezing.health.entity.ActionItem;
 import com.breezing.health.entity.enums.ChartModel;
 import com.breezing.health.providers.Breezing.EnergyCost;
@@ -27,11 +28,7 @@ import com.breezing.health.ui.fragment.DialogFragmentInterface;
 import com.breezing.health.ui.fragment.MonthIntervalPickerDialogFragment;
 import com.breezing.health.ui.fragment.WeekIntervalPickerDialogFragment;
 import com.breezing.health.ui.fragment.YearIntervalPickerDialogFragment;
-import com.breezing.health.util.BLog;
-import com.breezing.health.util.CalendarUtil;
-import com.breezing.health.util.DateFormatUtil;
-import com.breezing.health.util.ExtraName;
-import com.breezing.health.util.LocalSharedPrefsUtil;
+import com.breezing.health.util.*;
 import com.breezing.health.widget.linechart.data.ChartData;
 
 public class CaloricBurnHistoryActivity extends ActionBarActivity implements View.OnClickListener {
@@ -128,6 +125,14 @@ public class CaloricBurnHistoryActivity extends ActionBarActivity implements Vie
     }
     
     private void refreshFragment() {
+        AccountEntity account;
+        float caloricUnify;
+
+        int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this, LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
+        BreezingQueryViews query = new BreezingQueryViews( this );
+        account = query.queryBaseInfoViews(accountId);
+        caloricUnify = query.queryUnitObtainData( getString(R.string.caloric_type), account.getCaloricUnit() );
+
         mSelectModelButton.setText(mCaloricHistoryChartModel.nameRes);
         ChartData data = new ChartData(ChartData.LINE_COLOR_RED);
 
@@ -140,20 +145,20 @@ public class CaloricBurnHistoryActivity extends ActionBarActivity implements Vie
                         CalendarUtil.getFirstDayAndLastDayOfWeek( this,
                         mYear,
                         mWeek ) ) );
-                drawCostChartDataWeekly(data);
+                drawCostChartDataWeekly(data, caloricUnify);
                 break;
             }
 
             case MONTH: {
                 mSelectIntervalButton.setText(
                         getString(R.string.year_and_month, mYear, mMonth) );
-                drawCostChartDataMonthly(data);
+                drawCostChartDataMonthly(data, caloricUnify);
                 break;
             }
 
             case YEAR: {
                 mSelectIntervalButton.setText(mYear + getString(R.string.year));
-                drawCostChartDataYearly(data);
+                drawCostChartDataYearly(data, caloricUnify);
                 break;
             }
 
@@ -273,7 +278,7 @@ public class CaloricBurnHistoryActivity extends ActionBarActivity implements Vie
      * @param chartData
      * @return
      */
-    private ChartData drawCostChartDataWeekly( ChartData chartData ) {
+    private ChartData drawCostChartDataWeekly( ChartData chartData, float caloricUnify ) {
 
         int  yearWeek =  DateFormatUtil.getCompleteWeek(mYear, mWeek);
 
@@ -310,11 +315,11 @@ public class CaloricBurnHistoryActivity extends ActionBarActivity implements Vie
             index++;
         }  while ( fistCalendar.compareTo(lastCalendar) <= 0 );
         
-        chartData =  fillInTotalEnergyCostInWeek( yearWeek, chartData, hashMap);
+        chartData =  fillInTotalEnergyCostInWeek( yearWeek, chartData, hashMap, caloricUnify);
         return chartData;
     }
     
-    private ChartData drawCostChartDataMonthly(ChartData  chartData) {
+    private ChartData drawCostChartDataMonthly(ChartData  chartData, float caloricUnify) {
 
         int  yearMonth =  DateFormatUtil.getCompleteWeek(mYear, mMonth);
         int  weekNum = CalendarUtil.getTotalWeeksInMonth(mYear, mMonth);
@@ -342,7 +347,7 @@ public class CaloricBurnHistoryActivity extends ActionBarActivity implements Vie
              fistCalendar.add(Calendar.WEEK_OF_YEAR, 1);
         }
         
-        chartData = fillInTotalEnergyCostInMonth(yearMonth, chartData, hashMap);
+        chartData = fillInTotalEnergyCostInMonth(yearMonth, chartData, hashMap, caloricUnify);
               
         return chartData;
     }
@@ -352,7 +357,7 @@ public class CaloricBurnHistoryActivity extends ActionBarActivity implements Vie
      * @param chartData
      * @return
      */
-    private ChartData drawCostChartDataYearly(ChartData  chartData) {
+    private ChartData drawCostChartDataYearly(ChartData  chartData, float caloricUnify) {
 
         HashMap<Integer, Integer> hashMap =
                 new HashMap<Integer, Integer>();
@@ -375,7 +380,7 @@ public class CaloricBurnHistoryActivity extends ActionBarActivity implements Vie
              fistCalendar.add(Calendar.WEEK_OF_YEAR, 1);
         }
         
-        chartData = fillInTotalEnergyCostInYear(chartData, hashMap);
+        chartData = fillInTotalEnergyCostInYear(chartData, hashMap, caloricUnify);
         return chartData;
     }
     
@@ -398,8 +403,8 @@ public class CaloricBurnHistoryActivity extends ActionBarActivity implements Vie
      * @return
      */
     private ChartData  fillInWeightChangeInWeek(int yearWeek ,
-                                                   ChartData chartData,
-                                                   HashMap<Integer, Integer> hashMap ) {
+                                                ChartData chartData,
+                                                HashMap<Integer, Integer> hashMap) {
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.setLength(0);
@@ -464,8 +469,8 @@ public class CaloricBurnHistoryActivity extends ActionBarActivity implements Vie
      * @return
      */
     private ChartData  fillInWeightChangeInMonth(int  yearMonth ,
-                                                    ChartData chartData,
-                                                    HashMap<Integer, Integer> hashMap ) {
+                                                 ChartData chartData,
+                                                 HashMap<Integer, Integer> hashMap) {
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.setLength(0);
@@ -531,7 +536,7 @@ public class CaloricBurnHistoryActivity extends ActionBarActivity implements Vie
      * @return
      */
     private ChartData  fillInWeightChangeInYear(ChartData chartData,
-                                                   HashMap<Integer, Integer> hashMap ) {
+                                                HashMap<Integer, Integer> hashMap) {
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.setLength(0);
@@ -564,9 +569,9 @@ public class CaloricBurnHistoryActivity extends ActionBarActivity implements Vie
                     int index = hashMap.get(yearMonth);
                     Log.d(TAG, " fillInWeightChangeInYear index = " + index);
                     chartData.addPoint(index,
-                            (int)weight,
+                            (int) ( weight  ),
                             getString(mBalanceChartModel.nameRes),
-                            String.valueOf(weight) );
+                            String.valueOf( (int) ( weight  ) ) );
                 }
 
             }
@@ -598,7 +603,8 @@ public class CaloricBurnHistoryActivity extends ActionBarActivity implements Vie
      */
     private ChartData  fillInTotalEnergyCostInWeek(int yearWeek ,
                                ChartData chartData,
-                               HashMap<Integer, Integer> hashMap ) {
+                               HashMap<Integer, Integer> hashMap,
+                               float caloricUnify) {
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.setLength(0);
@@ -622,14 +628,14 @@ public class CaloricBurnHistoryActivity extends ActionBarActivity implements Vie
             cursor.moveToPosition(-1);
 
             while (cursor.moveToNext() ) {
-                long metabolism = cursor.getLong(ALL_METABOLISM_COLUMN_DAYLY_INDEX);
+                float metabolism = cursor.getFloat(ALL_METABOLISM_COLUMN_DAYLY_INDEX);
                 int  day = cursor.getInt(DATE_COLUMN_DAYLY_INDEX);
                 if ( hashMap.containsKey(day) ) {
                     int index = hashMap.get(day);
                     chartData.addPoint(index,
-                            (int)metabolism,
+                            (int) (metabolism * caloricUnify),
                             getString(mBalanceChartModel.nameRes),                            
-                            String.valueOf(metabolism) );
+                            String.valueOf( (int) (metabolism * caloricUnify) ) );
                 }
             }
         } finally {
@@ -662,7 +668,8 @@ public class CaloricBurnHistoryActivity extends ActionBarActivity implements Vie
      */
     private ChartData  fillInTotalEnergyCostInMonth(int  yearMonth ,
                                ChartData chartData,
-                               HashMap<Integer, Integer> hashMap ) {
+                               HashMap<Integer, Integer> hashMap,
+                               float caloricUnify ) {
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.setLength(0);
@@ -686,16 +693,16 @@ public class CaloricBurnHistoryActivity extends ActionBarActivity implements Vie
             cursor.moveToPosition(-1);
 
             while (cursor.moveToNext() ) {
-                long metabolism = cursor.getLong(METABOLISM_COLUMN_WEEKLY_INDEX);
+                float metabolism = cursor.getFloat(METABOLISM_COLUMN_WEEKLY_INDEX);
                 int  yearWeek = cursor.getInt(YEAR_WEEK_COLUMN_WEEKLY_INDEX);
                 Log.d(TAG, " fillInTotalEnergyInMonth avgTotalEnergy = " + metabolism + " yearWeek = " + yearWeek);
                 if ( hashMap.containsKey(yearWeek) ) {
                     int index = hashMap.get(yearWeek);
                     Log.d(TAG, " fillInTotalEnergyInMonth index = " + index);
                     chartData.addPoint(index,
-                            (int)metabolism,
+                            (int) (metabolism * caloricUnify) ,
                             getString(mBalanceChartModel.nameRes),
-                            String.valueOf(metabolism) );
+                            String.valueOf( (int) ( metabolism * caloricUnify ) ) );
                 }
 
             }
@@ -728,7 +735,8 @@ public class CaloricBurnHistoryActivity extends ActionBarActivity implements Vie
      * @return
      */
     private ChartData  fillInTotalEnergyCostInYear(ChartData chartData,
-                               HashMap<Integer, Integer> hashMap ) {
+                                                   HashMap<Integer, Integer> hashMap,
+                                                   float caloricUnify) {
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.setLength(0);
@@ -752,7 +760,7 @@ public class CaloricBurnHistoryActivity extends ActionBarActivity implements Vie
             cursor.moveToPosition(-1);
 
             while (cursor.moveToNext() ) {
-                long avgTotalEnergy = cursor.getLong(AVG_METABOLISM_MONTHLY_INDEX);
+                float avgTotalEnergy = cursor.getFloat(AVG_METABOLISM_MONTHLY_INDEX);
                 int  yearMonth = cursor.getInt(YEAR_MONTH_COLUMN_INDEX);
 
                 Log.d(TAG, " fillInTotalEnergyInYear avgTotalEnergy = " + avgTotalEnergy + " yearMonth = " + yearMonth);
@@ -761,9 +769,9 @@ public class CaloricBurnHistoryActivity extends ActionBarActivity implements Vie
                     int index = hashMap.get(yearMonth);
                     Log.d(TAG, " fillInTotalEnergyInMonth index = " + index);   
                     chartData.addPoint(index,
-                            (int)avgTotalEnergy,
+                            (int) (avgTotalEnergy * caloricUnify),
                             getString(mBalanceChartModel.nameRes),
-                            String.valueOf(avgTotalEnergy) );
+                            String.valueOf( (int) (avgTotalEnergy * caloricUnify) ) );
                 }
 
             }

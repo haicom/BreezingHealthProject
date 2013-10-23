@@ -6,6 +6,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 
 import com.breezing.health.R;
+import com.breezing.health.entity.AccountEntity;
 import com.breezing.health.entity.ActionItem;
 import com.breezing.health.entity.enums.ChartModel;
 import com.breezing.health.providers.Breezing.WeightChange;
@@ -16,10 +17,7 @@ import com.breezing.health.ui.fragment.DialogFragmentInterface;
 import com.breezing.health.ui.fragment.MonthIntervalPickerDialogFragment;
 import com.breezing.health.ui.fragment.WeekIntervalPickerDialogFragment;
 import com.breezing.health.ui.fragment.YearIntervalPickerDialogFragment;
-import com.breezing.health.util.BLog;
-import com.breezing.health.util.CalendarUtil;
-import com.breezing.health.util.DateFormatUtil;
-import com.breezing.health.util.LocalSharedPrefsUtil;
+import com.breezing.health.util.*;
 import com.breezing.health.widget.linechart.data.ChartData;
 
 import android.content.ContentResolver;
@@ -128,6 +126,13 @@ public class WeightHistoryActivity  extends ActionBarActivity implements OnClick
     }
     
     private void refreshFragment() {
+        AccountEntity account;
+        float weightUnify;
+        int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this, LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
+        BreezingQueryViews query = new BreezingQueryViews( this );
+        account = query.queryBaseInfoViews(accountId);
+        weightUnify = query.queryUnitObtainData( getString(R.string.weight_type), account.getWeightUnit() );
+
         mSelectModelButton.setText(mCaloricHistoryChartModel.nameRes);
         ChartData data = new ChartData(ChartData.LINE_COLOR_RED);
 
@@ -140,20 +145,20 @@ public class WeightHistoryActivity  extends ActionBarActivity implements OnClick
                         CalendarUtil.getFirstDayAndLastDayOfWeek( this,
                         mYear,
                         mWeek ) ) );
-                drawWeightChartDataWeekly(data);
+                drawWeightChartDataWeekly(data, weightUnify);
                 break;
             }
 
             case MONTH: {
                 mSelectIntervalButton.setText(
                         getString(R.string.year_and_month, mYear, mMonth) );
-                drawWeightChartDataMonthly(data);
+                drawWeightChartDataMonthly(data, weightUnify);
                 break;
             }
 
             case YEAR: {
                 mSelectIntervalButton.setText(mYear + getString(R.string.year));
-                drawWeightChartDataYearly(data);
+                drawWeightChartDataYearly(data, weightUnify);
                 break;
             }
 
@@ -273,7 +278,7 @@ public class WeightHistoryActivity  extends ActionBarActivity implements OnClick
      * @param chartData
      * @return
      */
-    private ChartData drawWeightChartDataWeekly( ChartData chartData ) {
+    private ChartData drawWeightChartDataWeekly( ChartData chartData, float weightUnify ) {
 
         int  yearWeek =  DateFormatUtil.getCompleteWeek(mYear, mWeek);
 
@@ -310,11 +315,11 @@ public class WeightHistoryActivity  extends ActionBarActivity implements OnClick
             index++;
         }  while ( fistCalendar.compareTo(lastCalendar) <= 0 );
         
-        chartData =  fillInWeightChangeInWeek( yearWeek, chartData, hashMap);
+        chartData =  fillInWeightChangeInWeek( yearWeek, chartData, hashMap, weightUnify);
         return chartData;
     }
     
-    private ChartData drawWeightChartDataMonthly(ChartData  chartData) {
+    private ChartData drawWeightChartDataMonthly(ChartData  chartData, float weightUnify) {
 
         int  yearMonth =  DateFormatUtil.getCompleteWeek(mYear, mMonth);
         int  weekNum = CalendarUtil.getTotalWeeksInMonth(mYear, mMonth);
@@ -342,7 +347,7 @@ public class WeightHistoryActivity  extends ActionBarActivity implements OnClick
              fistCalendar.add(Calendar.WEEK_OF_YEAR, 1);
         }
         
-        chartData = fillInWeightChangeInMonth(yearMonth, chartData, hashMap);
+        chartData = fillInWeightChangeInMonth(yearMonth, chartData, hashMap, weightUnify);
               
         return chartData;
     }
@@ -352,7 +357,7 @@ public class WeightHistoryActivity  extends ActionBarActivity implements OnClick
      * @param chartData
      * @return
      */
-    private ChartData drawWeightChartDataYearly(ChartData  chartData) {
+    private ChartData drawWeightChartDataYearly(ChartData  chartData, float weightUnify ) {
 
         HashMap<Integer, Integer> hashMap =
                 new HashMap<Integer, Integer>();
@@ -375,7 +380,7 @@ public class WeightHistoryActivity  extends ActionBarActivity implements OnClick
              fistCalendar.add(Calendar.WEEK_OF_YEAR, 1);
         }
         
-        chartData = fillInWeightChangeInYear(chartData, hashMap);
+        chartData = fillInWeightChangeInYear(chartData, hashMap, weightUnify);
         return chartData;
     }
 
@@ -395,9 +400,10 @@ public class WeightHistoryActivity  extends ActionBarActivity implements OnClick
      * @param hashMap
      * @return
      */
-    private ChartData  fillInWeightChangeInWeek(int yearWeek ,
-                                                   ChartData chartData,
-                                                   HashMap<Integer, Integer> hashMap ) {
+    private ChartData  fillInWeightChangeInWeek(int yearWeek,
+                                                ChartData chartData,
+                                                HashMap<Integer, Integer> hashMap,
+                                                float weightUnify) {
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.setLength(0);
@@ -426,9 +432,9 @@ public class WeightHistoryActivity  extends ActionBarActivity implements OnClick
                 if ( hashMap.containsKey(day) ) {
                     int index = hashMap.get(day);
                     chartData.addPoint(index,
-                            (int)weight,
-                            getString(mBalanceChartModel.nameRes),
-                            String.valueOf(weight) );
+                                      (int) (weight * weightUnify),
+                                      getString(mBalanceChartModel.nameRes),
+                                      String.valueOf( (int) (weight * weightUnify) ) );
                 }
             }
         } finally {
@@ -462,8 +468,9 @@ public class WeightHistoryActivity  extends ActionBarActivity implements OnClick
      * @return
      */
     private ChartData  fillInWeightChangeInMonth(int  yearMonth ,
-                                                    ChartData chartData,
-                                                    HashMap<Integer, Integer> hashMap ) {
+                                                 ChartData chartData,
+                                                 HashMap<Integer, Integer> hashMap,
+                                                 float weightUnify) {
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.setLength(0);
@@ -493,10 +500,10 @@ public class WeightHistoryActivity  extends ActionBarActivity implements OnClick
                 if ( hashMap.containsKey(yearWeek) ) {
                     int index = hashMap.get(yearWeek);
                     Log.d(TAG, " fillInWeightChangeInMonth index = " + index);
-                    chartData.addPoint(index,
-                            (int)weight,
-                            getString(mBalanceChartModel.nameRes),
-                            String.valueOf(weight) );
+                    chartData.addPoint( index,
+                                       (int) (weight * weightUnify),
+                                       getString(mBalanceChartModel.nameRes),
+                                       String.valueOf( (int) (weight * weightUnify) ) );
                 }
 
             }
@@ -528,8 +535,9 @@ public class WeightHistoryActivity  extends ActionBarActivity implements OnClick
      * @param hashMap
      * @return
      */
-    private ChartData  fillInWeightChangeInYear(ChartData chartData,
-                                                   HashMap<Integer, Integer> hashMap ) {
+    private ChartData  fillInWeightChangeInYear( ChartData chartData,
+                                                 HashMap<Integer, Integer> hashMap,
+                                                 float weightUnify ) {
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.setLength(0);
@@ -562,9 +570,9 @@ public class WeightHistoryActivity  extends ActionBarActivity implements OnClick
                     int index = hashMap.get(yearMonth);
                     Log.d(TAG, " fillInWeightChangeInYear index = " + index);
                     chartData.addPoint(index,
-                            (int)weight,
+                            (int) (weight * weightUnify),
                             getString(mBalanceChartModel.nameRes),
-                            String.valueOf(weight) );
+                            String.valueOf( (int) (weight * weightUnify) ) );
                 }
 
             }

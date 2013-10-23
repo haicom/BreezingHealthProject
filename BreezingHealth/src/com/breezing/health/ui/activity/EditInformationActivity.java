@@ -18,6 +18,7 @@ import java.util.ArrayList;
 
 import com.breezing.health.R;
 import com.breezing.health.bean.BaseInformationOutput;
+import com.breezing.health.entity.AccountEntity;
 import com.breezing.health.entity.ActionItem;
 import com.breezing.health.providers.Breezing;
 import com.breezing.health.providers.Breezing.Account;
@@ -32,6 +33,7 @@ import com.breezing.health.ui.fragment.HeightPickerDialogFragment;
 import com.breezing.health.ui.fragment.JobTypePickerDialogFragment;
 import com.breezing.health.ui.fragment.WeightPickerDialogFragment;
 import com.breezing.health.util.BLog;
+import com.breezing.health.util.BreezingQueryViews;
 import com.breezing.health.util.ChangeUnitUtil;
 import com.breezing.health.util.DateFormatUtil;
 import com.breezing.health.util.LocalSharedPrefsUtil;
@@ -79,16 +81,16 @@ public class EditInformationActivity extends ActionBarActivity implements OnClic
         initListeners();
     }
 
-    private void initValues() {
-
-        final String[] types = getResources().getStringArray(R.array.jobTypes);
-        final String[] heightUnits = getResources().getStringArray(R.array.heightUnits);
-        final String[] weightUnits = getResources().getStringArray(R.array.weightUnits);
-
-        mJobType.setText(types[0]);
-        mHeightUnit.setText(heightUnits[0]);
-        mWeightUnit.setText(weightUnits[0]);
-        mHopeWeightUnit.setText(weightUnits[0]);
+    private void initValues() {       
+        AccountEntity account;
+        int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this, LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
+        BreezingQueryViews query = new BreezingQueryViews( this );
+        account = query.queryBaseInfoViews(accountId);
+        mJobType.setText( getString( ChangeUnitUtil.
+                changeCustomUtilToId( account.getCustom() ) )  );
+        mHeightUnit.setText( account.getHeightUnit() );
+        mWeightUnit.setText( account.getWeightUnit() );
+        mHopeWeightUnit.setText( account.getWeightUnit() );
 
         mOps = new ArrayList<ContentProviderOperation>();
     }

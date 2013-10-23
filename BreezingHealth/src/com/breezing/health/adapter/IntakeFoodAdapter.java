@@ -1,5 +1,6 @@
 package com.breezing.health.adapter;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import android.content.Context;
@@ -10,16 +11,27 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.breezing.health.R;
+import com.breezing.health.entity.AccountEntity;
 import com.breezing.health.entity.FoodEntity;
+import com.breezing.health.util.BreezingQueryViews;
+import com.breezing.health.util.LocalSharedPrefsUtil;
 
 public class IntakeFoodAdapter extends BaseAdapter {
 
 	private Context context;
     private ArrayList<FoodEntity> foods;
+    private AccountEntity mAccount;
+    private float mUnifyUnit;
+    private int mAccountId;
     
     public IntakeFoodAdapter(Context context) {
         this.context = context;
         foods = new ArrayList<FoodEntity>();
+        mAccountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(context,
+                LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
+        BreezingQueryViews query = new BreezingQueryViews(context);
+        mAccount = query.queryBaseInfoViews(mAccountId);
+        mUnifyUnit = query.queryUnitObtainData( context.getString(R.string.caloric_type), mAccount.getCaloricUnit() );
     }
 
     @Override
@@ -67,14 +79,13 @@ public class IntakeFoodAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        
+        DecimalFormat df = new DecimalFormat("#.0");
         final FoodEntity food = getItem(position);
         holder.name.setText(food.getFoodName());
-        holder.unit.setText(food.getCalorie() + context.getString(R.string.kilojoule) 
-        		+ "/" + food.getFoodQuantity() + food.getNameExpress());
-        final int total = food.getSelectedNumber() * food.getCalorie();
-        holder.total.setText(total + context.getString(R.string.kilo_metabolism));
-        
+        holder.unit.setText( df.format(food.getCalorie() * mUnifyUnit) + mAccount.getCaloricUnit()
+            + "/" + food.getFoodQuantity() + food.getNameExpress() );
+        final float total = food.getSelectedNumber() * food.getCalorie() * mUnifyUnit;
+        holder.total.setText( df.format(total) + mAccount.getCaloricUnit() );        
         return convertView;
     }
     

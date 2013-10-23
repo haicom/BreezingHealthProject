@@ -88,15 +88,16 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
         super.onCreate(savedInstanceState);
         setContentFrame(R.layout.activity_caloric_intake);
         initValues();
-        initViews();
-        
+        initViews();        
         initListeners();
     }
+    
+    
 
     private void initValues() {
         Intent intent = this.getIntent();
-        mCaloricIntakeType = CaloricIntakeType.values()[intent.getIntExtra(ExtraName.EXTRA_TYPE, CaloricIntakeType.BREAKFAST.ordinal())];
-        mAccountId = intent.getIntExtra(ExtraName.EXTRA_ACCOUNT_ID, 0);
+        mCaloricIntakeType = CaloricIntakeType.values()
+                [intent.getIntExtra(ExtraName.EXTRA_TYPE, CaloricIntakeType.BREAKFAST.ordinal())];
         mDate = intent.getIntExtra(ExtraName.EXTRA_DATE, 0);
         Log.d(TAG," initValues mCaloricIntakeType = " + mCaloricIntakeType + " mAccountId = " + mAccountId + " mDate = " + mDate );
     }
@@ -143,10 +144,10 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
     @Override
     protected void onResume() {       
         super.onResume();
-        int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this,
+        mAccountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this,
                 LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
         BreezingQueryViews query = new BreezingQueryViews(this);
-        mAccount = query.queryBaseInfoViews(accountId);
+        mAccount = query.queryBaseInfoViews(mAccountId);
         mUnifyUnit = query.queryUnitObtainData( this.getString(R.string.caloric_type), mAccount.getCaloricUnit() );
         mSaveUnit = query.queryUnitUnifyData( this.getString(R.string.caloric_type), mAccount.getCaloricUnit() );
         valueToView();
@@ -509,20 +510,20 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
 
     @Override
     public void afterTextChanged(Editable s) {
-        Log.d(TAG, " afterTextChanged s.toString() = " + s.toString());
+        Log.d( TAG, "afterTextChanged" );
         
     }
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count,
             int after) {
-        Log.d(TAG, " beforeTextChanged s.toString() = " + s.toString());
+        Log.d( TAG, "beforeTextChanged" );
         
     }
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-        Log.d(TAG, " onTextChanged s.toString() = " + s.toString() );        
+        Log.d( TAG, "onTextChanged" );        
         mFoodAdapter.refreshCatagoryItems( mEditText.getText().toString().trim() );
         mFoodAdapter.notifyDataSetChanged();
     }

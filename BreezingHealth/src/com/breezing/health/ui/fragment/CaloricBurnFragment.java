@@ -100,14 +100,14 @@ public class CaloricBurnFragment extends BaseFragment implements OnItemClickList
                 LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
         BreezingQueryViews query = new BreezingQueryViews(this.getActivity());
         mAccount = query.queryBaseInfoViews(accountId);
-        mUnifyUnit = query.queryUnitObtainData( this.getString(R.string.caloric_type), mAccount.getCaloricUnit() );
-        mAccountId = bundel.getInt(MainActivity.MAIN_ACCOUNT_ID);
-        mDate = bundel.getInt(MainActivity.MAIN_DATE);
+        mUnifyUnit = query.queryUnitObtainData( this.getString(R.string.caloric_type), mAccount.getCaloricUnit() );        
+       // mDate = bundel.getInt(MainActivity.MAIN_DATE);
+        mDate = ( (MainActivity)this.getActivity() ).getDate();
         mCaloricUnit = mAccount.getCaloricUnit();
         mMetabolism.setText(mCaloricUnit);
-        
-        if ( ( mAccountId !=0 ) || ( mDate != 0 ) ) {
-            drawPieChar(mAccountId, mDate);
+        Log.d(TAG, "onResume accountId = " + accountId + " mDate = " + mDate);
+        if ( ( accountId !=0 ) || ( mDate != 0 ) ) {
+            drawPieChar(accountId, mDate);
         }
         
     }
@@ -239,9 +239,10 @@ public class CaloricBurnFragment extends BaseFragment implements OnItemClickList
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        RecordFunctionEntity recordFunction =  (RecordFunctionEntity) mAdapter.getItem(position);
-        Log.d(TAG, "onItemClick view = " + view + " position =  " + position);
+        RecordFunctionEntity recordFunction =  (RecordFunctionEntity) mAdapter.getItem(position);       
+        mDate = ( (MainActivity)this.getActivity() ).getDate();
         
+        Log.d(TAG, "onItemClick view = " + view + " position =  " + position + " mDate = " + mDate);
         if ( recordFunction.getTitleRes() == R.string.exercise ) {           
             Intent intent = new Intent(IntentAction.ACTIVITY_EXERCISE_RECORD);
             intent.putExtra(ExtraName.EXTRA_DATE, mDate);

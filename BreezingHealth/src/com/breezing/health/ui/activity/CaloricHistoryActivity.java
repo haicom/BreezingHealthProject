@@ -15,6 +15,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.breezing.health.R;
+import com.breezing.health.entity.AccountEntity;
 import com.breezing.health.entity.ActionItem;
 import com.breezing.health.entity.enums.ChartModel;
 import com.breezing.health.providers.Breezing.EnergyCost;
@@ -26,11 +27,7 @@ import com.breezing.health.ui.fragment.DialogFragmentInterface;
 import com.breezing.health.ui.fragment.MonthIntervalPickerDialogFragment;
 import com.breezing.health.ui.fragment.WeekIntervalPickerDialogFragment;
 import com.breezing.health.ui.fragment.YearIntervalPickerDialogFragment;
-import com.breezing.health.util.BLog;
-import com.breezing.health.util.CalendarUtil;
-import com.breezing.health.util.DateFormatUtil;
-import com.breezing.health.util.ExtraName;
-import com.breezing.health.util.LocalSharedPrefsUtil;
+import com.breezing.health.util.*;
 import com.breezing.health.widget.linechart.data.ChartData;
 
 public class CaloricHistoryActivity extends ActionBarActivity implements OnClickListener {
@@ -113,6 +110,14 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
     }
 
     private void refreshFragment() {
+        AccountEntity account;
+        float caloricUnify;
+        int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this, LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
+
+        BreezingQueryViews query = new BreezingQueryViews( this );
+        account = query.queryBaseInfoViews(accountId);
+        caloricUnify = query.queryUnitObtainData( getString(R.string.caloric_type), account.getCaloricUnit() );
+
         mSelectModelButton.setText(mCaloricHistoryChartModel.nameRes);
         ChartData data = new ChartData(ChartData.LINE_COLOR_RED);
 
@@ -128,7 +133,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
                         mYear,
                         mWeek ) ) );
 
-                drawChartDataWeekly(data);
+                drawChartDataWeekly(data, caloricUnify);
                 break;
             }
 
@@ -136,7 +141,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
                 mSelectIntervalButton.setText(
                         getString(R.string.year_and_month, mYear, mMonth) );
 
-                drawChartDataMonthly(data);
+                drawChartDataMonthly(data, caloricUnify);
                 break;
             }
 
@@ -144,7 +149,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
 
                 mSelectIntervalButton.setText(mYear + getString(R.string.year));
 
-                drawChartDataYearly(data);
+                drawChartDataYearly(data, caloricUnify);
 
                 break;
             }
@@ -321,7 +326,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
      * @param chartData
      * @return
      */
-    private ChartData drawChartDataWeekly( ChartData chartData ) {
+    private ChartData drawChartDataWeekly( ChartData chartData, float caloricUnify ) {
 
         int  yearWeek =  DateFormatUtil.getCompleteWeek(mYear, mWeek);
 
@@ -360,10 +365,10 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
 
         if ( mCaloricHistoryType.equals(mCaloricHistoryType.BURN ) ) {
             Log.d(TAG, " drawChartDataWeekly fillInTotalEnergyInWeek ");
-            chartData =  fillInTotalEnergyInWeek(yearWeek, chartData, hashMap);
+            chartData =  fillInTotalEnergyInWeek(yearWeek, chartData, hashMap, caloricUnify);
         } else if (mCaloricHistoryType.equals(mCaloricHistoryType.INTAKE) ) {
             Log.d(TAG, " drawChartDataWeekly fillInTotalIngestionInWeek ");
-            chartData = fillInTotalIngestionInWeek(yearWeek, chartData, hashMap);
+            chartData = fillInTotalIngestionInWeek(yearWeek, chartData, hashMap, caloricUnify);
         }
 
         return chartData;
@@ -388,7 +393,8 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
      */
     private ChartData  fillInTotalEnergyInWeek(int yearWeek ,
                                ChartData chartData,
-                               HashMap<Integer, Integer> hashMap ) {
+                               HashMap<Integer, Integer> hashMap,
+                               float caloricUnify) {
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.setLength(0);
@@ -412,14 +418,14 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
             cursor.moveToPosition(-1);
 
             while (cursor.moveToNext() ) {
-                long allTotalEnergy = cursor.getLong(ALL_TOTAL_ENERGY_COLUMN_DAYLY_INDEX);
+                float allTotalEnergy = cursor.getFloat(ALL_TOTAL_ENERGY_COLUMN_DAYLY_INDEX);
                 int  day = cursor.getInt(DATE_COLUMN_DAYLY_INDEX);
                 if ( hashMap.containsKey(day) ) {
                     int index = hashMap.get(day);
                     chartData.addPoint(index,
-                            (int)allTotalEnergy,
+                            (int) (allTotalEnergy * caloricUnify),
                             getString(mCaloricHistoryChartModel.nameRes),
-                            String.valueOf(allTotalEnergy) );
+                            String.valueOf( (int) (allTotalEnergy * caloricUnify) ) );
                 }
 
             }
@@ -449,8 +455,9 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
      * @return
      */
     private ChartData  fillInTotalIngestionInWeek(int yearWeek ,
-                               ChartData chartData,
-                               HashMap<Integer, Integer> hashMap ) {
+                                                  ChartData chartData,
+                                                  HashMap<Integer, Integer> hashMap,
+                                                  float caloricUnify) {
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.setLength(0);
@@ -474,14 +481,14 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
             cursor.moveToPosition(-1);
 
             while (cursor.moveToNext() ) {
-                long allTotalEnergy = cursor.getLong(TOTAL_INGESTION_COLUMN_DAYLY_INDEX);
+                float allTotalEnergy = cursor.getFloat(TOTAL_INGESTION_COLUMN_DAYLY_INDEX);
                 int  day = cursor.getInt(INGESTION_DATE_COLUMN_DAYLY_INDEX);
                 if ( hashMap.containsKey(day) ) {
                     int index = hashMap.get(day);
                     chartData.addPoint(index,
-                            (int)allTotalEnergy,
+                            (int) (allTotalEnergy * caloricUnify),
                             getString(mCaloricHistoryChartModel.nameRes),
-                            String.valueOf(allTotalEnergy) );
+                            String.valueOf( (int) (allTotalEnergy * caloricUnify) ) );
                 }
 
             }
@@ -500,7 +507,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
      * @param chartData
      * @return
      */
-    private ChartData drawChartDataMonthly(ChartData  chartData) {
+    private ChartData drawChartDataMonthly(ChartData  chartData, float caloricUnify) {
 
         int  yearMonth =  DateFormatUtil.getCompleteWeek(mYear, mMonth);
         int  weekNum = CalendarUtil.getTotalWeeksInMonth(mYear, mMonth);
@@ -529,9 +536,9 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
         }
 
         if ( mCaloricHistoryType.equals(mCaloricHistoryType.BURN ) ) {
-            chartData =  fillInTotalEnergyInMonth(yearMonth, chartData, hashMap);
+            chartData =  fillInTotalEnergyInMonth(yearMonth, chartData, hashMap, caloricUnify);
         } else if (mCaloricHistoryType.equals(mCaloricHistoryType.INTAKE) ) {
-            chartData = fillInTotalIngestionInMonth(yearMonth, chartData, hashMap);
+            chartData = fillInTotalIngestionInMonth(yearMonth, chartData, hashMap, caloricUnify);
         }
 
         return chartData;
@@ -558,8 +565,9 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
      * @return
      */
     private ChartData  fillInTotalEnergyInMonth(int  yearMonth ,
-                               ChartData chartData,
-                               HashMap<Integer, Integer> hashMap ) {
+                                                ChartData chartData,
+                                                HashMap<Integer, Integer> hashMap,
+                                                float caloricUnify) {
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.setLength(0);
@@ -583,16 +591,16 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
             cursor.moveToPosition(-1);
 
             while (cursor.moveToNext() ) {
-                long avgTotalEnergy = cursor.getLong(AVG_TOTAL_ENERGY_COLUMN_WEEKLY_INDEX);
+                float avgTotalEnergy = cursor.getFloat(AVG_TOTAL_ENERGY_COLUMN_WEEKLY_INDEX);
                 int  yearWeek = cursor.getInt(YEAR_WEEK_COLUMN_WEEKLY_INDEX);
                 Log.d(TAG, " fillInTotalEnergyInMonth avgTotalEnergy = " + avgTotalEnergy + " yearWeek = " + yearWeek);
                 if ( hashMap.containsKey(yearWeek) ) {
                     int index = hashMap.get(yearWeek);
                     Log.d(TAG, " fillInTotalEnergyInMonth index = " + index);
                     chartData.addPoint(index,
-                            (int)avgTotalEnergy,
+                            (int) (avgTotalEnergy * caloricUnify),
                             getString(mCaloricHistoryChartModel.nameRes),
-                            String.valueOf(avgTotalEnergy) );
+                            String.valueOf( (int) (avgTotalEnergy * caloricUnify) ) );
                 }
 
             }
@@ -626,8 +634,9 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
      * @return
      */
     private ChartData  fillInTotalIngestionInMonth(int  yearMonth ,
-                               ChartData chartData,
-                               HashMap<Integer, Integer> hashMap ) {
+                                                   ChartData chartData,
+                                                   HashMap<Integer, Integer> hashMap,
+                                                   float caloricUnify) {
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.setLength(0);
@@ -652,7 +661,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
 
             while (cursor.moveToNext() ) {
 
-                long avgTotalEnergy = cursor.getLong(AVG_TOTAL_INGESTION_COLUMN_WEEKLY_INDEX);
+                float avgTotalEnergy = cursor.getFloat(AVG_TOTAL_INGESTION_COLUMN_WEEKLY_INDEX);
                 int  yearWeek = cursor.getInt(INGESTION_YEAR_WEEK_COLUMN_WEEKLY_INDEX);
 
                 Log.d(TAG, " fillInTotalEnergyInMonth avgTotalEnergy = " + avgTotalEnergy + " yearWeek = " + yearWeek);
@@ -664,9 +673,9 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
                     Log.d(TAG, " fillInTotalEnergyInMonth index = " + index);
 
                     chartData.addPoint(index,
-                            (int)avgTotalEnergy,
+                            (int) (avgTotalEnergy * caloricUnify),
                             getString(mCaloricHistoryChartModel.nameRes),
-                            String.valueOf(avgTotalEnergy) );
+                            String.valueOf( (int) (avgTotalEnergy * caloricUnify) ) );
                 }
 
             }
@@ -686,7 +695,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
      * @param chartData
      * @return
      */
-    private ChartData drawChartDataYearly(ChartData  chartData) {
+    private ChartData drawChartDataYearly(ChartData  chartData, float caloricUnify) {
 
         HashMap<Integer, Integer> hashMap =
                 new HashMap<Integer, Integer>();
@@ -710,9 +719,9 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
         }
 
         if ( mCaloricHistoryType.equals(mCaloricHistoryType.BURN ) ) {
-            chartData =  fillInTotalEnergyInYear(chartData, hashMap);
+            chartData =  fillInTotalEnergyInYear(chartData, hashMap, caloricUnify);
         } else if (mCaloricHistoryType.equals(mCaloricHistoryType.INTAKE) ) {
-            chartData = fillInIngestionInYear(chartData, hashMap);
+            chartData = fillInIngestionInYear(chartData, hashMap, caloricUnify);
         }
 
         return chartData;
@@ -738,7 +747,8 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
      * @return
      */
     private ChartData  fillInTotalEnergyInYear(ChartData chartData,
-                               HashMap<Integer, Integer> hashMap ) {
+                                               HashMap<Integer, Integer> hashMap,
+                                               float caloricUnify) {
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.setLength(0);
@@ -762,7 +772,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
             cursor.moveToPosition(-1);
 
             while (cursor.moveToNext() ) {
-                long avgTotalEnergy = cursor.getLong(AVG_TOTAL_ENERGY_COLUMN_MONTHLY_INDEX);
+                float avgTotalEnergy = cursor.getFloat(AVG_TOTAL_ENERGY_COLUMN_MONTHLY_INDEX);
                 int  yearMonth = cursor.getInt(YEAR_MONTH_COLUMN_INDEX);
 
                 Log.d(TAG, " fillInTotalEnergyInYear avgTotalEnergy = " + avgTotalEnergy + " yearMonth = " + yearMonth);
@@ -771,9 +781,9 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
                     int index = hashMap.get(yearMonth);
                     Log.d(TAG, " fillInTotalEnergyInMonth index = " + index);
                     chartData.addPoint(index,
-                            (int)avgTotalEnergy,
+                            (int) ( avgTotalEnergy * caloricUnify),
                             getString(mCaloricHistoryChartModel.nameRes),
-                            String.valueOf(avgTotalEnergy) );
+                            String.valueOf( (int) ( avgTotalEnergy * caloricUnify) ) );
                 }
 
             }
@@ -806,7 +816,8 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
      * @return
      */
     private ChartData  fillInIngestionInYear(ChartData chartData,
-                               HashMap<Integer, Integer> hashMap ) {
+                                             HashMap<Integer, Integer> hashMap,
+                                             float caloricUnify) {
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.setLength(0);
@@ -830,7 +841,7 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
             cursor.moveToPosition(-1);
 
             while (cursor.moveToNext() ) {
-                long avgTotalEnergy = cursor.getLong(AVG_INGESTION_COLUMN_MONTHLY_INDEX);
+                float avgTotalEnergy = cursor.getFloat(AVG_INGESTION_COLUMN_MONTHLY_INDEX);
                 int  yearMonth = cursor.getInt(INGESTION_YEAR_MONTH_COLUMN_INDEX);
 
                 Log.d(TAG, " fillInTotalEnergyInYear avgTotalEnergy = " + avgTotalEnergy + " yearMonth = " + yearMonth);
@@ -839,9 +850,9 @@ public class CaloricHistoryActivity extends ActionBarActivity implements OnClick
                     int index = hashMap.get(yearMonth);
                     Log.d(TAG, " fillInTotalEnergyInMonth index = " + index);
                     chartData.addPoint(index,
-                            (int)avgTotalEnergy,
+                            (int) (avgTotalEnergy * caloricUnify),
                             getString(mCaloricHistoryChartModel.nameRes),
-                            String.valueOf(avgTotalEnergy) );
+                            String.valueOf( (int) (avgTotalEnergy * caloricUnify) ) );
                 }
 
             }

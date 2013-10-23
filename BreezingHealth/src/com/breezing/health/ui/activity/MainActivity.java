@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.breezing.health.R;
 import com.breezing.health.adapter.CaloricPagerAdapter;
+import com.breezing.health.entity.AccountEntity;
 import com.breezing.health.entity.ActionItem;
 import com.breezing.health.providers.Breezing;
 import com.breezing.health.providers.Breezing.Account;
@@ -33,6 +34,7 @@ import com.breezing.health.providers.Breezing.Information;
 import com.breezing.health.providers.Breezing.UnitSettings;
 import com.breezing.health.providers.Breezing.WeightChange;
 import com.breezing.health.tools.IntentAction;
+import com.breezing.health.tools.Tools;
 import com.breezing.health.ui.activity.CaloricHistoryActivity.CaloricHistoryType;
 import com.breezing.health.ui.fragment.BaseDialogFragment;
 import com.breezing.health.ui.fragment.CalendarDialogFragment;
@@ -41,8 +43,10 @@ import com.breezing.health.ui.fragment.CaloricIntakeFragment;
 import com.breezing.health.ui.fragment.DialogFragmentInterface;
 import com.breezing.health.ui.fragment.ImagePickerDialogFragment;
 import com.breezing.health.util.BLog;
+import com.breezing.health.util.BreezingQueryViews;
 import com.breezing.health.util.DateFormatUtil;
 import com.breezing.health.util.ExtraName;
+import com.breezing.health.util.InternalStorageContentProvider;
 import com.breezing.health.util.LocalSharedPrefsUtil;
 import com.breezing.health.widget.imagecrop.ImageUtil;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnClosedListener;
@@ -77,11 +81,21 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
     @Override
     protected void onResume() {
-        super.onResume();
-        String weightString  = getBaseInfoViews(mAccountId);
-        mWeight.setText( weightString );
-       
+        super.onResume();        
         
+        AccountEntity account;
+        float weightUnify;
+        int accountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this, LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
+        
+        BreezingQueryViews query = new BreezingQueryViews( this );
+        account = query.queryBaseInfoViews(accountId);
+        weightUnify = query.queryUnitObtainData( getString(R.string.weight_type), account.getWeightUnit() );
+        DecimalFormat df = new DecimalFormat("#.0");
+        float weight  = getWeightInfoViews(accountId);
+        
+        String str = df.format(weight * weightUnify);
+        Log.d(TAG, "getBaseInfoViews str = " + str);        
+        mWeight.setText( getResources().getString(R.string.breezing_weight, str, account.getWeightUnit() ) );        
     }
 
     private void initValues() {        
@@ -115,21 +129,16 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         CaloricBurnFragment caloricBurnFragment  = (CaloricBurnFragment) mCaloricPagerAdapter.
                 getItem(CaloricHistoryType.BURN.ordinal());
         
-        Bundle IntakeBundle = caloricIntakeFragment.getArguments();
-        if (IntakeBundle == null) {
-            IntakeBundle = new Bundle();
-        }
+       
+        Bundle IntakeBundle = new Bundle();
+        
        
         IntakeBundle.putInt(MAIN_ACCOUNT_ID, mAccountId);
         IntakeBundle.putInt(MAIN_DATE, mDate);
         caloricIntakeFragment.setArguments(IntakeBundle);
         
         
-        Bundle burnBundle = caloricBurnFragment.getArguments();
-        if (burnBundle == null) {
-            burnBundle = new Bundle();
-        }
-        
+        Bundle burnBundle =  new Bundle();        
         burnBundle.putInt(MAIN_ACCOUNT_ID, mAccountId);
         burnBundle.putInt(MAIN_DATE, mDate);      
         caloricBurnFragment.setArguments(burnBundle);
@@ -180,13 +189,15 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
     }
 
     private void drawPiePicture() {
+        int accountId  = LocalSharedPrefsUtil.getSharedPrefsValueInt(this,
+                LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
         CaloricBurnFragment caloricBurnFragment  = (CaloricBurnFragment) mCaloricPagerAdapter.
                 getItem(CaloricHistoryType.BURN.ordinal());
-        caloricBurnFragment.drawPieChar( mAccountId, mDate );
+        caloricBurnFragment.drawPieChar( accountId, mDate );
         
         CaloricIntakeFragment caloricIntakeFragment  = (CaloricIntakeFragment) mCaloricPagerAdapter.
                 getItem(CaloricHistoryType.INTAKE.ordinal());
-        caloricIntakeFragment.drawPieChar( mAccountId, mDate );
+        caloricIntakeFragment.drawPieChar( accountId, mDate );
     }
 
     public int getAccountId() {
@@ -255,7 +266,38 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
     private static final int INFO_WEIGHT_UNIT_INDEX = 0;
     private static final int INFO_WEIGHT_INDEX = 1;
+    
+    public float getWeightInfoViews(int accountId) {
+        Log.d(TAG, "getWeightInfoViews");
+       
+        float  weight = 0;
+        
 
+        String accountClause =  Account.ACCOUNT_ID + " = ?";
+        String sortOrder = WeightChange.DATE + " DESC";
+        String[] args = new String[] { String.valueOf(accountId) };
+
+        Cursor cursor  = mContentResolver.query(Information.CONTENT_BASE_INFO_URI,
+                PROJECTION_BASE_INFO, accountClause, args, sortOrder);
+
+        if (cursor == null) {
+            Log.d(TAG, " testBaseInfoView cursor = " + cursor);
+        }
+
+
+        try {
+            if (cursor != null) {
+                if ( cursor.getCount() > 0 ) {
+                    cursor.moveToPosition(0);                 
+                    weight = cursor.getFloat(INFO_WEIGHT_INDEX);
+                }
+            }
+        } finally {
+            cursor.close();
+        }
+        
+        return weight;
+    }
 
     public String getBaseInfoViews(int accountId) {
         Log.d(TAG, "queryBaseInfoView");
@@ -339,6 +381,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         }
         super.onClickActionBarItems(item, v);
     }
+    
+   
     
     public void showImagePickerDialog() {
         ImagePickerDialogFragment imagePicker = (ImagePickerDialogFragment) getSupportFragmentManager().findFragmentByTag("imagePicker");
