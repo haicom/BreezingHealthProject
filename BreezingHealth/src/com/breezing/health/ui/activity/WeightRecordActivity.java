@@ -310,18 +310,19 @@ public class WeightRecordActivity extends ActionBarActivity implements OnClickLi
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         
         mNotice.setText(spannable);
-    
+        String actualString = weightFormat.format(mActualEvery);
+        String actualHope =  weightFormat.format(mActualHope);
         final String differentValue = getString(R.string.different_weight_value_notice, 
-                String.valueOf(mActualEvery), String.valueOf(mActualHope), mWeightUnitValue);
-        final int index = differentValue.indexOf(String.valueOf(mActualEvery));
+                actualString, actualHope, mWeightUnitValue);
+        final int index = differentValue.indexOf( actualString );
         SpannableString diffValueSpan = new SpannableString(differentValue);
         diffValueSpan.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.green)),
                 index ,
-                index + String.valueOf(mActualEvery).length(),
+                index + actualString.length(),
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         diffValueSpan.setSpan(new RelativeSizeSpan(1.2f),
                 index ,
-                index + String.valueOf(mActualEvery).length(),
+                index + actualHope.length(),
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         
         mDifferentValue.setText(diffValueSpan);
@@ -329,7 +330,7 @@ public class WeightRecordActivity extends ActionBarActivity implements OnClickLi
         mSeekBar.setMax( (int) Math.abs( mActualWeight - mActualHope) );
         mSeekBar.setProgress( (int) Math.abs( mActualWeight - mActualEvery) );
         
-        Log.d(TAG, " refreshWeightInfo mActualEvery = " + mActualEvery + " mActualHope = " + mActualHope);
+        Log.d(TAG, " refreshWeightInfo mActualEvery = " + mActualEvery + " mActualHope = " + mActualHope + " mActualWeight =" + mActualWeight);
         mWeight.setText( weightFormat.format(mActualEvery) );
         mExpectedWeight.setText( weightFormat.format(mActualHope) );
         mWeightUnit.setText(mWeightUnitValue);
@@ -409,10 +410,12 @@ public class WeightRecordActivity extends ActionBarActivity implements OnClickLi
                 LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);        
         int count = queryWeightInfoByDate(accountId);
         
-        float weightText = Float.valueOf(mWeight.getText().toString() );
-        float expectedText = Float.valueOf(mExpectedWeight.getText().toString() );
-        
-        Log.d(TAG, "updateWeightData weightText = " + weightText + " expectedText = " + expectedText);
+        float weightText = Float.valueOf( mWeight.getText().toString() );
+        float expectedText = Float.valueOf( mExpectedWeight.getText().toString() );
+        DecimalFormat weightFormat = new DecimalFormat("#0.0");
+        Log.d(TAG, "updateWeightData weightText = " + weightText + " expectedText = " + expectedText 
+                + "weightFormat.format(mActualHope) = " + weightFormat.format(mActualHope) 
+                + " weightFormat.format(mActualWeight) = " + weightFormat.format(mActualWeight));
         float updateWeight = queryUnitUnifyData(weightText, 
                 getString(R.string.weight_type),
                 mWeightUnit.getText().toString() );
@@ -421,11 +424,11 @@ public class WeightRecordActivity extends ActionBarActivity implements OnClickLi
                 getString(R.string.weight_type),
                 mWeightUnit.getText().toString() );
         if (count > 0 ) {
-            if (expectedText != mActualHope) {
+            if (expectedText != Float.valueOf(weightFormat.format(mActualHope) ) ) {
                 if (weightText != 0) {
                     updateExpectedWeightChange(ops, accountId, updateWeight, updateExpected);
                 }
-            } else if (weightText != mActualWeight) {
+            } else if (weightText != Float.valueOf(weightFormat.format(mActualWeight) ) ) {
                 updateWeightChange(ops, accountId, updateWeight);
             }
         } else {

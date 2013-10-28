@@ -523,9 +523,16 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-        Log.d( TAG, "onTextChanged" );        
-        mFoodAdapter.refreshCatagoryItems( mEditText.getText().toString().trim() );
-        mFoodAdapter.notifyDataSetChanged();
+        Log.d( TAG, "onTextChanged" );   
+        
+        if ( mEditText.getText() != null ) {
+            if ( mEditText.getText().length() > 0 ) {
+                mFoodAdapter.refreshCatagoryItems( mEditText.getText().toString().trim() );
+                mFoodAdapter.notifyDataSetChanged();
+            }
+            
+        }
+       
     }
     
     
