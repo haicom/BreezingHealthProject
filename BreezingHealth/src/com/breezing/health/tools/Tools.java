@@ -250,14 +250,29 @@ public class Tools {
     }
     
     public static void refreshVane(int number, View vane) {
-        if (number > 9999) {
+        if (number > 99999) {
             return ;
         }
         
-        final int k = number / 1000;
-        final int h = number % 1000 / 100;
-        final int t = number % 1000 % 100 / 10;
-        final int u = number % 1000 % 100 % 10;
+        int kNumber = 0;
+        if (number > 9999) {
+            kNumber = number % 10000;
+            final int m = number / 10000;
+            
+            vane.findViewById(R.id.ring_fifth_layout).setVisibility(View.VISIBLE);
+            vane.findViewById(R.id.number_fifth_layout).setVisibility(View.VISIBLE);
+            ((ImageView)vane.findViewById(R.id.number_fifth)).setImageResource(getVaneImageRes(m));
+        } else {
+            kNumber = number;
+            
+            vane.findViewById(R.id.ring_fifth_layout).setVisibility(View.GONE);
+            vane.findViewById(R.id.number_fifth_layout).setVisibility(View.GONE);
+        }
+        
+        final int k = kNumber / 1000;
+        final int h = kNumber % 1000 / 100;
+        final int t = kNumber % 1000 % 100 / 10;
+        final int u = kNumber % 1000 % 100 % 10;
         
         BLog.v(TAG, "number =" + number + ";k =" + k + ";h = " + h + "; t = " + t + ";u = " + u);
         

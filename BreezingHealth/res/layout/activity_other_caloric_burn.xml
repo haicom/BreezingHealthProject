@@ -18,11 +18,13 @@
 
     <include
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_below="@+id/baseResult"
         android:layout_marginTop="@dimen/activity_vertical_small_margin"
         layout="@layout/vane_layout"
-        android:id="@+id/base_vane" />
+        android:id="@+id/base_vane"
+        android:layout_marginLeft="@dimen/activity_vertical_margin"
+        android:layout_marginRight="@dimen/activity_vertical_margin"
+        android:layout_height="@dimen/vane_height" />
     
     <TextView
         android:id="@+id/base_result_notice"
@@ -53,11 +55,13 @@
 
     <include
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_below="@+id/digestResult"
         android:layout_marginTop="@dimen/activity_vertical_small_margin"
         layout="@layout/vane_layout"
-        android:id="@+id/digest_vane" />
+        android:id="@+id/digest_vane"
+        android:layout_marginLeft="@dimen/activity_vertical_margin"
+        android:layout_marginRight="@dimen/activity_vertical_margin"
+        android:layout_height="@dimen/vane_height" />
     
     <TextView
         android:id="@+id/digest_result_notice"

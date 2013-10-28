@@ -43,5 +43,6 @@
     <dimen name="picker_height">280dp</dimen>
     
     <dimen name="wheel_val_height">55dp</dimen>
+    <dimen name="vane_height">90dp</dimen>
     
 </resources>

@@ -15,12 +15,12 @@
         android:visibility="gone" />
 
     <LinearLayout
+        android:id="@+id/last_test_result"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/activity_vertical_margin"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:orientation="vertical"
-        android:id="@+id/last_test_result"
         android:visibility="gone" >
 
         <TextView
@@ -30,19 +30,20 @@
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:gravity="center_vertical"
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin"
-            android:gravity="center_vertical"
             android:textColor="@color/gray"
             android:textSize="@dimen/small_textsize" />
 
         <include
             android:id="@+id/energy_vane"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/vane_height"
+            android:layout_marginLeft="@dimen/activity_vertical_margin"
+            android:layout_marginRight="@dimen/activity_vertical_margin"
             android:layout_marginTop="@dimen/activity_vertical_small_margin"
             layout="@layout/vane_layout" />
-        
     </LinearLayout>
 
     <com.breezing.health.widget.CustomViewPager
