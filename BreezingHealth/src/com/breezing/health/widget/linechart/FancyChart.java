@@ -14,7 +14,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.breezing.health.tools.Tools;
 import com.breezing.health.widget.linechart.data.AxisValue;
 import com.breezing.health.widget.linechart.data.ChartData;
 import com.breezing.health.widget.linechart.data.Point;
@@ -23,6 +22,7 @@ public class FancyChart extends View {
 
 	private static int VERTICAL_LEGEND_WIDTH = 10;
 	private static int VERTICAL_LEGEND_MARGIN_RIGHT = 10;
+	private static int HORIZONTAL_LEGEND_MARGIN_LEFT = 40;
 	
 	private static int HORIZONTAL_LEGEND_HEIGHT = 10;
 	private static int HORIZONTAL_LEGEND_MARGIN_TOP = 10;
@@ -38,7 +38,7 @@ public class FancyChart extends View {
 		super(context, attrs);
 		
 		this.chartData = new ArrayList<ChartData>();
-		this.chartStyle = new FancyChartStyle();
+		this.chartStyle = new FancyChartStyle(context);
 	}
 	
 	public void addData(ChartData data) {
@@ -156,10 +156,13 @@ public class FancyChart extends View {
 		paintSelectedBorder.setAntiAlias(true);
 		
 		int maxTextRowLength = Math.max(title.length(), subtitle.length());
+		if (maxTextRowLength <= 3) {
+		    maxTextRowLength = 4;
+		}
 		
 		// TODO: Crashes on smaller text lengths
-		int rWidth = (int) (maxTextRowLength*(Tools.dip2px(getContext(), chartStyle.getBoxTextSize())));
-		int rHeight = (int) (Tools.dip2px(getContext(), chartStyle.getBoxTextSize())*3);
+		int rWidth = (int) (maxTextRowLength* chartStyle.getBoxTextSize());
+		int rHeight = (int) (chartStyle.getBoxTextSize()*3);
 		
 		RectF borderRectangle = new RectF(point.canvasX-(rWidth/2), point.canvasY-(rHeight/2)-chartStyle.getPointRadius()*6, point.canvasX+(rWidth/2), point.canvasY+(rHeight/2)-chartStyle.getPointRadius()*6);
 		canvas.drawRoundRect(borderRectangle, 5, 5, paintSelectedBorder);
@@ -214,12 +217,12 @@ public class FancyChart extends View {
 		textPaint.setColor(chartStyle.getBoxTextColor());
 		textPaint.setStyle(Paint.Style.FILL);
 		textPaint.setAntiAlias(true);
-		textPaint.setTextSize(Tools.dip2px(getContext(), chartStyle.getBoxTextSize()));
+		textPaint.setTextSize(chartStyle.getBoxTextSize());
 		
 		textPaint.setTypeface(Typeface.DEFAULT_BOLD);
-		canvas.drawText(title, rInside.left + 7, rInside.top + 20, textPaint);
+		canvas.drawText(title, rInside.left + 7, rInside.top + chartStyle.getBoxTextSize(), textPaint);
 		textPaint.setTypeface(Typeface.DEFAULT);
-		canvas.drawText(subtitle, rInside.left + 7, rInside.top + 20 + 15, textPaint);
+		canvas.drawText(subtitle, rInside.left + 7, rInside.top + chartStyle.getBoxTextSize() * 2, textPaint);
 	}
 
 	private void drawLinesBetweenPoints(List<Point> points, Canvas canvas, Paint paintLine) {
@@ -353,7 +356,7 @@ public class FancyChart extends View {
 		Paint paintLegend = new Paint();
 		paintLegend.setColor(chartStyle.getyAxisLegendColor());
 		paintLegend.setStyle(Paint.Style.FILL);
-		paintLegend.setTextSize(Tools.dip2px(getContext(), chartStyle.getLegendTextSize()));
+		paintLegend.setTextSize(chartStyle.getLegendTextSize());
 		paintLegend.setAntiAlias(true);
 		
 		double min = getMinY();
@@ -382,7 +385,7 @@ public class FancyChart extends View {
 		
 		for(AxisValue value : reduced) {
 			int y = canvasHeight - transformTo(min, max, canvasMin, canvasMax, value.value);
-			canvas.drawLine(VERTICAL_LEGEND_WIDTH + VERTICAL_LEGEND_MARGIN_RIGHT, y, getWidth(), y, paint);
+			canvas.drawLine(VERTICAL_LEGEND_WIDTH + HORIZONTAL_LEGEND_MARGIN_LEFT, y, getWidth(), y, paint);
 			
 			if(value.title != null) {
 				int length = value.title.length();
@@ -406,7 +409,7 @@ public class FancyChart extends View {
 		Paint paintLegend = new Paint();
 		paintLegend.setColor(chartStyle.getxAxisLegendColor());
 		paintLegend.setStyle(Paint.Style.FILL);
-		paintLegend.setTextSize(Tools.dip2px(getContext(), chartStyle.getLegendTextSize()));
+		paintLegend.setTextSize(chartStyle.getLegendTextSize());
 		paintLegend.setAntiAlias(true);
 		
 		List<AxisValue> xValues = new ArrayList<AxisValue>();
@@ -422,7 +425,7 @@ public class FancyChart extends View {
 
 			if(value.title != null) {
 				int length = value.title.length();
-				canvas.drawText(value.title, x - length * 4, getHeight()-Tools.dip2px(getContext(), chartStyle.getLegendTextSize())/2, paintLegend);
+				canvas.drawText(value.title, x - length * 4, getHeight()- chartStyle.getLegendTextSize()/2, paintLegend);
 			}
 		}
 	}

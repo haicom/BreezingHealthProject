@@ -36,7 +36,7 @@
         app:pointer_halo_color="#88252525"
         app:pointer_size="5"
         app:text_color="#FF0000"
-        app:text_size="20"
+        app:text_size="14"
         app:wheel_size="3"
         app:wheel_active_color="#00BFFF"
         app:wheel_unactive_color="#FFCCCCCC"

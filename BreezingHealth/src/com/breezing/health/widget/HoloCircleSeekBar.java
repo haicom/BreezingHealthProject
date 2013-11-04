@@ -18,6 +18,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.breezing.health.R;
+import com.breezing.health.tools.Tools;
 
 /**
  * Displays a holo-themed color picker.
@@ -186,7 +187,7 @@ public class HoloCircleSeekBar extends View {
         textPaint.setStyle(Style.FILL_AND_STROKE);
         textPaint.setTextAlign(Align.LEFT);
         // canvas.drawPaint(textPaint);
-        textPaint.setTextSize(text_size);
+        textPaint.setTextSize(Tools.dip2px(getContext(), text_size));
 
         mPointerColor = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPointerColor.setStrokeWidth(mPointerRadius);
@@ -233,7 +234,7 @@ public class HoloCircleSeekBar extends View {
 
         text_color_attr = a.getString(R.styleable.HoloCircleSeekBar_text_color);
 
-        text_size = a.getInteger(R.styleable.HoloCircleSeekBar_text_size, 95);
+        text_size = a.getInteger(R.styleable.HoloCircleSeekBar_text_size, 14);
 
         init_position = a.getInteger(
                 R.styleable.HoloCircleSeekBar_init_position, 0);

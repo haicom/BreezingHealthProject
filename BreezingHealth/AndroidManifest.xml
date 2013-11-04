@@ -278,5 +278,10 @@
         </receiver>
         
     </application>
+    
+    <supports-screens android:xlargeScreens="true"
+        android:normalScreens="true"
+        android:largeScreens="true"
+        android:anyDensity="true" />
 
 </manifest>

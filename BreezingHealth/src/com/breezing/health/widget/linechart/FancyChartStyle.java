@@ -1,5 +1,8 @@
 package com.breezing.health.widget.linechart;
 
+import com.breezing.health.tools.Tools;
+
+import android.content.Context;
 import android.graphics.Color;
 
 public class FancyChartStyle {
@@ -32,7 +35,7 @@ public class FancyChartStyle {
 	private int chartPaddingTop;
 	private int chartPaddingBottom;
 	
-	public FancyChartStyle() {
+	public FancyChartStyle(Context context) {
 		pointColor = Color.parseColor("#efefeb");
 		
 		horizontalGridColor = Color.parseColor("#ddddda");
@@ -47,20 +50,20 @@ public class FancyChartStyle {
 
 		pointColor = Color.parseColor("#ffffff");
 		
-		pointRadius = 9;
+		pointRadius = Tools.dip2px(context, 6);
 		pointStrokeWidth = 3;
 		
-		legendTextSize = 11;
-		boxTextSize = 11;
+		legendTextSize = Tools.dip2px(context, 12);
+		boxTextSize = Tools.dip2px(context, 12);
 		
 		dataLineWidth = 5;
 		gridLineWidth = 1;
-		selectedBoxStrokeWidth = 3;
+		selectedBoxStrokeWidth = Tools.dip2px(context, 3);
 		
-		chartPaddingLeft = 40;
-		chartPaddingRight = 40;
-		chartPaddingTop = 20;
-		chartPaddingBottom = 20;
+		chartPaddingLeft = Tools.dip2px(context, 30);
+		chartPaddingRight = Tools.dip2px(context, 30);
+		chartPaddingTop = Tools.dip2px(context, 20);
+		chartPaddingBottom = Tools.dip2px(context, 20);
 		
 		drawBackgroundBelowLine = true;
 	}

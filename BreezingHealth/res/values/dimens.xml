@@ -45,4 +45,6 @@
     <dimen name="wheel_val_height">55dp</dimen>
     <dimen name="vane_height">90dp</dimen>
     
+    <dimen name="dialog_actionbar_height">56dp</dimen>
+    
 </resources>
