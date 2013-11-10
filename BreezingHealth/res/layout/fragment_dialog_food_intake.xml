@@ -34,12 +34,20 @@
             android:text="@string/confirm" />
     </RelativeLayout>
 
-    <ListView
+    <com.breezing.health.widget.swipelist.SwipeListView
+        xmlns:swipe="http://schemas.android.com/apk/res-auto"
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="@dimen/picker_height"
         android:layout_alignParentBottom="true"
         android:background="@color/background_color"
-        android:cacheColorHint="@color/transparent" />
+        android:cacheColorHint="@color/transparent"
+        swipe:swipeActionLeft="reveal"
+        swipe:swipeBackView="@+id/back"
+        swipe:swipeCloseAllItemsWhenMoveList="true"
+        swipe:swipeFrontView="@+id/front"
+        swipe:swipeMode="left"
+        swipe:swipeOffsetLeft="200dp"
+        swipe:swipeOpenOnLongPress="false" />
 
 </RelativeLayout>

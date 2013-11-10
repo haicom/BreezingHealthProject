@@ -42,7 +42,7 @@
                 android:singleLine="true"
                 android:text="@string/textview_title_sex" />
 
-            <RadioGroup
+            <RadioGroup android:id="@+id/sex_radiogroup"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="@dimen/activity_horizontal_small_margin"
@@ -57,7 +57,7 @@
                     android:layout_weight="1"
                     android:text="@string/male"
                     android:textColor="@color/black"
-                    android:checked="true"
+                    android:checked="false"
                     android:button="@drawable/btn_radio_selector" />
 
                 <RadioButton
@@ -68,7 +68,8 @@
                     android:layout_weight="1"
                     android:text="@string/female"
                     android:textColor="@color/black"
-                    android:button="@drawable/btn_radio_selector" />
+                    android:button="@drawable/btn_radio_selector"
+                    android:checked="false" />
             </RadioGroup>
         </LinearLayout>
 
@@ -163,14 +164,15 @@
 
         </RelativeLayout>
         
-        <TextView
+        <TextView android:id="@+id/weight_notice"
             style="@style/TitleTextViewStyle"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:singleLine="true"
             android:textSize="@dimen/small_textsize"
             android:textColor="@color/red"
-            android:text="@string/less_than_standard_weight_notice" />
+            android:text="@string/less_than_standard_weight_notice"
+            android:visibility="gone" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -200,14 +202,15 @@
                 android:paddingRight="@dimen/activity_horizontal_margin" />
         </RelativeLayout>
         
-        <TextView
+        <TextView android:id="@+id/hope_weight_notice"
             style="@style/TitleTextViewStyle"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:singleLine="true"
             android:textSize="@dimen/small_textsize"
             android:textColor="@color/red"
-            android:text="@string/more_than_standard_weight_notice" />
+            android:text="@string/more_than_standard_weight_notice"
+            android:visibility="gone" />
         
         <Button   
             android:id="@+id/modify"

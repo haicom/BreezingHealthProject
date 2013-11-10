@@ -3,7 +3,9 @@ package com.breezing.health.ui.activity;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
+import android.content.ContentProviderOperation;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.SpannableString;
@@ -23,25 +25,23 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.content.ContentProviderOperation;
-import android.database.Cursor;
 
 import com.breezing.health.R;
-import com.breezing.health.providers.Breezing;
-import com.breezing.health.providers.Breezing.Ingestion;
-import com.breezing.health.providers.Breezing.IngestiveRecord;
 import com.breezing.health.adapter.FoodAdapter;
 import com.breezing.health.adapter.FoodCatagoryAdapter;
 import com.breezing.health.entity.AccountEntity;
 import com.breezing.health.entity.ActionItem;
 import com.breezing.health.entity.FoodEntity;
+import com.breezing.health.providers.Breezing;
+import com.breezing.health.providers.Breezing.Ingestion;
+import com.breezing.health.providers.Breezing.IngestiveRecord;
 import com.breezing.health.ui.fragment.FoodIntakeDialogFragment;
 import com.breezing.health.util.BreezingQueryViews;
 import com.breezing.health.util.ExtraName;
 import com.breezing.health.util.LocalSharedPrefsUtil;
 import com.breezing.health.widget.MultiDirectionSlidingDrawer;
 import com.breezing.health.widget.MultiDirectionSlidingDrawer.OnDrawerCloseListener;
-import com.haarman.listviewanimations.itemmanipulation.OnDismissCallback;
+import com.breezing.health.widget.swipelist.OnDismissCallback;
 
 public class CaloricIntakeActivity extends ActionBarActivity implements OnClickListener, TextWatcher {
     private static final String TAG = "CaloricIntakeActivity";

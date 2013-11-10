@@ -12,22 +12,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
-import android.widget.ListView;
 
 import com.breezing.health.R;
 import com.breezing.health.adapter.IntakeFoodAdapter;
 import com.breezing.health.entity.FoodEntity;
-import com.haarman.listviewanimations.itemmanipulation.OnDismissCallback;
-import com.haarman.listviewanimations.itemmanipulation.SwipeDismissAdapter;
+import com.breezing.health.widget.swipelist.BaseSwipeListViewListener;
+import com.breezing.health.widget.swipelist.OnDismissCallback;
+import com.breezing.health.widget.swipelist.SwipeListView;
 
-public class FoodIntakeDialogFragment extends BaseDialogFragment implements OnClickListener, OnDismissCallback {
+public class FoodIntakeDialogFragment extends BaseDialogFragment implements OnClickListener {
 
 	private View mFragmentView;
-	private ListView mListView;
+	private SwipeListView mListView;
 	private IntakeFoodAdapter mAdapter;
 	private Button mConfirm;
 	private OnDismissCallback mOnDismissCallback;
@@ -50,15 +49,13 @@ public class FoodIntakeDialogFragment extends BaseDialogFragment implements OnCl
             Bundle savedInstanceState) {
         mFragmentView = inflater.inflate(R.layout.fragment_dialog_food_intake, null);
         mConfirm = (Button) mFragmentView.findViewById(R.id.confirm);
-        mListView = (ListView) mFragmentView.findViewById(R.id.list);
+        mListView = (SwipeListView) mFragmentView.findViewById(R.id.list);
         
         mConfirm.setOnClickListener(this);
         
-        mAdapter = new IntakeFoodAdapter(getActivity());
+        mAdapter = new IntakeFoodAdapter(this);
 		mAdapter.addItems(mFoods);
-        SwipeDismissAdapter adapter = new SwipeDismissAdapter(mAdapter, this);
-		adapter.setAbsListView(mListView);
-        mListView.setAdapter(adapter);
+        mListView.setAdapter(mAdapter);
         mListView.setOnItemLongClickListener(new OnItemLongClickListener() {
 
             @Override
@@ -67,6 +64,53 @@ public class FoodIntakeDialogFragment extends BaseDialogFragment implements OnCl
                 showConfirmDialog(position);
                 return false;
             }
+        });
+        
+        mListView.setSwipeListViewListener(new BaseSwipeListViewListener() {
+        	@Override
+			public void onOpened(int position, boolean toRight) {
+        		
+			}
+
+			@Override
+			public void onClosed(int position, boolean fromRight) {
+				
+			}
+
+			@Override
+			public void onListChanged() {
+				
+			}
+
+			@Override
+			public void onMove(int position, float x) {
+				
+			}
+
+			@Override
+			public void onStartOpen(int position, int action, boolean right) {
+				
+			}
+
+			@Override
+			public void onStartClose(int position, boolean right) {
+				
+			}
+
+			@Override
+			public void onClickFrontView(int position) {
+				
+			}
+
+			@Override
+			public void onClickBackView(int position) {
+				mListView.closeOpenedItems();
+			}
+
+			@Override
+			public void onDismiss(int[] reverseSortedPositions) {
+
+			}
         });
         
         getDialog().getWindow().setBackgroundDrawable(new
@@ -87,9 +131,7 @@ public class FoodIntakeDialogFragment extends BaseDialogFragment implements OnCl
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                mAdapter.removeItem(mWillDeleteItem);
-                mAdapter.notifyDataSetChanged();
-                mOnDismissCallback.onDismiss(mListView, new int[]{mWillDeleteItem});
+                removeItem(mWillDeleteItem);
             }
         })
         .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -99,6 +141,13 @@ public class FoodIntakeDialogFragment extends BaseDialogFragment implements OnCl
                 dialog.dismiss();
             }
         }).create().show();
+    }
+    
+    public void removeItem(int position) {
+    	mListView.closeOpenedItems();
+    	mAdapter.removeItem(position);
+    	mAdapter.notifyDataSetChanged();
+        mOnDismissCallback.onDismiss(mListView, new int[]{position});
     }
 
 	@Override
@@ -115,16 +164,6 @@ public class FoodIntakeDialogFragment extends BaseDialogFragment implements OnCl
 	
 	public void setOnDeleteListener(OnDismissCallback listener) {
 		mOnDismissCallback = listener;
-	}
-
-	@Override
-	public void onDismiss(AbsListView listView, int[] reverseSortedPositions) {
-		// TODO Auto-generated method stub
-		for (int position : reverseSortedPositions) {
-			mAdapter.removeItem(position);
-		}
-		mAdapter.notifyDataSetChanged();
-		mOnDismissCallback.onDismiss(listView, reverseSortedPositions);
 	}
 
 }

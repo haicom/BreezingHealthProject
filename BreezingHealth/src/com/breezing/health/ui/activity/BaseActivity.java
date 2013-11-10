@@ -1,5 +1,6 @@
 package com.breezing.health.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 
@@ -50,6 +51,18 @@ public class BaseActivity extends SlidingFragmentActivity {
         finish();
         android.os.Process.killProcess(android.os.Process.myPid());
         System.exit(0);
+    }
+    
+    @Override
+    public void startActivity(Intent intent) {
+    	super.startActivity(intent);
+    	overridePendingTransition(R.anim.anim_window_in, R.anim.anim_window_out);
+    }
+    
+    @Override
+    public void finish() {
+    	super.finish();
+    	overridePendingTransition(R.anim.anim_window_close_in, R.anim.anim_window_close_out);
     }
     
 }

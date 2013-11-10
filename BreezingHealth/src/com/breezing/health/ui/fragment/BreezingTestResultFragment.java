@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -163,4 +164,5 @@ public class BreezingTestResultFragment extends BaseFragment implements OnClickL
     private static final int ENERGY_COST_YEAR = 4;
     private static final int ENERGY_COST_MONTH = 2;
     private static final int ENERGY_COST_DAY = 2;
+    
 }

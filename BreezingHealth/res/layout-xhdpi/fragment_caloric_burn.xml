@@ -10,13 +10,13 @@
         android:adjustViewBounds="true"
         android:scaleType="centerInside"
         android:src="@drawable/ic_shadow"
-        android:layout_marginTop="240dp"
+        android:layout_marginTop="225dp"
         android:contentDescription="@string/content_description" />
 
     <FrameLayout
         android:id="@+id/pie_graph_layout"
         android:layout_width="match_parent"
-        android:layout_height="240dp"
+        android:layout_height="220dp"
         android:layout_marginTop="12dp" >
 
         <com.breezing.health.widget.PieGraph
@@ -26,7 +26,7 @@
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="165dp"
+            android:layout_height="145dp"
             android:layout_gravity="center"
             android:adjustViewBounds="true"
             android:scaleType="centerInside"
@@ -62,7 +62,7 @@
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="265dp"
+        android:layout_height="245dp"
         android:adjustViewBounds="true"
         android:scaleType="centerInside"
         android:src="@drawable/bg_pie_chart_out"
@@ -73,7 +73,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/pie_graph_layout"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin_large"
         android:numColumns="3" />
 
 </RelativeLayout>

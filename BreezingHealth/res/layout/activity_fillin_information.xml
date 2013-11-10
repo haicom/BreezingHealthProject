@@ -49,7 +49,7 @@
                 android:singleLine="true"
                 android:text="@string/textview_title_sex" />
 
-            <RadioGroup
+            <RadioGroup android:id="@+id/sex_radiogroup"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="@dimen/activity_horizontal_small_margin"
@@ -168,14 +168,15 @@
                 android:text="@string/textview_title_unit" />
         </RelativeLayout>
         
-        <TextView
+        <TextView android:id="@+id/weight_notice"
             style="@style/TitleTextViewStyle"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:singleLine="true"
             android:textSize="@dimen/small_textsize"
             android:textColor="@color/red"
-            android:text="@string/less_than_standard_weight_notice" />
+            android:text="@string/less_than_standard_weight_notice"
+            android:visibility="gone" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -205,14 +206,15 @@
                 android:text="@string/textview_title_unit" />
         </RelativeLayout>
         
-        <TextView
+        <TextView android:id="@+id/hope_weight_notice"
             style="@style/TitleTextViewStyle"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:singleLine="true"
             android:textSize="@dimen/small_textsize"
             android:textColor="@color/red"
-            android:text="@string/more_than_standard_weight_notice" />
+            android:text="@string/more_than_standard_weight_notice"
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/next"

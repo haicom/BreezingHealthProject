@@ -958,5 +958,47 @@ public class BreezingQueryViews {
              
              return units;
          }
+         
+         private final static int UNIT_SETTINGS_UNIFY_DATA = 0;
+         
+         /***
+          * 查询统计信息换算单位，把单位改为统计信息存储，比如 重量 输入 磅 换算成斤存储
+          * @param data
+          * @param unitType
+          * @param unitName
+          * @return
+          */
+         public float queryUnitUnifyData(float data, String unitType, String unitName) {
+             float unifyUnit = 0;
+             BLog.d(TAG, " queryUnitUnifyData unitType = " + unitType + " unitName = " + unitName);
+             StringBuilder stringBuilder = new StringBuilder();
+             stringBuilder.setLength(0);
+             stringBuilder.append(UnitSettings.UNIT_TYPE + " = ? AND ");
+             stringBuilder.append(UnitSettings.UNIT_NAME + "= ?");
+             Cursor cursor = null;
+             try {
+                 cursor = mContentResolver.query(UnitSettings.CONTENT_URI,
+                         new String[] {UnitSettings.UNIT_UNIFY_DATA},
+                         stringBuilder.toString(),
+                         new String[] {unitType, unitName},
+                         null);
+
+                 if (cursor != null) {
+                     if ( cursor.getCount() > 0 ) {
+                         cursor.moveToPosition(0);
+                         unifyUnit = cursor.getFloat(UNIT_SETTINGS_UNIFY_DATA);
+                     }
+                     
+                 }
+             } finally {
+                 if (cursor != null) {
+                     cursor.close();
+                 }
+             }
+
+             BLog.d(TAG, " queryUnitUnifyData  data = " + data + " unifyUnit = " + unifyUnit);
+
+             return data * unifyUnit;
+         }
 
 }

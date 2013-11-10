@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical" >
+    
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_shadow"
+        android:layout_marginTop="140dp"
+        android:contentDescription="@string/content_description" />
+
+    <FrameLayout
+        android:id="@+id/pie_graph_layout"
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:layout_marginTop="12dp" >
+
+        <com.breezing.health.widget.PieGraph
+            android:id="@+id/pie_graph"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="95dp"
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside"
+            android:src="@drawable/bg_pie_chart_in"
+            android:contentDescription="@string/content_description" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/uptake_caloric"
+                style="@style/TitleTextViewStyle"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center" />
+
+            <TextView
+                android:id = "@+id/metabolism"
+                style="@style/TitleTextViewStyle"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:text="@string/kilo_metabolism"
+                android:gravity="center" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="155dp"
+        android:adjustViewBounds="true"
+        android:scaleType="centerInside"
+        android:src="@drawable/bg_pie_chart_out"
+        android:contentDescription="@string/content_description" />
+
+    <GridView
+        android:id="@+id/gridView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pie_graph_layout"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:numColumns="4" />
+
+</RelativeLayout>

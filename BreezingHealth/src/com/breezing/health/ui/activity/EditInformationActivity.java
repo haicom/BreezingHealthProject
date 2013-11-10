@@ -1,5 +1,8 @@
 package com.breezing.health.ui.activity;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+
 import android.content.ContentProviderOperation;
 import android.content.Intent;
 import android.database.Cursor;
@@ -10,11 +13,9 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.text.DecimalFormat;
-import java.util.ArrayList;
 
 import com.breezing.health.R;
 import com.breezing.health.bean.BaseInformationOutput;
@@ -24,7 +25,8 @@ import com.breezing.health.providers.Breezing;
 import com.breezing.health.providers.Breezing.Account;
 import com.breezing.health.providers.Breezing.Information;
 import com.breezing.health.providers.Breezing.UnitSettings;
-import com.breezing.health.tools.IntentAction;
+import com.breezing.health.providers.Breezing.WeightChange;
+import com.breezing.health.tools.Tools;
 import com.breezing.health.ui.fragment.BaseDialogFragment;
 import com.breezing.health.ui.fragment.DatePickerDialogFragment;
 import com.breezing.health.ui.fragment.DialogFragmentInterface;
@@ -37,7 +39,6 @@ import com.breezing.health.util.BreezingQueryViews;
 import com.breezing.health.util.ChangeUnitUtil;
 import com.breezing.health.util.DateFormatUtil;
 import com.breezing.health.util.LocalSharedPrefsUtil;
-import com.breezing.health.providers.Breezing.WeightChange;
 
 
 
@@ -55,6 +56,7 @@ public class EditInformationActivity extends ActionBarActivity implements OnClic
     private EditText mWeight;
     private EditText mHopeWeight;
 
+    private RadioGroup mSexGroup;
     private RadioButton mRadioMale;
     private RadioButton mRadioFemale;
 
@@ -70,6 +72,12 @@ public class EditInformationActivity extends ActionBarActivity implements OnClic
     
     private Button mModify;
    
+    private TextView mWeightNotice;
+    private TextView mExpectedWeightNotice;
+    
+    private float mWeightValue = 0;
+    private float mExpectedWeightValue = 0;
+    private double mStandardWeightValue = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {       
@@ -107,13 +115,14 @@ public class EditInformationActivity extends ActionBarActivity implements OnClic
 
         mModify = (Button) findViewById(R.id.modify);
         
+        mSexGroup = (RadioGroup) findViewById(R.id.sex_radiogroup);
         mRadioMale = (RadioButton) findViewById(R.id.male);
         mRadioFemale = (RadioButton) findViewById(R.id.female);
         
         if ( mBaseInformationOutput.getGender() == ChangeUnitUtil.GENDER_MALE ) {
-            mRadioMale.isChecked();
+            mRadioMale.setChecked(true);
         } else if (mBaseInformationOutput.getGender() == ChangeUnitUtil.GENDER_FEMALE ) {
-            mRadioFemale.isChecked();
+            mRadioFemale.setChecked(true);
         }
         
         mUserName = (EditText)findViewById(R.id.user_name);
@@ -164,7 +173,7 @@ public class EditInformationActivity extends ActionBarActivity implements OnClic
         mWeight.setText( weightString ); 
         
         mWeightUnit = (TextView) findViewById(R.id.weight_unit);
-        mWeightUnit.setText( mBaseInformationOutput.getHeightUnit() );        
+        mWeightUnit.setText( mBaseInformationOutput.getWeightUnit() );        
         mWeight.setFocusable(false);
         
         float  hopeWeight = queryUnitObtainData( mBaseInformationOutput.getExpectedWeight(), 
@@ -178,10 +187,25 @@ public class EditInformationActivity extends ActionBarActivity implements OnClic
         mHopeWeight.setText( hopeWeightString ); 
         
         mHopeWeightUnit = (TextView) findViewById(R.id.hope_weight_unit);
-        mHopeWeightUnit.setText( mBaseInformationOutput.getHeightUnit() );      
+        mHopeWeightUnit.setText( mBaseInformationOutput.getWeightUnit() );      
         mHopeWeight.setFocusable(false);
         
-          
+        mWeightNotice = (TextView) findViewById(R.id.weight_notice);
+        mExpectedWeightNotice = (TextView) findViewById(R.id.hope_weight_notice);
+        
+        BreezingQueryViews query = new BreezingQueryViews(EditInformationActivity.this);
+        mWeightValue = query.queryUnitUnifyData(
+                Float.parseFloat(mWeight.getText().toString()) ,
+                getResources().getString(R.string.weight_type),
+                mWeightUnit.getText().toString());
+        mExpectedWeightValue = query.queryUnitUnifyData(
+                Float.parseFloat(mHopeWeight.getText().toString()) ,
+                getResources().getString(R.string.weight_type),
+                mWeightUnit.getText().toString());
+        BLog.v("mWeightValue =" + mWeightValue + "mExpectedWeightValue =" + mExpectedWeightValue);
+        caculateStandard();
+        updateWeightNotice();
+        updateExpectedWeightNotice();
     }
 
     private void valueToView() {
@@ -197,6 +221,15 @@ public class EditInformationActivity extends ActionBarActivity implements OnClic
         mHopeWeight.setOnClickListener(this);
         mHeight.setOnClickListener(this);
         mModify.setOnClickListener(this);
+        mSexGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			
+			@Override
+			public void onCheckedChanged(RadioGroup group, int checkedId) {
+				caculateStandard();
+                updateWeightNotice();
+                updateExpectedWeightNotice();
+			}
+		});
     }
 
     @Override
@@ -330,6 +363,13 @@ public class EditInformationActivity extends ActionBarActivity implements OnClic
                 mWeight.setText(String.valueOf(params[0]));
                 mWeightUnit.setText(String.valueOf(params[1]));
                 mHopeWeightUnit.setText(String.valueOf(params[1]));
+                
+                BreezingQueryViews query = new BreezingQueryViews(EditInformationActivity.this);
+                mWeightValue = query.queryUnitUnifyData(
+                        Float.parseFloat(mWeight.getText().toString()) ,
+                        getResources().getString(R.string.weight_type),
+                        mWeightUnit.getText().toString());
+                updateWeightNotice();
             }
 
         });
@@ -363,6 +403,13 @@ public class EditInformationActivity extends ActionBarActivity implements OnClic
             public void onClick(BaseDialogFragment dialog,
                     Object... params) {
                 mHopeWeight.setText(String.valueOf(params[0]));
+                
+                BreezingQueryViews query = new BreezingQueryViews(EditInformationActivity.this);
+                mExpectedWeightValue = query.queryUnitUnifyData(
+                        Float.parseFloat(mHopeWeight.getText().toString()) ,
+                        getResources().getString(R.string.weight_type),
+                        mWeightUnit.getText().toString());
+                updateExpectedWeightNotice();
             }
 
         });
@@ -398,6 +445,10 @@ public class EditInformationActivity extends ActionBarActivity implements OnClic
                     Object... params) {
                 mHeight.setText(String.valueOf(params[0]));
                 mHeightUnit.setText(String.valueOf(params[1]));
+                
+                caculateStandard();
+                updateWeightNotice();
+                updateExpectedWeightNotice();
             }
 
         });
@@ -452,17 +503,18 @@ public class EditInformationActivity extends ActionBarActivity implements OnClic
         updateAccount(mOps, mUserName.getText().toString(), accountId,
                       DEFAULT_PASSWORD);
 
-        float height =  queryUnitUnifyData(
+        BreezingQueryViews query = new BreezingQueryViews(EditInformationActivity.this);
+        float height =  query.queryUnitUnifyData(
                            Float.parseFloat(mHeight.getText().toString()) ,
                            getResources().getString(R.string.height_type),
                            mHeightUnit.getText().toString());
 
-        float exceptedWeight = queryUnitUnifyData(
+        float exceptedWeight = query.queryUnitUnifyData(
                                 Float.parseFloat(mHopeWeight.getText().toString()) ,
                                 getResources().getString(R.string.weight_type),
                                 mWeightUnit.getText().toString());
 
-        float weight = queryUnitUnifyData(
+        float weight = query.queryUnitUnifyData(
                        Float.parseFloat(mWeight.getText().toString()) ,
                        getResources().getString(R.string.weight_type),
                        mWeightUnit.getText().toString());
@@ -616,48 +668,6 @@ public class EditInformationActivity extends ActionBarActivity implements OnClic
                 .build());
     }
 
-    private final static int UNIT_SETTINGS_UNIFY_DATA = 0;
-
-    /***
-     * 查询统计信息换算单位，把单位改为统计信息存储，比如 重量 输入 磅 换算成斤存储
-     * @param data
-     * @param unitType
-     * @param unitName
-     * @return
-     */
-    public float queryUnitUnifyData(float data, String unitType, String unitName) {
-        float unifyUnit = 0;
-        Log.d(TAG, " queryUnitUnifyData unitType = " + unitType + " unitName = " + unitName);
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.setLength(0);
-        stringBuilder.append(UnitSettings.UNIT_TYPE + " = ? AND ");
-        stringBuilder.append(UnitSettings.UNIT_NAME + "= ?");
-        Cursor cursor = null;
-        try {
-            cursor = getContentResolver().query(UnitSettings.CONTENT_URI,
-                    new String[] {UnitSettings.UNIT_UNIFY_DATA},
-                    stringBuilder.toString(),
-                    new String[] {unitType, unitName},
-                    null);
-
-            if (cursor != null) {
-                if ( cursor.getCount() > 0 ) {
-                    cursor.moveToPosition(0);
-                    unifyUnit = cursor.getFloat(UNIT_SETTINGS_UNIFY_DATA);
-                }
-                
-            }
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-
-        Log.d(TAG, " queryUnitUnifyData  data = " + data + " unifyUnit = " + unifyUnit);
-
-        return data * unifyUnit;
-    }
-    
     /***
      * 查询统计信息换算单位，把单位改为统计信息存储，比如 重量 输入 磅 换算成斤存储
      * @param data
@@ -712,6 +722,55 @@ public class EditInformationActivity extends ActionBarActivity implements OnClic
         mMonth = dateString.subSequence(WEEK_PICKER_YEAR, WEEK_PICKER_YEAR + WEEK_PICKER_MONTH).toString();
         mDay = dateString.subSequence(WEEK_PICKER_YEAR + WEEK_PICKER_MONTH, dateString.length() ).toString();       
        
+    }
+    
+    private void caculateStandard() {
+    	if (mHeight.getText().toString().equals("")) {
+    		return ;
+    	}
+    	final float inputHeight = Float.parseFloat(mHeight.getText().toString());
+    	BreezingQueryViews query = new BreezingQueryViews(EditInformationActivity.this);
+    	float height =  query.queryUnitUnifyData(
+    			inputHeight ,
+                getResources().getString(R.string.height_type),
+                mHeightUnit.getText().toString());
+    	
+    	mStandardWeightValue = Tools.checkWeight(height, mRadioFemale.isChecked());
+    	BLog.v(TAG, "caculateStandard() mStandardWeightValue =" + mStandardWeightValue);
+    }
+    
+    public void updateWeightNotice() {
+    	BLog.v("updateWeightNotice() mWeightValue = " + mWeightValue);
+    	if (mWeightValue == 0 || mStandardWeightValue == 0) {
+    		return ;
+    	}
+    	
+    	mWeightNotice.setVisibility(View.VISIBLE);
+    	if (mWeightValue > mStandardWeightValue) {
+    		mWeightNotice.setText(R.string.more_than_standard_weight_notice);
+    	} else if (mWeightValue < mStandardWeightValue) {
+    		mWeightNotice.setText(R.string.less_than_standard_weight_notice);
+    	} else {
+    		mWeightNotice.setText(R.string.equal_standard_weight_notice);
+    	}
+    	
+    }
+    
+    public void updateExpectedWeightNotice() {
+    	BLog.v("updateExpectedWeightNotice() mExpectedWeightValue = " + mExpectedWeightValue);
+    	if (mExpectedWeightValue == 0 || mStandardWeightValue == 0) {
+    		return ;
+    	}
+    	
+    	mExpectedWeightNotice.setVisibility(View.VISIBLE);
+    	if (mExpectedWeightValue > mStandardWeightValue) {
+    		mExpectedWeightNotice.setText(R.string.more_than_standard_weight_notice);
+    	} else if (mExpectedWeightValue < mStandardWeightValue) {
+    		mExpectedWeightNotice.setText(R.string.less_than_standard_weight_notice);
+    	} else {
+    		mExpectedWeightNotice.setText(R.string.equal_standard_weight_notice);
+    	}
+    	
     }
 
     private static final String DEFAULT_PASSWORD = "888888";
