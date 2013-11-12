@@ -1,8 +1,6 @@
 package com.breezing.health.adapter;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -20,16 +18,14 @@ import android.widget.TextView;
 import com.breezing.health.R;
 import com.breezing.health.entity.CatagoryEntity;
 import com.breezing.health.entity.FoodEntity;
-import com.breezing.health.providers.Breezing.FoodClassify;
 import com.breezing.health.providers.Breezing.HeatIngestion;
 import com.breezing.health.providers.Breezing.IngestiveRecord;
 import com.breezing.health.ui.activity.CaloricIntakeActivity;
 import com.breezing.health.ui.activity.CaloricIntakeActivity.CaloricIntakeType;
-import com.breezing.health.util.BreezingQueryViews;
 
 public class FoodAdapter extends BaseAdapter implements OnClickListener {
     private static final String TAG = "FoodAdapter";
-    private Context mContext;
+    private CaloricIntakeActivity mContext;
     private ArrayList<FoodEntity> mFoods;
     private ArrayList<FoodEntity> mSelectedFoods;
     private FoodCatagoryAdapter mCatagoryAdapter;
@@ -38,7 +34,7 @@ public class FoodAdapter extends BaseAdapter implements OnClickListener {
     private float mUnifyUnit;
     private CaloricIntakeType mCaloricIntakeType;
     
-    public FoodAdapter(Context context, FoodCatagoryAdapter catagoryAdapter, 
+    public FoodAdapter(CaloricIntakeActivity context, FoodCatagoryAdapter catagoryAdapter, 
             int accountId, int date, CaloricIntakeType caloricIntakeType, float unifyUnit) {
         this.mContext = context;
         this.mCatagoryAdapter = catagoryAdapter;
@@ -135,12 +131,13 @@ public class FoodAdapter extends BaseAdapter implements OnClickListener {
     	if (index != -1) {
     		mSelectedFoods.get(index).decreaseSelectedNumber();
     		if (mSelectedFoods.get(index).getSelectedNumber() <= 0) {
-    			mSelectedFoods.remove(index);
+    		    removeSelectedFood(index);
     		}
     	}
     }
     
     public void removeSelectedFood(int position) {
+        mContext.deleteIngestiveRecord(mSelectedFoods.get(position));
     	mSelectedFoods.remove(position);
     }
 

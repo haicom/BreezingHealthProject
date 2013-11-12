@@ -275,5 +275,7 @@
     <string name="saving_image">图片保存中，请稍候</string>
     
     <string name="delete">删除</string>
+    <string name="share_message_content">%1$s年%2$s月%3$s日，%4$s摄入%5$s%6$s，消耗%7$s%8$s</string>
+    <string name="share_message_subject">%1$s年%2$s月%3$s日能量平衡情况</string>
     
 </resources>

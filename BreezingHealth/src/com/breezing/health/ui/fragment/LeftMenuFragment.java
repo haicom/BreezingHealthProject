@@ -22,9 +22,11 @@ import com.breezing.health.R;
 import com.breezing.health.adapter.LeftMenuAdapter;
 import com.breezing.health.entity.AccountEntity;
 import com.breezing.health.providers.Breezing.EnergyCost;
+import com.breezing.health.tools.IntentAction;
 import com.breezing.health.ui.activity.BaseActivity;
 import com.breezing.health.ui.activity.MainActivity;
 import com.breezing.health.util.BreezingQueryViews;
+import com.breezing.health.util.ExtraName;
 import com.breezing.health.util.LocalSharedPrefsUtil;
 import com.breezing.health.widget.imagecrop.ImageUtil;
 
@@ -78,7 +80,12 @@ public class LeftMenuFragment extends BaseFragment implements android.view.View.
                 final int menuPosition = position - mListView.getHeaderViewsCount();
                 if ( mAdapter.getItem(menuPosition).intent != null ) {
                     ( (BaseActivity) getActivity() ).toggle();
-                    getActivity().startActivity( new Intent(mAdapter.getItem(menuPosition).intent) );
+                    
+                    Intent intent = new Intent(mAdapter.getItem(menuPosition).intent);
+                    if (getActivity() instanceof MainActivity) {
+                        intent.putExtra(ExtraName.EXTRA_DATE, ((MainActivity) getActivity()).getDate());
+                    }
+                    getActivity().startActivity(intent);
                 }
             }
         });

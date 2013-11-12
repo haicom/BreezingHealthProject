@@ -88,7 +88,8 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
         super.onCreate(savedInstanceState);
         setContentFrame(R.layout.activity_caloric_intake);
         initValues();
-        initViews();        
+        initViews();    
+        valueToView();
         initListeners();
     }
     
@@ -100,6 +101,12 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
                 [intent.getIntExtra(ExtraName.EXTRA_TYPE, CaloricIntakeType.BREAKFAST.ordinal())];
         mDate = intent.getIntExtra(ExtraName.EXTRA_DATE, 0);
         Log.d(TAG," initValues mCaloricIntakeType = " + mCaloricIntakeType + " mAccountId = " + mAccountId + " mDate = " + mDate );
+        mAccountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this,
+                LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
+        BreezingQueryViews query = new BreezingQueryViews(this);
+        mAccount = query.queryBaseInfoViews(mAccountId);
+        mUnifyUnit = query.queryUnitObtainData( this.getString(R.string.caloric_type), mAccount.getCaloricUnit() );
+        mSaveUnit = query.queryUnitUnifyData( this.getString(R.string.caloric_type), mAccount.getCaloricUnit() );
     }
 
     private void initViews() {
@@ -144,13 +151,6 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
     @Override
     protected void onResume() {       
         super.onResume();
-        mAccountId = LocalSharedPrefsUtil.getSharedPrefsValueInt(this,
-                LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
-        BreezingQueryViews query = new BreezingQueryViews(this);
-        mAccount = query.queryBaseInfoViews(mAccountId);
-        mUnifyUnit = query.queryUnitObtainData( this.getString(R.string.caloric_type), mAccount.getCaloricUnit() );
-        mSaveUnit = query.queryUnitUnifyData( this.getString(R.string.caloric_type), mAccount.getCaloricUnit() );
-        valueToView();
     }
 
     private void initListeners() {
@@ -179,12 +179,15 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
             case ActionItem.ACTION_MORE: 
                 mDrawer.animateToggle();
                 return ;
-            case ActionItem.ACTION_BACK:
-                appendFoodInfo();
-                break;
               
         }
         super.onClickActionBarItems(item, v);
+    }
+    
+    @Override
+    public void finish() {
+        appendFoodInfo();
+        super.finish();
     }
 
     @Override
@@ -535,6 +538,29 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
        
     }
     
-    
+    public void deleteIngestiveRecord(FoodEntity foodEntity) {
+        ArrayList<ContentProviderOperation>  ops = new ArrayList<ContentProviderOperation>();
+        
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.setLength(0);
+        stringBuilder.append(IngestiveRecord.ACCOUNT_ID + " = ? "  + " AND ");
+        stringBuilder.append(IngestiveRecord.FOOD_ID + "= ? " + " AND ");
+        stringBuilder.append(IngestiveRecord.DINING + "= ? " + " AND ");
+        stringBuilder.append(IngestiveRecord.DATE + "= ? " );
+        
+        ops.add(ContentProviderOperation.newDelete(IngestiveRecord.CONTENT_URI)
+                .withSelection(stringBuilder.toString(),  
+                        new String[] { String.valueOf(mAccountId), 
+                                       String.valueOf(foodEntity.getFoodId()), 
+                                       String.valueOf(String.valueOf( mCaloricIntakeType.ordinal() ) ),
+                                       String.valueOf(String.valueOf(mDate)        ) } )           
+                .build());
+        
+        try {
+            getContentResolver().applyBatch(Breezing.AUTHORITY, ops);           
+        } catch (Exception e) {           
+            Log.e(TAG, "Exceptoin encoutered while deleting contact: " + e);
+        }
+    }
 
 }

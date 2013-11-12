@@ -7,7 +7,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/dialog_actionbar_height"
-        android:layout_above="@+id/list"
+        android:layout_above="@+id/layout"
         android:background="@drawable/bg_action_bar"
         android:padding="@dimen/activity_horizontal_small_margin" >
 
@@ -34,20 +34,25 @@
             android:text="@string/confirm" />
     </RelativeLayout>
 
-    <com.breezing.health.widget.swipelist.SwipeListView
-        xmlns:swipe="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/list"
+    <LinearLayout android:id="@+id/layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/picker_height"
         android:layout_alignParentBottom="true"
-        android:background="@color/background_color"
-        android:cacheColorHint="@color/transparent"
-        swipe:swipeActionLeft="reveal"
-        swipe:swipeBackView="@+id/back"
-        swipe:swipeCloseAllItemsWhenMoveList="true"
-        swipe:swipeFrontView="@+id/front"
-        swipe:swipeMode="left"
-        swipe:swipeOffsetLeft="200dp"
-        swipe:swipeOpenOnLongPress="false" />
+        android:background="@color/background_color" >
+
+        <com.breezing.health.widget.swipelist.SwipeListView
+            xmlns:swipe="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:cacheColorHint="@color/transparent"
+            swipe:swipeActionLeft="reveal"
+            swipe:swipeBackView="@+id/back"
+            swipe:swipeCloseAllItemsWhenMoveList="true"
+            swipe:swipeFrontView="@+id/front"
+            swipe:swipeMode="left"
+            swipe:swipeOffsetLeft="200dp"
+            swipe:swipeOpenOnLongPress="false" />
+    </LinearLayout>
 
 </RelativeLayout>

@@ -242,7 +242,7 @@ public class Tools {
         }
         
         Intent intent = new Intent(android.content.Intent.ACTION_SEND);  
-        intent.setType("plain/text");
+        intent.setType("image/*");
         intent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
         intent.putExtra(android.content.Intent.EXTRA_TEXT, message);
         context.startActivity(Intent.createChooser(intent, context.getString(R.string.please_choose_share_method)));
@@ -320,12 +320,12 @@ public class Tools {
     }
     
     /**
-     * ¸ù¾Ý¹ú¼Ê±ê×¼ÌåÖØ¼ÆËã¹«Ê½£¬¼ÆËã±ê×¼ÌåÖØ¡£
-     * ÄÐ£º£¨Ç§¿Ë£©£½ (Éí¸ßcm - 100) x 0.9(kg)
-     * Å®£º£¨Ç§¿Ë£©£½ (Éí¸ßcm - 100) x 0.9(kg) - 2.5(kg)
+     * ï¿½ï¿½Ý¹ï¿½Ê±ï¿½×¼ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½ã¹«Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×¼ï¿½ï¿½ï¿½Ø¡ï¿½
+     * ï¿½Ð£ï¿½ï¿½ï¿½Ç§ï¿½Ë£ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½cm - 100) x 0.9(kg)
+     * Å®ï¿½ï¿½ï¿½ï¿½Ç§ï¿½Ë£ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½cm - 100) x 0.9(kg) - 2.5(kg)
      * @param height (m)
      * @param isMale
-     * @return standard height(½ï)
+     * @return standard height(ï¿½ï¿½)
      */
     public static double checkWeight(double height, boolean isMale) {
     	final double standard = (height * 100 - 100.0) * 0.9;
