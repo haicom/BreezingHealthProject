@@ -2,6 +2,7 @@ package com.breezing.health.ui.activity;
 
 
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -196,13 +197,15 @@ public class ExerciseRecordActivity extends ActionBarActivity
         final String title = getString(R.string.title_total_exercise_caloric);
        
 
-        SpannableString span = new SpannableString(title + String.valueOf(count) + mAccount.getCaloricUnit() );
+        DecimalFormat df = new DecimalFormat("#.0");
+        final String total = df.format(count);
+        SpannableString span = new SpannableString(title + total + mAccount.getCaloricUnit() );
         span.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.red)),
                 title.length(),
-                title.length() + String.valueOf(count).length(),
+                title.length() + total.length(),
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         span.setSpan(new RelativeSizeSpan(1.5f),
-                title.length(), title.length() + String.valueOf(count).length(),
+                title.length(), title.length() + total.length(),
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         mTotalCaloric.setText(span);

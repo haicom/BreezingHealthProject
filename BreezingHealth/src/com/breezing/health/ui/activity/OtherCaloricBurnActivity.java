@@ -110,14 +110,11 @@ public class OtherCaloricBurnActivity extends ActionBarActivity {
         }
         
         BreezingQueryViews query = new BreezingQueryViews(this);
-        mSport = (int) query.queryUnitUnifyData(
-        		mSport ,
+        final float unifyUnit = query.queryUnitObtainData(
                 getResources().getString(R.string.caloric_type),
                 mCaloricUnit);
-        mDigest = (int) query.queryUnitUnifyData(
-        		mDigest ,
-                getResources().getString(R.string.caloric_type),
-                mCaloricUnit);
+        mSport = (int) (mSport * unifyUnit);
+        mDigest = (int) (mDigest * unifyUnit);
     }
     
     private static final String[] PROJECTION_BASE_INFO = new String[] {

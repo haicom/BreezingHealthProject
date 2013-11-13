@@ -369,7 +369,15 @@ public class EditInformationActivity extends ActionBarActivity implements OnClic
                         Float.parseFloat(mWeight.getText().toString()) ,
                         getResources().getString(R.string.weight_type),
                         mWeightUnit.getText().toString());
+                
                 updateWeightNotice();
+                
+                //换算目标体重单位值
+                final float unifyUnit = query.queryUnitObtainData(
+                        getResources().getString(R.string.weight_type),
+                        mWeightUnit.getText().toString());
+                DecimalFormat df = new DecimalFormat("#.0");
+                mHopeWeight.setText(df.format(mExpectedWeightValue * unifyUnit));
             }
 
         });
