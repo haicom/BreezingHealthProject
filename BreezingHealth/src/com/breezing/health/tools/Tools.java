@@ -320,12 +320,12 @@ public class Tools {
     }
     
     /**
-     * ��ݹ�ʱ�׼���ؼ��㹫ʽ�������׼���ء�
-     * �У���ǧ�ˣ��� (���cm - 100) x 0.9(kg)
-     * Ů����ǧ�ˣ��� (���cm - 100) x 0.9(kg) - 2.5(kg)
+     * 根据国际标准体重计算公式，计算标准体重。
+     * 男：（千克）＝ (身高cm - 100) x 0.9(kg)
+     * 女：（千克）＝ (身高cm - 100) x 0.9(kg) - 2.5(kg)
      * @param height (m)
      * @param isMale
-     * @return standard height(��)
+     * @return standard height(斤)
      */
     public static double checkWeight(double height, boolean isMale) {
     	final double standard = (height * 100 - 100.0) * 0.9;
