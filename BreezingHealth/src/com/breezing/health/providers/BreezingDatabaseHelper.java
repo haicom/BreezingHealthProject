@@ -22,7 +22,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
     private final static String TAG = "BreezingDatabaseHelper";
     private static BreezingDatabaseHelper sInstance = null;
     static final String DATABASE_NAME = "breezing.db";
-    static final int DATABASE_VERSION = 10;
+    static final int DATABASE_VERSION = 11;
     private final Context mContext;
 
     public interface Views {
@@ -34,6 +34,9 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
         public static final String INGESTION_YEARLY = "view_ingestion_yearly";
         public static final String INGESTION_COMPARE_MONTHLY = "ingestion_compare_monthly";
         public static final String INGESTION_COMPARE_YEARLY = "ingestion_compare_yearly";
+        public static final String BALANCE_HISTORY_WEEKLY ="balance_history_weekly";
+        public static final String BALANCE_HISTORY_MONTHLY = "balance_history_monthly";
+        public static final String BALANCE_HISTORY_YEARLY = "balance_history_yearly";
         public static final String WEIGHT_WEEKLY = "view_weight_weekly";
         public static final String WEIGHT_MONTHLY = "view_weight_monthly";
         public static final String WEIGHT_YEARLY = "view_weight_yearly";
@@ -75,6 +78,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
         createIngestionCompareViews(db);
         createEnergyCostViews(db);
         createIngestionViews(db);
+        createBalanceHistoryView(db);
         createWeightChangeViews(db);
         createUnitSettings(db);
         createBaseInfomationViews(db);
@@ -285,6 +289,66 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE VIEW " + Views.INGESTION_COMPARE_YEARLY + " AS " + yearlyIngestionSelect);
 
     }
+    
+    private void createBalanceHistoryView(SQLiteDatabase db) {
+        db.execSQL("DROP VIEW IF EXISTS " + Views.BALANCE_HISTORY_WEEKLY + ";");
+        db.execSQL("DROP VIEW IF EXISTS " + Views.BALANCE_HISTORY_MONTHLY + ";");
+        db.execSQL("DROP VIEW IF EXISTS " + Views.BALANCE_HISTORY_YEARLY + ";");
+
+        String weeklyBalanceSelect =  "SELECT "
+                + Ingestion.INGESTION_ACCOUNT_ID + " , "                
+                + Ingestion.TOTAL_INGESTION + " , "               
+                + EnergyCost.TOTAL_ENERGY + " , " 
+                + Ingestion.INGESTION_DATE + " , "
+                + Ingestion.INGESTION_YEAR_WEEK
+                + " FROM " + BreezingProvider.TABLE_INGESTION
+                + " LEFT OUTER JOIN " + BreezingProvider.TABLE_COST  + " ON "
+                +  Ingestion.INGESTION_ACCOUNT_ID + " = " + EnergyCost.COST_ACCOUNT_ID
+                + " AND " + Ingestion.INGESTION_DATE + " = " + EnergyCost.COST_DATE
+                + " WHERE " + Ingestion.FOOD_QTY + " >= 2 ";
+
+        db.execSQL("CREATE VIEW " + Views.BALANCE_HISTORY_WEEKLY + " AS " +  weeklyBalanceSelect);
+        
+        String monthlyBalanceSelect =  "SELECT "
+                + Ingestion.INGESTION_ACCOUNT_ID + " , "
+                + " round ( avg( " +  Ingestion.TOTAL_INGESTION + " ) ) AS " + Ingestion.AVG_TOTAL_INGESTION + " , "
+                + " total( " + Ingestion.TOTAL_INGESTION + " )  AS "+ Ingestion.ALL_TOTAL_INGESTION + " , "    
+                + " round( avg( " + EnergyCost.METABOLISM + ") ) AS " + EnergyCost.AVG_METABOLISM + " , "
+                + " round( avg( " + EnergyCost.TOTAL_ENERGY + " ) )  AS " + EnergyCost.AVG_TOTAL_ENERGY + " , "
+                + " total( " + EnergyCost.METABOLISM + " ) AS " +  EnergyCost.ALL_METABOLISM + " , "
+                + " total( " + EnergyCost.TOTAL_ENERGY + " )  AS " + EnergyCost.ALL_TOTAL_ENERGY + " , "
+                + Ingestion.INGESTION_YEAR_MONTH + " , "
+                + Ingestion.INGESTION_YEAR_WEEK
+                + " FROM " + BreezingProvider.TABLE_INGESTION
+                + " LEFT OUTER JOIN " + BreezingProvider.TABLE_COST  + " ON "
+                +  Ingestion.INGESTION_ACCOUNT_ID + " = " + EnergyCost.COST_ACCOUNT_ID
+                + " AND " + Ingestion.INGESTION_DATE + " = " + EnergyCost.COST_DATE
+                + " WHERE " + Ingestion.FOOD_QTY + " >= 2 "
+                + " GROUP BY " + Ingestion.INGESTION_ACCOUNT_ID + " , " + Ingestion.INGESTION_YEAR_WEEK;
+
+        db.execSQL("CREATE VIEW " + Views.BALANCE_HISTORY_MONTHLY + " AS " +  monthlyBalanceSelect);
+
+        String yearlyBalanceSelect =  "SELECT "
+                + Ingestion.INGESTION_ACCOUNT_ID + " , "
+                + " round ( avg( " +  Ingestion.TOTAL_INGESTION + " ) ) AS " + Ingestion.AVG_TOTAL_INGESTION + " , "
+                + " total( " + Ingestion.TOTAL_INGESTION + " )  AS "+ Ingestion.ALL_TOTAL_INGESTION + " , "
+                + " round( avg( " + EnergyCost.METABOLISM + ") ) AS " + EnergyCost.AVG_METABOLISM + " , "
+                + " round( avg( " + EnergyCost.TOTAL_ENERGY + " ) )  AS " + EnergyCost.AVG_TOTAL_ENERGY + " , "
+                + " total( " + EnergyCost.METABOLISM + " ) AS " +  EnergyCost.ALL_METABOLISM + " , "
+                + " total( " + EnergyCost.TOTAL_ENERGY + " )  AS " + EnergyCost.ALL_TOTAL_ENERGY + " , "
+                +  Ingestion.INGESTION_YEAR + " , "
+                +  Ingestion.INGESTION_YEAR_MONTH
+                + " FROM " + BreezingProvider.TABLE_INGESTION
+                + " LEFT OUTER JOIN " + BreezingProvider.TABLE_COST  + " ON "
+                +  Ingestion.INGESTION_ACCOUNT_ID + " = " + EnergyCost.COST_ACCOUNT_ID
+                + " AND " + Ingestion.INGESTION_DATE + " = " + EnergyCost.COST_DATE
+                + " WHERE " + Ingestion.FOOD_QTY + " >= 2 "
+                + " GROUP BY " + Ingestion.INGESTION_ACCOUNT_ID + " , " + Ingestion.INGESTION_YEAR_MONTH;
+
+        db.execSQL("CREATE VIEW " + Views.BALANCE_HISTORY_YEARLY + " AS " +  yearlyBalanceSelect );
+        
+    }
+
 
     /***
      * 产生体重变化表
@@ -560,6 +624,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
             upgradeToVersion8(db);
             upgradeToVersion9(db);
             upgradeToVersion10(db);
+            upgradeToVersion11(db);
         } else if (oldVersion == 2) {
             upgradeToVersion3(db);
             upgradeToVersion4(db);
@@ -569,6 +634,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
             upgradeToVersion8(db);
             upgradeToVersion9(db);
             upgradeToVersion10(db);
+            upgradeToVersion11(db);
         } else if (oldVersion ==3 ){
             upgradeToVersion4(db);
             upgradeToVersion5(db);
@@ -577,6 +643,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
             upgradeToVersion8(db);
             upgradeToVersion9(db);
             upgradeToVersion10(db);
+            upgradeToVersion11(db);
         } else if (oldVersion == 4 ) {
             upgradeToVersion5(db);
             upgradeToVersion6(db);
@@ -584,27 +651,34 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
             upgradeToVersion8(db);
             upgradeToVersion9(db);
             upgradeToVersion10(db);
+            upgradeToVersion11(db);
         } else if (oldVersion == 5) {
             upgradeToVersion6(db);
             upgradeToVersion7(db);
             upgradeToVersion8(db);
             upgradeToVersion9(db);
             upgradeToVersion10(db);
+            upgradeToVersion11(db);
         } else if (oldVersion == 6 ) {
             upgradeToVersion7(db);
             upgradeToVersion8(db);
             upgradeToVersion9(db);
             upgradeToVersion10(db);
+            upgradeToVersion11(db);
         } else if (oldVersion == 7) {
             upgradeToVersion8(db);
             upgradeToVersion9(db);
             upgradeToVersion10(db);
+            upgradeToVersion11(db);
         } else if (oldVersion == 8) {
             upgradeToVersion9(db);
             upgradeToVersion10(db);
-            
-        } else {
+            upgradeToVersion11(db);
+        } else if (oldVersion == 9 ){
             upgradeToVersion10(db);
+            upgradeToVersion11(db);
+        } else {
+            upgradeToVersion11(db);
         }
     }
 
@@ -682,6 +756,10 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE " + BreezingProvider.TABLE_INGESTION); 
         createEnergyCostTables(db);
         createIngestionTables(db);
+    }
+
+    private void upgradeToVersion11(SQLiteDatabase db) {
+        createBalanceHistoryView(db);
     }
 
 }

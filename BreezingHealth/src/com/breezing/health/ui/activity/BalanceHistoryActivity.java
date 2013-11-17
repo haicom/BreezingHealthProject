@@ -1,5 +1,6 @@
 package com.breezing.health.ui.activity;
 
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -13,10 +14,17 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import com.breezing.health.R;
 import com.breezing.health.adapter.BalanceHistoryPagerAdapter;
@@ -44,6 +52,7 @@ import com.breezing.health.widget.linechart.FancyChart;
 import com.breezing.health.widget.linechart.FancyChartPointListener;
 import com.breezing.health.widget.linechart.data.ChartData;
 import com.breezing.health.widget.linechart.data.Point;
+import com.breezing.health.widget.BarChart;
 import com.viewpagerindicator.LinePageIndicator;
 
 public class BalanceHistoryActivity extends ActionBarActivity implements OnClickListener {
@@ -74,13 +83,15 @@ public class BalanceHistoryActivity extends ActionBarActivity implements OnClick
     private View mBurnHistoryPage;
     private View mEnergyCostPage;
     private View mWeightHistoryPage;
+    private View mBalanceHistoryPage;
     
     private FancyChart mIntakeHistoryChart;
     private FancyChart mBurnHistoryChart;
     private FancyChart mEnergyCostChart;
     private FancyChart mWeightHistoryChart;
+    private BarChart   mBalanceHistoryChart;
 
-    private ViewGroup mBalanceHistoryPage;
+   // private ViewGroup mBalanceHistoryPage;
     private BalanceBarChartView mBalanceBarChartView;
 
     private LinePageIndicator mLinePageIndicator;
@@ -142,11 +153,11 @@ public class BalanceHistoryActivity extends ActionBarActivity implements OnClick
         mWeightHistoryPage = mLayoutInflater.inflate(R.layout.page_of_weight_history, null);
         mWeightHistoryChart = (FancyChart) mWeightHistoryPage.findViewById(R.id.chart);
 
-        mBalanceHistoryPage = (ViewGroup) mLayoutInflater.inflate(R.layout.page_of_caloric_balance_history, null);
-        
-        mBalanceBarChartView = new BalanceBarChartView(this);
-        mBalanceBarChartView.setZoomable(false);        
-        mBalanceHistoryPage.addView(mBalanceBarChartView);
+        mBalanceHistoryPage =  mLayoutInflater.inflate(R.layout.page_of_caloric_balance_history, null);
+        mBalanceHistoryChart = (BarChart)mBalanceHistoryPage.findViewById(R.id.bar_chart);
+//        mBalanceBarChartView = new BalanceBarChartView(this);
+//        mBalanceBarChartView.setZoomable(false);
+//        mBalanceHistoryPage.addView(mBalanceBarChartView);
     }
 
     private void valueToView() {
@@ -368,6 +379,7 @@ public class BalanceHistoryActivity extends ActionBarActivity implements OnClick
         refreshBurnView(caloricUnify);
         refreshEnergyCostView(caloricUnify);
         refreshWeightView(weightUnify);
+        refreshBalanceBarView();
         switch ( mBalanceChartModel ) {
             case WEEK: {    
                 mSelectIntervalButton.setText(
@@ -1452,6 +1464,29 @@ public class BalanceHistoryActivity extends ActionBarActivity implements OnClick
             mWeightHistoryChart.invalidate();
         }
     }
+
+    private void refreshBalanceBarView( ) {       
+
+        switch ( mBalanceChartModel ) {
+            case WEEK: {
+                drawBalanceChartDataWeekly();
+                break;
+            }
+
+            case MONTH: {
+                drawBalanceChartDataMonthly();
+                break;
+            }
+
+            case YEAR: {
+                drawBalanceChartDataYearly();
+                break;
+            }
+
+        }
+
+        mBalanceHistoryChart.invalidate();
+    }
     
     /**
      * 画我的我的能量代谢周视图
@@ -1764,6 +1799,322 @@ public class BalanceHistoryActivity extends ActionBarActivity implements OnClick
 
         return chartData;
     }
+
+    /**
+     * 画我的平衡代谢周视图
+     * @param chartData
+     * @return
+     */
+    private void drawBalanceChartDataWeekly( ) {
+
+        int  yearWeek =  DateFormatUtil.getCompleteWeek(mYear, mWeek);
+
+
+        Calendar fistCalendar = CalendarUtil.getFirstDayOfWeek(mYear, mWeek) ;
+        Calendar lastCalendar = CalendarUtil.getLastDayOfWeek(mYear, mWeek);
+
+        TreeMap<Integer, String> hashMap =
+                new TreeMap<Integer, String>();
+
+        Log.d(TAG, " drawBalanceChartDataWeekly yearWeek = " + yearWeek
+                + " mYear = " + mYear + " mWeek = " + mWeek);
+
+        do {
+
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.setLength(0);
+
+            int month = fistCalendar.get(Calendar.MONTH) + 1;
+            int day = fistCalendar.get(Calendar.DAY_OF_MONTH);
+            int date = Integer.valueOf(
+                    CalendarUtil.getDayFromCalendar( fistCalendar ) );
+
+            stringBuilder.append( String.valueOf(month) );
+            stringBuilder.append(".");
+            stringBuilder.append( String.valueOf(day) );
+            hashMap.put( date, stringBuilder.toString() );
+            fistCalendar.add(GregorianCalendar.DATE, 1);
+           
+           
+        }  while ( fistCalendar.compareTo(lastCalendar) <= 0 );
+        
+//        // 对HashMap中的key 进行排序 
+//        
+//        ArrayList<Entry<Integer, String>> list = new ArrayList< Entry<Integer, String> >( hashMap.entrySet() );
+//        
+//        Collections.sort(list, new Comparator< Map.Entry<Integer, String> >() {  
+//            public int compare(Map.Entry<Integer, String> o1,  
+//                    Map.Entry<Integer, String> o2) {  
+////              System.out.println(o1.getKey()+"   ===  "+o2.getKey());  
+//                return (o1.getKey()).toString().compareTo(o2.getKey().toString());  
+//            }  
+//        });  
+        fillInBalanceChangeInWeek(yearWeek, hashMap);
+
+    }
+
+    private static final String[] PROJECTION_BALANCE_CHANGE_DAYLY = new String[] {
+            Ingestion.TOTAL_INGESTION ,   // 0
+            EnergyCost.TOTAL_ENERGY ,      // 1
+            Ingestion.DATE
+    };
+
+    private static final int BALANCE_TOTAL_INGESTION_COLUMN_INDEX = 0;
+    private static final int BALANCE_TOTAL_ENERGY_COLUMN_INDEX = 1;
+    private static final int BALANCE_DATE_COLUMN_INDEX = 2;
+
+    @SuppressLint("UseSparseArrays")
+    private void  fillInBalanceChangeInWeek(int yearWeek,  TreeMap<Integer, String> hashMap) {
+        HashMap<Integer, Float> balanceHashMap = new HashMap<Integer, Float>();
+        
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.setLength(0);
+        stringBuilder.append( Ingestion.ACCOUNT_ID + " = ? AND ");
+        stringBuilder.append( Ingestion.YEAR_WEEK + " = ? ");
+
+        String sortOrder = Ingestion.DATE + " ASC ";
+        
+        mBalanceHistoryChart.clearDate();
+        
+        Cursor cursor = null;
+        try {
+            cursor = mContentResolver.query(Ingestion.CONTENT_BALANCE_WEEKLY_URI,
+                    PROJECTION_BALANCE_CHANGE_DAYLY,
+                    stringBuilder.toString(),
+                    new String[] { String.valueOf(mAccountId),  String.valueOf(yearWeek) },
+                    sortOrder );
+
+            if (cursor == null) {
+                Log.d(TAG, "fillInBalanceChangeInWeek cursor = " + cursor);
+            }
+
+            cursor.moveToPosition(-1);
+
+            while (cursor.moveToNext() ) {
+                float ingestion = cursor.getFloat(BALANCE_TOTAL_INGESTION_COLUMN_INDEX);
+                float energy = cursor.getFloat(BALANCE_TOTAL_ENERGY_COLUMN_INDEX);
+                int  day = cursor.getInt(BALANCE_DATE_COLUMN_INDEX);
+                balanceHashMap.put(day, ingestion - energy);
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        
+        Iterator< Entry<Integer, String> > dateIter = hashMap.entrySet().iterator(); 
+        
+        while ( dateIter.hasNext() ) { 
+            Entry<Integer,String> dateEntry = (Entry<Integer, String>) dateIter.next(); 
+            int    dateKey = Integer.parseInt( dateEntry.getKey().toString() ); 
+            String dateVal = dateEntry.getValue().toString();
+            
+            double value = findBalanceMatch(dateKey, balanceHashMap);
+            Log.d(TAG, "fillInBalanceChangeInWeek dateVal = " + dateVal + " value = " + value);
+            mBalanceHistoryChart.addData(dateVal, value);            
+        } 
+        
+    }
+    
+    private double findBalanceMatch(int date, HashMap<Integer, Float> hashMap) {
+        double result = 0;
+        
+        if ( hashMap.containsKey(date) ) {
+            result = hashMap.get(date);
+        }    
+        
+        return result;
+    }
+
+    @SuppressLint("UseSparseArrays")
+    private void drawBalanceChartDataMonthly( ) {
+        int  yearMonth =  DateFormatUtil.getCompleteWeek(mYear, mMonth);
+        int  weekNum = CalendarUtil.getTotalWeeksInMonth(mYear, mMonth);
+
+        TreeMap<Integer, String> hashMap =
+                new TreeMap<Integer, String>();
+
+        Calendar fistCalendar = CalendarUtil.getFirstCalendarOfMonth(mYear, mMonth);
+
+
+        BLog.d(TAG, " drawChartDataMonthly yearMonth = " + yearMonth
+                + " mYear = " + mYear + " mMonth = " + mMonth + " weekNum = " + weekNum);
+
+        for ( int index = 0; index < weekNum; index++ ) {
+            int weeks = fistCalendar.get(Calendar.WEEK_OF_YEAR);
+            int yearWeek = DateFormatUtil.getCompleteWeek(mYear, weeks);
+
+            hashMap.put(yearWeek, getString(R.string.month_in_week, index + 1) );
+            BLog.d(TAG, " drawChartDataMonthly weeks = " + weeks
+                    + " yearWeek = " + yearWeek);
+
+            fistCalendar.add(Calendar.WEEK_OF_YEAR, 1);
+        }
+
+        fillInBalanceChangeInMonth(yearMonth, hashMap);        
+    }
+
+
+
+    private static final String[] PROJECTION_BALANCE_CHANGE_WEEKLY = new String[] {
+            Ingestion.AVG_TOTAL_INGESTION ,   // 0
+            EnergyCost.AVG_TOTAL_ENERGY ,      // 1
+            Ingestion.YEAR_WEEK
+    };
+
+    private static final int BALANCE_AVG_TOTAL_INGESTION_COLUMN_INDEX = 0;
+    private static final int BALANCE_AVG_TOTAL_ENERGY_COLUMN_INDEX = 1;
+    private static final int BALANCE_YEAR_WEEK_COLUMN_INDEX = 2;
+
+    @SuppressLint("UseSparseArrays")
+    private void  fillInBalanceChangeInMonth(int yearMonth, TreeMap<Integer, String> hashMap) {
+        HashMap<Integer, Float> balanceHashMap = new HashMap<Integer, Float>();
+        
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.setLength(0);
+        stringBuilder.append( Ingestion.ACCOUNT_ID + " = ? AND ");
+        stringBuilder.append( Ingestion.YEAR_MONTH + " = ? ");
+
+        String sortOrder = Ingestion.YEAR_WEEK + " ASC ";
+        
+        mBalanceHistoryChart.clearDate();
+        
+        Cursor cursor = null;
+        try {
+            cursor = mContentResolver.query(Ingestion.CONTENT_BALANCE_MONTHLY_URI,
+                    PROJECTION_BALANCE_CHANGE_WEEKLY,
+                    stringBuilder.toString(),
+                    new String[] { String.valueOf(mAccountId),  String.valueOf(yearMonth) },
+                    sortOrder );
+
+            if (cursor == null) {
+                Log.d(TAG, " fillInBalanceChangeInMonth cursor = " + cursor);
+            }
+
+            cursor.moveToPosition(-1);
+
+            while (cursor.moveToNext() ) {
+                float ingestion = cursor.getFloat(BALANCE_AVG_TOTAL_INGESTION_COLUMN_INDEX);
+                float energy = cursor.getFloat(BALANCE_AVG_TOTAL_ENERGY_COLUMN_INDEX);
+                int  yearWeek = cursor.getInt(BALANCE_YEAR_WEEK_COLUMN_INDEX);
+                
+                balanceHashMap.put(yearWeek, ingestion - energy);
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        
+        Iterator< Entry<Integer, String> > dateIter = hashMap.entrySet().iterator(); 
+        
+        while ( dateIter.hasNext() ) { 
+            Entry<Integer,String> dateEntry = (Entry<Integer, String>) dateIter.next(); 
+            int    dateKey = Integer.parseInt( dateEntry.getKey().toString() ); 
+            String dateVal = dateEntry.getValue().toString();
+            
+            double value = findBalanceMatch(dateKey, balanceHashMap);
+            mBalanceHistoryChart.addData(dateVal, value);            
+        } 
+
+
+    }
+    
+    
+    /**
+     * 画年视图
+     * @param chartData
+     * @return
+     */
+    private void drawBalanceChartDataYearly( ) {
+
+        TreeMap<Integer, String> hashMap =
+                new TreeMap<Integer, String>();
+
+        Calendar fistCalendar = CalendarUtil.getFirstCalendarOfMonth(mYear, mMonth);
+
+
+        BLog.d(TAG, " drawChartDataMonthly  mYear = " + mYear + " mMonth = " + mMonth );
+
+        for ( int index = 0; index < CALORIC_MONTH_NUMBER; index++ ) {
+
+             int weeks = fistCalendar.get(Calendar.WEEK_OF_YEAR);
+             int yearMonth = DateFormatUtil.getCompleteYearMonth(mYear, index + 1);
+             
+             hashMap.put(yearMonth, getString(R.string.year_in_month, index + 1) );
+            
+             BLog.d(TAG, " drawChartDataMonthly weeks = " + weeks
+                     + " yearMonth = " + yearMonth);
+
+            
+             fistCalendar.add(Calendar.WEEK_OF_YEAR, 1);
+        }
+        
+        fillInBalanceChangeInYear(hashMap);
+        
+    }
+
+    private static final String[] PROJECTION_BALANCE_CHANGE_MONTHLY = new String[] {
+            Ingestion.AVG_TOTAL_INGESTION ,   // 0
+            EnergyCost.AVG_TOTAL_ENERGY ,      // 1
+            Ingestion.YEAR_MONTH
+    };
+
+
+    private static final int BALANCE_YEAR_MONTH_COLUMN_INDEX = 2;
+
+    private void  fillInBalanceChangeInYear(TreeMap<Integer, String> hashMap ) {
+        HashMap<Integer, Float> balanceHashMap = new HashMap<Integer, Float>();
+        
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.setLength(0);
+        stringBuilder.append( Ingestion.ACCOUNT_ID + " = ? AND ");
+        stringBuilder.append( Ingestion.YEAR + " = ? ");
+
+        String sortOrder =  Ingestion.YEAR_MONTH + " ASC ";
+        
+        mBalanceHistoryChart.clearDate();
+
+        Cursor cursor = null;
+        try {
+            cursor = mContentResolver.query(Ingestion.CONTENT_BALANCE_YEARLY_URI,
+                    PROJECTION_BALANCE_CHANGE_MONTHLY,
+                    stringBuilder.toString(),
+                    new String[] { String.valueOf(mAccountId),  String.valueOf(mYear) },
+                    sortOrder );
+
+            if (cursor == null) {
+                Log.d(TAG, " fillInBalanceChangeInMonth cursor = " + cursor);
+            }
+
+            cursor.moveToPosition(-1);
+
+            while (cursor.moveToNext() ) {
+                float ingestion = cursor.getFloat(BALANCE_AVG_TOTAL_INGESTION_COLUMN_INDEX);
+                float energy = cursor.getFloat(BALANCE_AVG_TOTAL_ENERGY_COLUMN_INDEX);
+                int  yearMonth = cursor.getInt(BALANCE_YEAR_MONTH_COLUMN_INDEX);
+                
+                balanceHashMap.put(yearMonth, ingestion - energy);
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        
+        Iterator< Entry<Integer, String> > dateIter = hashMap.entrySet().iterator(); 
+        
+        while ( dateIter.hasNext() ) { 
+            Entry<Integer,String> dateEntry = (Entry<Integer, String>) dateIter.next(); 
+            int    dateKey = Integer.parseInt( dateEntry.getKey().toString() ); 
+            String dateVal = dateEntry.getValue().toString();
+            
+            double value = findBalanceMatch(dateKey, balanceHashMap);
+            mBalanceHistoryChart.addData(dateVal, value);            
+        } 
+    }
+    
+   
 
     private void refreshBalanceView() {
 

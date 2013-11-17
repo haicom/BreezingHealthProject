@@ -138,6 +138,9 @@ public class Breezing {
         public static final String AVG_TOTAL_ENERGY = "avg_total_energy";
         public static final String ALL_METABOLISM = "all_metabolism";
         public static final String ALL_TOTAL_ENERGY = "all_total_energy";
+        
+        public static final String COST_ACCOUNT_ID = BreezingProvider.TABLE_COST + "." + ACCOUNT_ID;
+        public static final String COST_DATE = BreezingProvider.TABLE_COST + "." + DATE;
         /**
          * The default sort order for this table
          */
@@ -178,6 +181,15 @@ public class Breezing {
         public static final Uri CONTENT_YEAR_COMPARE_URI = Uri.withAppendedPath(AUTHORITY_URI,
                 "ingestion_compare_yearly");
 
+        public static final Uri CONTENT_BALANCE_WEEKLY_URI = Uri.withAppendedPath(AUTHORITY_URI,
+                "balance_history_weekly");
+
+        public static final Uri CONTENT_BALANCE_MONTHLY_URI = Uri.withAppendedPath(AUTHORITY_URI,
+                "balance_history_monthly");
+
+        public static final Uri CONTENT_BALANCE_YEARLY_URI = Uri.withAppendedPath(AUTHORITY_URI,
+                "balance_history_yearly");
+
         public static final String ACCOUNT_ID   = "account_id";
         public static final String BREAKFAST   = "breakfast";
         public static final String LUNCH   = "lunch";
@@ -187,7 +199,13 @@ public class Breezing {
         public static final String TOTAL_INGESTION   = "total_ingestion";
         public static final String AVG_TOTAL_INGESTION = "avg_total_ingestion";
         public static final String ALL_TOTAL_INGESTION = "all_total_ingestion";
-
+        
+        public static final String INGESTION_ACCOUNT_ID = BreezingProvider.TABLE_INGESTION + "." + ACCOUNT_ID;
+        public static final String INGESTION_DATE = BreezingProvider.TABLE_INGESTION + "." + DATE;
+        public static final String INGESTION_YEAR_WEEK = BreezingProvider.TABLE_INGESTION + "." + YEAR_WEEK;
+        public static final String INGESTION_YEAR_MONTH = BreezingProvider.TABLE_INGESTION + "." + YEAR_MONTH;
+        public static final String INGESTION_YEAR = BreezingProvider.TABLE_INGESTION + "." + YEAR;
+        
         /**
          * The default sort order for this table
          */
