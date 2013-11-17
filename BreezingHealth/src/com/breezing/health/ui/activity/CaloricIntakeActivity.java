@@ -3,9 +3,12 @@ package com.breezing.health.ui.activity;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
+import android.content.AsyncQueryHandler;
 import android.content.ContentProviderOperation;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.SpannableString;
@@ -33,6 +36,7 @@ import com.breezing.health.entity.AccountEntity;
 import com.breezing.health.entity.ActionItem;
 import com.breezing.health.entity.FoodEntity;
 import com.breezing.health.providers.Breezing;
+import com.breezing.health.providers.Breezing.HeatConsumptionRecord;
 import com.breezing.health.providers.Breezing.Ingestion;
 import com.breezing.health.providers.Breezing.IngestiveRecord;
 import com.breezing.health.ui.fragment.FoodIntakeDialogFragment;
@@ -69,7 +73,7 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
     private AccountEntity mAccount;
     private float mUnifyUnit;
     private float mSaveUnit;
-
+    
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         switch(keyCode) {
@@ -496,7 +500,7 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
     
     public void updateTotalCaloric() {
         float total = mFoodAdapter.getTotalCaloric() * mUnifyUnit;         
-        DecimalFormat df = new DecimalFormat("#.0");
+        DecimalFormat df = new DecimalFormat("#0.0");
         final String title = getString(R.string.total_food_intake, df.format(total), mAccount.getCaloricUnit() );
 
         SpannableString span = new SpannableString(title);
@@ -562,5 +566,19 @@ public class CaloricIntakeActivity extends ActionBarActivity implements OnClickL
             Log.e(TAG, "Exceptoin encoutered while deleting contact: " + e);
         }
     }
-
+    
+    @Override
+    protected void onStop() {
+    	super.onStop();
+    	if (mFoodAdapter != null) {
+            mFoodAdapter.changeCursor(null);
+        }
+    }
+    
+    @Override
+    protected void onRestart() {
+    	mFoodAdapter.refreshCatagoryItems();
+    	super.onRestart();
+    }
+    
 }

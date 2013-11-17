@@ -13,6 +13,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
+import android.support.v4.widget.CursorAdapter;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -43,6 +44,7 @@ import com.breezing.health.util.BreezingQueryViews;
 import com.breezing.health.util.DateFormatUtil;
 import com.breezing.health.util.ExtraName;
 import com.breezing.health.util.LocalSharedPrefsUtil;
+import com.breezing.health.util.OnDataSetChangedListener;
 
 public class ExerciseRecordActivity extends ActionBarActivity
               implements View.OnClickListener {
@@ -197,7 +199,7 @@ public class ExerciseRecordActivity extends ActionBarActivity
         final String title = getString(R.string.title_total_exercise_caloric);
        
 
-        DecimalFormat df = new DecimalFormat("#.0");
+        DecimalFormat df = new DecimalFormat("#0.0");
         final String total = df.format(count);
         SpannableString span = new SpannableString(title + total + mAccount.getCaloricUnit() );
         span.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.red)),
@@ -390,13 +392,13 @@ public class ExerciseRecordActivity extends ActionBarActivity
     }
 
 
-    private final ExerciseRecordAdapter.OnDataSetChangedListener
-        mDataSetChangedListener = new ExerciseRecordAdapter.OnDataSetChangedListener() {
-            public void onDataSetChanged(ExerciseRecordAdapter adapter) {
+    private final OnDataSetChangedListener
+        mDataSetChangedListener = new OnDataSetChangedListener() {
+            public void onDataSetChanged(CursorAdapter adapter) {
 
             }
 
-            public void onContentChanged(ExerciseRecordAdapter adapter) {
+            public void onContentChanged(CursorAdapter adapter) {
                 Log.d(TAG, "MessageListAdapter.OnDataSetChangedListener.onContentChanged");
                 startMsgListQuery();
            }

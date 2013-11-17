@@ -2,7 +2,9 @@ package com.breezing.health.ui.fragment;
 
 import java.util.ArrayList;
 
+import android.app.Activity;
 import android.content.ContentProviderOperation;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,15 +17,21 @@ import android.widget.Toast;
 
 import com.breezing.health.R;
 import com.breezing.health.entity.AccountEntity;
+import com.breezing.health.entity.BreezingTestReport;
 import com.breezing.health.providers.Breezing;
 import com.breezing.health.providers.Breezing.EnergyCost;
+import com.breezing.health.tools.IntentAction;
 import com.breezing.health.ui.activity.BreezingTestActivity;
-import com.breezing.health.ui.activity.MainActivity;
+import com.breezing.health.util.BLog;
 import com.breezing.health.util.BreezingQueryViews;
 import com.breezing.health.util.DateFormatUtil;
+import com.breezing.health.util.ExtraName;
 import com.breezing.health.util.LocalSharedPrefsUtil;
 
 public class BreezingTestSecondStepFragment extends BaseFragment implements OnClickListener {
+	
+	public final static int REQUEST_BREEZING_TEST = 0x111;
+	
     private static final String TAG = "BreezingTestSecondStepFragment";
     private View mFragmentView;
     private ImageButton mBegin;
@@ -31,6 +39,8 @@ public class BreezingTestSecondStepFragment extends BaseFragment implements OnCl
     private AccountEntity mAccount;
     private float mUnifyUnit;
     private String mCaloricUnit;
+    
+    private BreezingTestReport mBreezingTestReport;
 
     public static BreezingTestSecondStepFragment newInstance() {
         BreezingTestSecondStepFragment fragment = new BreezingTestSecondStepFragment();
@@ -67,17 +77,30 @@ public class BreezingTestSecondStepFragment extends BaseFragment implements OnCl
     public void onClick(View v) {
         if (v == mBegin) {
 //            showBluetoothSettingDialog();
-            int count = queryEnergyCost();
-            if (count == 0 ) {
-                mTestInfo = appendEnergyCost();
-            } else {
-                mTestInfo = updateEnergyCost();
-            }
-            
-            ((BreezingTestActivity)getActivity()).setTestResult();
-            Toast.makeText(getActivity(), mTestInfo, Toast.LENGTH_SHORT).show();
+        	Intent intent = new Intent(IntentAction.ACTIVITY_TEST_BREEZING);
+        	startActivityForResult(intent, REQUEST_BREEZING_TEST);
             return ;
         }
+    }
+    
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    	if (resultCode == Activity.RESULT_OK) {
+    		if (requestCode == REQUEST_BREEZING_TEST) {
+    		  mBreezingTestReport = data.getParcelableExtra(ExtraName.EXTRA_DATA);
+              int count = queryEnergyCost();
+              if (count == 0 ) {
+                  mTestInfo = appendEnergyCost();
+              } else {
+                  mTestInfo = updateEnergyCost();
+              }
+              
+              ((BreezingTestActivity)getActivity()).setTestResult();
+              Toast.makeText(getActivity(), mTestInfo, Toast.LENGTH_SHORT).show();
+    		 return ;
+    		}
+    	}
+    	super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void showBluetoothSettingDialog() {
@@ -137,20 +160,20 @@ public class BreezingTestSecondStepFragment extends BaseFragment implements OnCl
                         getSharedPrefsValueInt(this.getActivity(), LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
         ops.add(ContentProviderOperation.newInsert(EnergyCost.CONTENT_URI)
                 .withValue(EnergyCost.ACCOUNT_ID, accountId)
-                .withValue(EnergyCost.METABOLISM, ENERGY_COST_METABOLISM)
-                .withValue(EnergyCost.SPORT, ENERGY_COST_SPORT)
-                .withValue(EnergyCost.DIGEST, ENERGY_COST_DIGEST)
+                .withValue(EnergyCost.METABOLISM, mBreezingTestReport.getMetabolism())
+                .withValue(EnergyCost.SPORT, mBreezingTestReport.getSport())
+                .withValue(EnergyCost.DIGEST, mBreezingTestReport.getDigest())
                 .withValue(EnergyCost.TRAIN, 0)
                 .withValue(EnergyCost.ENERGY_COST_DATE, DateFormatUtil.simpleDateFormat("yyyyMMdd") )
                 .build());
         try {
             getActivity().getContentResolver().applyBatch(Breezing.AUTHORITY, ops);
             result =  getActivity().getString(R.string.input_infomation, 
-                    ENERGY_COST_METABOLISM, ENERGY_COST_METABOLISM, ENERGY_COST_DIGEST);                   
+            		mBreezingTestReport.getMetabolism(), mBreezingTestReport.getSport(), mBreezingTestReport.getDigest());                   
         } catch (Exception e) {
             result = getResources().getString(R.string.data_error);
             // Log exception
-            Log.e(TAG, "Exceptoin encoutered while inserting contact: " + e);
+            BLog.e(TAG, "Exceptoin encoutered while inserting contact: " + e);
         }
 
         return result;
@@ -175,22 +198,22 @@ public class BreezingTestSecondStepFragment extends BaseFragment implements OnCl
                         new String[] { 
                         String.valueOf( accountId ) , 
                         String.valueOf( date ) } )               
-                .withValue(EnergyCost.METABOLISM, ENERGY_COST_METABOLISM)                     
+                .withValue(EnergyCost.METABOLISM, mBreezingTestReport.getMetabolism())
+                .withValue(EnergyCost.SPORT, mBreezingTestReport.getSport())
+                .withValue(EnergyCost.DIGEST, mBreezingTestReport.getDigest())
+                .withValue(EnergyCost.TOTAL_ENERGY, mBreezingTestReport.getTotalEnerge())
                 .build() );      
         try {
             getActivity().getContentResolver().applyBatch(Breezing.AUTHORITY, ops);
             result =  getActivity().getString(R.string.input_infomation, 
-                    ENERGY_COST_METABOLISM, ENERGY_COST_METABOLISM, ENERGY_COST_DIGEST);                   
+            		mBreezingTestReport.getMetabolism(), mBreezingTestReport.getSport(), mBreezingTestReport.getDigest());                   
         } catch (Exception e) {
             result = getResources().getString(R.string.data_error);
             // Log exception
-            Log.e(TAG, "Exceptoin encoutered while inserting contact: " + e);
+            BLog.e(TAG, "Exceptoin encoutered while inserting contact: " + e);
         }
 
         return result;
     }
 
-    private static final int ENERGY_COST_METABOLISM = 3500;
-    private static final int ENERGY_COST_SPORT = 160;
-    private static final int ENERGY_COST_DIGEST = ENERGY_COST_METABOLISM / 20;
 }

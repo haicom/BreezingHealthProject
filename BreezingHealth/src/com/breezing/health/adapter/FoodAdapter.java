@@ -2,14 +2,17 @@ package com.breezing.health.adapter;
 
 import java.util.ArrayList;
 
+import android.content.AsyncQueryHandler;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteException;
+import android.support.v4.widget.CursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -18,52 +21,38 @@ import android.widget.TextView;
 import com.breezing.health.R;
 import com.breezing.health.entity.CatagoryEntity;
 import com.breezing.health.entity.FoodEntity;
+import com.breezing.health.providers.Breezing.HeatConsumptionRecord;
 import com.breezing.health.providers.Breezing.HeatIngestion;
 import com.breezing.health.providers.Breezing.IngestiveRecord;
 import com.breezing.health.ui.activity.CaloricIntakeActivity;
 import com.breezing.health.ui.activity.CaloricIntakeActivity.CaloricIntakeType;
+import com.breezing.health.util.OnDataSetChangedListener;
 
-public class FoodAdapter extends BaseAdapter implements OnClickListener {
+public class FoodAdapter extends CursorAdapter implements OnClickListener {
+	
     private static final String TAG = "FoodAdapter";
     private CaloricIntakeActivity mContext;
-    private ArrayList<FoodEntity> mFoods;
     private ArrayList<FoodEntity> mSelectedFoods;
     private FoodCatagoryAdapter mCatagoryAdapter;
     private int mAccountId;
     private int mDate;
-    private float mUnifyUnit;
     private CaloricIntakeType mCaloricIntakeType;
+    
+    private BackgroundQueryHandler mBackgroundQueryHandler;
+    private String checkedCatagoryName;
     
     public FoodAdapter(CaloricIntakeActivity context, FoodCatagoryAdapter catagoryAdapter, 
             int accountId, int date, CaloricIntakeType caloricIntakeType, float unifyUnit) {
+    	super(context, null, FLAG_REGISTER_CONTENT_OBSERVER); 
         this.mContext = context;
+        mBackgroundQueryHandler = new BackgroundQueryHandler(this.mContext.getContentResolver());
         this.mCatagoryAdapter = catagoryAdapter;
-        mFoods = new ArrayList<FoodEntity>();
         mSelectedFoods = new ArrayList<FoodEntity>();
         mAccountId = accountId;
         mDate = date;
         mCaloricIntakeType = caloricIntakeType;
-        mUnifyUnit = unifyUnit;
-        refreshCatagoryItems(null);        
-    }
-
-  
-	@Override
-    public int getCount() {
-	    
-        if (mFoods == null) {
-            return 0;
-        }
-        
-        return mFoods.size();
-    }
-
-    @Override
-    public FoodEntity getItem(int position) {
-        if (mFoods == null) {
-            return null;
-    	}
-        return mFoods.get(position);
+        queryIngestiveRecord();
+        refreshCatagoryItems(null);
     }
 
     @Override
@@ -79,15 +68,13 @@ public class FoodAdapter extends BaseAdapter implements OnClickListener {
         }
     }
     
-    public void clearItems() {
-        if (mFoods != null) {
-            mFoods.clear();
-        }
+    public void refreshCatagoryItems(String name) {
+    	checkedCatagoryName = name;
+    	getFoodSortFromFoodTypes(mCatagoryAdapter.getCheckedCatagories(), checkedCatagoryName);
     }
     
-    public void refreshCatagoryItems(String name) {
-        clearItems();
-        getFoodSortFromFoodTypes( mCatagoryAdapter.getCheckedCatagories(), name);
+    public void refreshCatagoryItems() {
+    	getFoodSortFromFoodTypes(mCatagoryAdapter.getCheckedCatagories(), checkedCatagoryName);
     }
     
     public void increaseFoodNumber(FoodEntity food) {
@@ -140,65 +127,6 @@ public class FoodAdapter extends BaseAdapter implements OnClickListener {
         mContext.deleteIngestiveRecord(mSelectedFoods.get(position));
     	mSelectedFoods.remove(position);
     }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
-        if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.list_food_item, null);
-            
-            holder = new ViewHolder();
-            holder.image = (ImageView) convertView.findViewById(R.id.image);
-            holder.name = (TextView) convertView.findViewById(R.id.name);
-            holder.unit = (TextView) convertView.findViewById(R.id.unit);
-            holder.increase = (Button) convertView.findViewById(R.id.increase);
-            holder.number = (EditText) convertView.findViewById(R.id.number);
-            holder.decrease = (Button) convertView.findViewById(R.id.decrease);
-            
-            convertView.setTag(holder);
-            
-        } else {
-            holder = (ViewHolder) convertView.getTag();
-        }
-        
-        final FoodEntity food = getItem(position);
-       
-        Log.d(TAG, "getView food.getImageRes() = " + food.getImageRes()
-                + " position = " + position + " food.getSelectedNumber() = " + food.getSelectedNumber() );
-       
-        int iconRes = mContext.getResources().getIdentifier( food.getImageRes(), "drawable", mContext.getPackageName() );
-        holder.image.setImageResource(iconRes);
-        holder.name.setText( food.getFoodName() );
-        holder.unit.setText( food.getNameExpress() );
-        
-        holder.increase.setTag(food);
-        holder.increase.setOnClickListener(this);
-        
-        holder.decrease.setTag(food);
-        holder.decrease.setOnClickListener(this);
-        
-//        final int selectedIndex = getSelectedFoodIndex( food.getFoodName() );
-//        if (selectedIndex == -1) {
-//           	holder.number.setText("");
-//        } else {
-//        	final int total = mSelectedFoods.get(selectedIndex).getSelectedNumber() * mSelectedFoods.get(selectedIndex).getFoodQuantity();
-//        	holder.number.setText( String.valueOf(total) );
-//        }
-        int total = 0;
-        for (FoodEntity selectFoodEntity: mSelectedFoods) {
-             if (selectFoodEntity.getFoodId() ==  food.getFoodId() ) {
-                 total = selectFoodEntity.getSelectedNumber() * selectFoodEntity.getFoodQuantity();
-                 break;
-             }
-        }
-        
-        if ( total == 0 ) {
-            holder.number.setText("");
-        } else {           
-            holder.number.setText( String.valueOf(total) );
-        }
-        return convertView;
-    }
     
     class ViewHolder {
         TextView name;
@@ -212,31 +140,47 @@ public class FoodAdapter extends BaseAdapter implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		if (v.getId() == R.id.increase) {
-			final FoodEntity food = (FoodEntity) v.getTag();
-			increaseFoodNumber(food);
+			final int index = Integer.parseInt(String.valueOf(v.getTag()));
+			increaseFoodNumber(getFoodItem(index));
 			notifyDataSetChanged();
 			return ;
 		} else if (v.getId() == R.id.decrease) {
-			final FoodEntity food = (FoodEntity) v.getTag();
-			decreaseFoodNumber(food);
+			final int index = Integer.parseInt(String.valueOf(v.getTag()));
+			decreaseFoodNumber(getFoodItem(index));
 			notifyDataSetChanged();
 			return ;
 		}
 	}
 	
-	@Override
-	public void notifyDataSetChanged() {
-	    if (mContext instanceof CaloricIntakeActivity) {
-	        ((CaloricIntakeActivity) mContext).updateTotalCaloric();
-	    }
-	    
-	    super.notifyDataSetChanged();
+	private FoodEntity getFoodItem(int position) {
+		Cursor cursor = (Cursor) getItem(position);
+		int foodType = cursor.getInt(FOOD_CLASSIFY_ID_INGESTION_INDEX);
+        String foodName = cursor.getString(FOOD_NAME_INGESTION_INDEX);
+        int foodId = cursor.getInt(FOOD_ID_INGESTION_INDEX);;
+        String nameExpress = cursor.getString(NAME_EXPRESS_INGESTION_INDEX);                
+        int  priority = cursor.getInt(PRIORITY_INGESTION_INDEX);
+        int  foodQuantity = cursor.getInt(FOOD_QUANTITY_INGESTION_INDEX);
+        int  calorie = cursor.getInt(CALORIE_INGESTION_INDEX);
+        String imageRes = cursor.getString(FOOD_PICTURE_INGESTION_INDEX);
+       
+        FoodEntity food = new FoodEntity();
+        food.setFoodClassifyId(foodType);
+        food.setFoodId(foodId);
+        food.setFoodName(foodName);
+        food.setNameExpress(nameExpress);
+        food.setPriority(priority);
+        food.setFoodQuantity(foodQuantity);
+        food.setCalorie(calorie);
+        food.setImageRes(imageRes);
+        
+        return food;
 	}
 
     /**
      * 获取食物种类
      */
     private static final String[] PROJECTION_FOOD_SORT = new String[] {
+    		HeatIngestion._ID,
             HeatIngestion.FOOD_CLASSIFY_ID,
             HeatIngestion.FOOD_ID,
             HeatIngestion.FOOD_NAME,          // 0
@@ -248,32 +192,31 @@ public class FoodAdapter extends BaseAdapter implements OnClickListener {
     };
 
 
-    private static final int FOOD_CLASSIFY_ID_INGESTION_INDEX = 0;
-    private static final int FOOD_ID_INGESTION_INDEX = 1;
-    private static final int FOOD_NAME_INGESTION_INDEX = 2;
-    private static final int NAME_EXPRESS_INGESTION_INDEX = 3;
-    private static final int PRIORITY_INGESTION_INDEX = 4;
-    private static final int FOOD_QUANTITY_INGESTION_INDEX = 5;
-    private static final int CALORIE_INGESTION_INDEX = 6;
-    private static final int FOOD_PICTURE_INGESTION_INDEX = 7;
+    private static final int FOOD_CLASSIFY_ID_INGESTION_INDEX = 1;
+    private static final int FOOD_ID_INGESTION_INDEX = 2;
+    private static final int FOOD_NAME_INGESTION_INDEX = 3;
+    private static final int NAME_EXPRESS_INGESTION_INDEX = 4;
+    private static final int PRIORITY_INGESTION_INDEX = 5;
+    private static final int FOOD_QUANTITY_INGESTION_INDEX = 6;
+    private static final int CALORIE_INGESTION_INDEX = 7;
+    private static final int FOOD_PICTURE_INGESTION_INDEX = 8;
     /**
      * 获得食物种类通过食物的类型
      *
      *
      */
-    public void getFoodSortFromFoodTypes(CatagoryEntity catagory, String name) {
+    private void getFoodSortFromFoodTypes(CatagoryEntity catagory, String name) {
         
         Log.d(TAG, " getFoodSortFromFoodTypes foodTypes.size() " + catagory + " name = " + name);
         
         if ( catagory == null ) {
-            return;
+            return ;
         }
         
         String sortOrder = HeatIngestion.FOOD_ID + " ASC";
         
         
        
-        Cursor cursor = null;
         StringBuilder foodBuilder = new StringBuilder();
         foodBuilder.setLength(0);
         foodBuilder.append( catagory.getId() );
@@ -305,53 +248,61 @@ public class FoodAdapter extends BaseAdapter implements OnClickListener {
             }
             
             Log.d(TAG, "getFoodSortFromFoodTypes whereClause = " + whereClause);
-            cursor = mContext.getContentResolver().query(
-                    HeatIngestion.CONTENT_URI, PROJECTION_FOOD_SORT, whereClause, null, sortOrder);
-        }
+            long threadId = 0;
 
-        if ( cursor == null ) {
-            return;
-        }
 
-        try {
-            cursor.moveToPosition(-1);
-            while (cursor.moveToNext() ) {
-                int foodType = cursor.getInt(FOOD_CLASSIFY_ID_INGESTION_INDEX);
-                String foodName = cursor.getString(FOOD_NAME_INGESTION_INDEX);
-                int foodId = cursor.getInt(FOOD_ID_INGESTION_INDEX);;
-                String nameExpress = cursor.getString(NAME_EXPRESS_INGESTION_INDEX);                
-                int  priority = cursor.getInt(PRIORITY_INGESTION_INDEX);
-                int  foodQuantity = cursor.getInt(FOOD_QUANTITY_INGESTION_INDEX);
-                int  calorie = cursor.getInt(CALORIE_INGESTION_INDEX);
-                String imageRes = cursor.getString(FOOD_PICTURE_INGESTION_INDEX);
-               
-                FoodEntity food = new FoodEntity();
-                food.setFoodClassifyId(foodType);
-                food.setFoodId(foodId);
-                food.setFoodName(foodName);
-                food.setNameExpress(nameExpress);
-                food.setPriority(priority);
-                food.setFoodQuantity(foodQuantity);
-                food.setCalorie(calorie);
-                food.setImageRes(imageRes);               
-                mFoods.add(food);
+            // Cancel any pending queries
+            mBackgroundQueryHandler.cancelOperation(MESSAGE_LIST_QUERY_TOKEN);
+            try {
+                // Kick off the new query
+                mBackgroundQueryHandler.startQuery(
+                        MESSAGE_LIST_QUERY_TOKEN,
+                        threadId /* cookie */,
+                        HeatIngestion.CONTENT_URI,
+                        PROJECTION_FOOD_SORT,
+                        whereClause,
+                        null,
+                        sortOrder);
+            } catch (SQLiteException e) {
+
             }
-        } finally {
-            cursor.close();
         }
-        
-        queryIngestiveRecord( );
-
-        return;
     }
     
+    private final OnDataSetChangedListener
+    	mOnDataSetChangedListener = new OnDataSetChangedListener() {
+        public void onDataSetChanged(CursorAdapter adapter) {
+
+        }
+
+        public void onContentChanged(CursorAdapter adapter) {
+            Log.d(TAG, "MessageListAdapter.OnDataSetChangedListener.onContentChanged");
+            getFoodSortFromFoodTypes( mCatagoryAdapter.getCheckedCatagories(), checkedCatagoryName);
+       }
+    };
     
-    /**
-     * 获取食物种类
-     */
+    private final class BackgroundQueryHandler extends AsyncQueryHandler {
+        public BackgroundQueryHandler(ContentResolver contentResolver) {
+            super(contentResolver);
+        }
+
+        @Override
+        protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
+            switch(token) {
+                case MESSAGE_LIST_QUERY_TOKEN:
+                    // check consistency between the query result and 'mConversation'
+                    long tid = (Long) cookie;
+                    changeCursor(cursor);
+                    return;
+            }
+        }
+    }
+    
+    private static final int MESSAGE_LIST_QUERY_TOKEN = 9527;
+    
     private static final String[] PROJECTION_INGESTIVE_RECORD_SORT = new String[] {
         IngestiveRecord.FOOD_ID,
-        IngestiveRecord.FOOD_QUANTITY,          
+        IngestiveRecord.FOOD_QUANTITY
     };
 
 
@@ -359,7 +310,7 @@ public class FoodAdapter extends BaseAdapter implements OnClickListener {
     private static final int INGESTIVE_RECORD_FOOD_QUANTITY_INDEX = 1;
    
     
-    private void queryIngestiveRecord( ) {
+    public void queryIngestiveRecord( ) {
         Cursor cursor = null;        
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.setLength(0);
@@ -380,9 +331,14 @@ public class FoodAdapter extends BaseAdapter implements OnClickListener {
         try {
              cursor.moveToPosition(-1);
              while (cursor.moveToNext() ) {
-                 int foodId = cursor.getInt(INGESTIVE_RECORD_FOOD_ID_INDEX);
-                 int selectedNumber = cursor.getInt(INGESTIVE_RECORD_FOOD_QUANTITY_INDEX);  
-                 findSelectedNumber(foodId, selectedNumber);
+                 final int foodId = cursor.getInt(INGESTIVE_RECORD_FOOD_ID_INDEX);
+                 final int selectedNumber = cursor.getInt(INGESTIVE_RECORD_FOOD_QUANTITY_INDEX);  
+                 
+                 FoodEntity foodEntity = queryFoodById(foodId);
+                 if (foodEntity != null) {
+                	 foodEntity.setSelectedNumber(selectedNumber);
+                     mSelectedFoods.add(foodEntity);
+                 }
              }            
         } finally {
             if (cursor != null) {
@@ -392,21 +348,124 @@ public class FoodAdapter extends BaseAdapter implements OnClickListener {
         
         return;
     }
+
+	@Override
+	public void bindView(View convertView, Context context, Cursor cursor) {
+      ViewHolder holder = (ViewHolder) convertView.getTag();
+      
+      final String foodName = cursor.getString(FOOD_NAME_INGESTION_INDEX);
+      final int foodId = cursor.getInt(FOOD_ID_INGESTION_INDEX);;
+      final String nameExpress = cursor.getString(NAME_EXPRESS_INGESTION_INDEX);                
+      final String imageRes = cursor.getString(FOOD_PICTURE_INGESTION_INDEX);
+      
+      int iconRes = mContext.getResources().getIdentifier( imageRes, "drawable", mContext.getPackageName() );
+      holder.image.setImageResource(iconRes);
+      holder.name.setText( foodName );
+      holder.unit.setText( nameExpress );
+      
+      holder.increase.setTag(String.valueOf(cursor.getPosition()));
+      holder.increase.setOnClickListener(this);
+      
+      holder.decrease.setTag(String.valueOf(cursor.getPosition()));
+      holder.decrease.setOnClickListener(this);
+      
+      int total = 0;
+      for (FoodEntity selectFoodEntity: mSelectedFoods) {
+           if (selectFoodEntity.getFoodId() ==  foodId ) {
+               total = selectFoodEntity.getSelectedNumber() * selectFoodEntity.getFoodQuantity();
+               break;
+           }
+      }
+      
+      if ( total == 0 ) {
+          holder.number.setText("");
+      } else {           
+          holder.number.setText( String.valueOf(total) );
+      }
+	}
+
+	@Override
+	public View newView(Context context, Cursor cursor, ViewGroup parent) {
+		ViewHolder holder = new ViewHolder();
+		View convertView = LayoutInflater.from(context).inflate(R.layout.list_food_item, null);
+        
+        holder.image = (ImageView) convertView.findViewById(R.id.image);
+        holder.name = (TextView) convertView.findViewById(R.id.name);
+        holder.unit = (TextView) convertView.findViewById(R.id.unit);
+        holder.increase = (Button) convertView.findViewById(R.id.increase);
+        holder.number = (EditText) convertView.findViewById(R.id.number);
+        holder.decrease = (Button) convertView.findViewById(R.id.decrease);
+        
+        convertView.setTag(holder);
+		return convertView;
+	}
     
-    private void findSelectedNumber(int foodId, int selectedNumber) { 
-        Log.d(TAG, "findSelectedNumber foodId = " + foodId + " selectedNumber = " + selectedNumber);
-        for ( int index = 0; index < mFoods.size() ; index++ ) {
-            FoodEntity foodEntity = mFoods.get(index);            
-            if ( foodEntity.getFoodId() == foodId ) {
-                Log.d(TAG, "findSelectedNumber foodEntity.getFoodId() = " + foodEntity.getFoodId() );
-                foodEntity.setSelectedNumber(selectedNumber);
-                mFoods.set(index, foodEntity);
-                if ( getSelectedFoodIndex(foodId) == -1) {
-                    mSelectedFoods.add(foodEntity); 
-                }                                            
-                break;
+	@Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+        Log.v(TAG, "notifyDataSetChanged MessageListAdapter.notifyDataSetChanged().");
+        if (mContext instanceof CaloricIntakeActivity) {
+	        ((CaloricIntakeActivity) mContext).updateTotalCaloric();
+	    }
+        if (mOnDataSetChangedListener != null) {
+            mOnDataSetChangedListener.onDataSetChanged(this);
+        }
+    }
+
+    @Override
+    protected void onContentChanged() {
+        Log.d(TAG, "onContentChanged");
+        if (getCursor() != null && !getCursor().isClosed()) {
+            if (mOnDataSetChangedListener != null) {
+                mOnDataSetChangedListener.onContentChanged(this);
             }
         }
+    }
+    
+    private FoodEntity queryFoodById(int id) {
+    	Cursor cursor = null;        
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.setLength(0);
+        stringBuilder.append(HeatIngestion.FOOD_ID + "= ? " );
+        
+       
+        cursor = mContext.getContentResolver().query(HeatIngestion.CONTENT_URI,
+        		PROJECTION_FOOD_SORT,
+                 stringBuilder.toString(),
+                 new String[] { String.valueOf(id)},
+                 null);
+
+        FoodEntity food = null;
+          
+        try {
+             cursor.moveToPosition(-1);
+             while (cursor.moveToNext() ) {
+            	 int foodType = cursor.getInt(FOOD_CLASSIFY_ID_INGESTION_INDEX);
+                 String foodName = cursor.getString(FOOD_NAME_INGESTION_INDEX);
+                 int foodId = cursor.getInt(FOOD_ID_INGESTION_INDEX);;
+                 String nameExpress = cursor.getString(NAME_EXPRESS_INGESTION_INDEX);                
+                 int  priority = cursor.getInt(PRIORITY_INGESTION_INDEX);
+                 int  foodQuantity = cursor.getInt(FOOD_QUANTITY_INGESTION_INDEX);
+                 int  calorie = cursor.getInt(CALORIE_INGESTION_INDEX);
+                 String imageRes = cursor.getString(FOOD_PICTURE_INGESTION_INDEX);
+                
+                 food = new FoodEntity();
+                 food.setFoodClassifyId(foodType);
+                 food.setFoodId(foodId);
+                 food.setFoodName(foodName);
+                 food.setNameExpress(nameExpress);
+                 food.setPriority(priority);
+                 food.setFoodQuantity(foodQuantity);
+                 food.setCalorie(calorie);
+                 food.setImageRes(imageRes);
+             }            
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }       
+        
+        return food;
     }
 
 }

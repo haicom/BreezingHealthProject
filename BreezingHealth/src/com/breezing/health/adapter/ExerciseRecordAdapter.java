@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.breezing.health.R;
 import com.breezing.health.ui.activity.ExerciseRecordActivity;
+import com.breezing.health.util.OnDataSetChangedListener;
 
 public class ExerciseRecordAdapter extends CursorAdapter {
     private static final String TAG = "ExerciseRecordAdapter";
@@ -47,11 +48,6 @@ public class ExerciseRecordAdapter extends CursorAdapter {
         TextView calorie;
     }
 
-    public interface OnDataSetChangedListener {
-        void onDataSetChanged(ExerciseRecordAdapter adapter);
-        void onContentChanged(ExerciseRecordAdapter adapter);
-    }
-    
     public void setOnDataSetChangedListener(OnDataSetChangedListener l) {
         mOnDataSetChangedListener = l;
     }

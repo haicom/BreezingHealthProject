@@ -278,4 +278,13 @@
     <string name="share_message_content">%1$s年%2$s月%3$s日，%4$s摄入%5$s%6$s，消耗%7$s%8$s</string>
     <string name="share_message_subject">%1$s年%2$s月%3$s日能量平衡情况</string>
     
+    <string name="breezing_test">Breezing测试</string>
+    <string name="hint_digest">消化能耗</string>
+    <string name="hint_sport">运动能耗</string>
+    <string name="hint_metabolism">新陈代谢</string>
+    
+    <string name="error_input_digest">请输入消化能耗值</string>
+    <string name="error_input_sport">请输入运动能耗值</string>
+    <string name="error_input_metabolism">请输入新陈代谢值</string>
+    
 </resources>
