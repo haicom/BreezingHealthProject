@@ -2,6 +2,7 @@ package com.breezing.health.providers;
 
 import com.breezing.health.R;
 import com.breezing.health.providers.Breezing.Account;
+import com.breezing.health.providers.Breezing.BreezingInfo;
 import com.breezing.health.providers.Breezing.EnergyCost;
 import com.breezing.health.providers.Breezing.FoodClassify;
 import com.breezing.health.providers.Breezing.HeatConsumption;
@@ -10,6 +11,7 @@ import com.breezing.health.providers.Breezing.HeatIngestion;
 import com.breezing.health.providers.Breezing.Information;
 import com.breezing.health.providers.Breezing.Ingestion;
 import com.breezing.health.providers.Breezing.IngestiveRecord;
+import com.breezing.health.providers.Breezing.RealTimePressure;
 import com.breezing.health.providers.Breezing.UnitSettings;
 import com.breezing.health.providers.Breezing.WeightChange;
 
@@ -22,7 +24,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
     private final static String TAG = "BreezingDatabaseHelper";
     private static BreezingDatabaseHelper sInstance = null;
     static final String DATABASE_NAME = "breezing.db";
-    static final int DATABASE_VERSION = 11;
+    static final int DATABASE_VERSION = 12;
     private final Context mContext;
 
     public interface Views {
@@ -81,6 +83,8 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
         createBalanceHistoryView(db);
         createWeightChangeViews(db);
         createUnitSettings(db);
+        createBreezingInfo(db);
+        createRealTime(db);
         createBaseInfomationViews(db);
         createSportTypeViews(db);       
         createFoodIngestionViews(db);
@@ -572,7 +576,36 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
                 ");");
 
     }
+    
+    /***
+     * Breezing info table: (only one piece of data) 
+     * @param db
+     */
+    private void createBreezingInfo(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE " + BreezingProvider.TABLE_BREEZING_INFO  + " ("
+                +  BreezingInfo._ID + " INTEGER PRIMARY KEY , "
+                +  BreezingInfo.ACCOUNT_ID + " INTEGER NOT NULL , "
+                +  BreezingInfo.MAC + " VARCHAR(20) NOT NULL , "
+                +  BreezingInfo.FREQUENCY + " NUMERIC(2, 2) ,"
+                +  BreezingInfo.TIMES  + " INTEGER NOT NULL ,"
+                +  BreezingInfo.QRCODE  + " VARCHAR(100) NOT NULL ,"               
+                +  BreezingInfo.FINISH_TIME + "INTEGER  " +
+                ");");
 
+    }
+    
+    /***
+     * real-time pressure table
+     * @param db
+     */
+    private void createRealTime(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE " + BreezingProvider.TABLE_REAL_TIME  + " ("
+                +  RealTimePressure._ID + " INTEGER PRIMARY KEY , "
+                +  RealTimePressure.PRESSURE + " NUMERIC(10, 6) NOT NULL  " +               
+                ");");
+
+    }
+    
     /***
      * 产生基本信息 view
      * @param db
@@ -625,6 +658,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
             upgradeToVersion9(db);
             upgradeToVersion10(db);
             upgradeToVersion11(db);
+            upgradeToVersion12(db);
         } else if (oldVersion == 2) {
             upgradeToVersion3(db);
             upgradeToVersion4(db);
@@ -635,6 +669,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
             upgradeToVersion9(db);
             upgradeToVersion10(db);
             upgradeToVersion11(db);
+            upgradeToVersion12(db);
         } else if (oldVersion ==3 ){
             upgradeToVersion4(db);
             upgradeToVersion5(db);
@@ -644,6 +679,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
             upgradeToVersion9(db);
             upgradeToVersion10(db);
             upgradeToVersion11(db);
+            upgradeToVersion12(db);
         } else if (oldVersion == 4 ) {
             upgradeToVersion5(db);
             upgradeToVersion6(db);
@@ -652,6 +688,7 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
             upgradeToVersion9(db);
             upgradeToVersion10(db);
             upgradeToVersion11(db);
+            upgradeToVersion12(db);
         } else if (oldVersion == 5) {
             upgradeToVersion6(db);
             upgradeToVersion7(db);
@@ -659,26 +696,34 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
             upgradeToVersion9(db);
             upgradeToVersion10(db);
             upgradeToVersion11(db);
+            upgradeToVersion12(db);
         } else if (oldVersion == 6 ) {
             upgradeToVersion7(db);
             upgradeToVersion8(db);
             upgradeToVersion9(db);
             upgradeToVersion10(db);
             upgradeToVersion11(db);
+            upgradeToVersion12(db);
         } else if (oldVersion == 7) {
             upgradeToVersion8(db);
             upgradeToVersion9(db);
             upgradeToVersion10(db);
             upgradeToVersion11(db);
+            upgradeToVersion12(db);
         } else if (oldVersion == 8) {
             upgradeToVersion9(db);
             upgradeToVersion10(db);
             upgradeToVersion11(db);
+            upgradeToVersion12(db);
         } else if (oldVersion == 9 ){
             upgradeToVersion10(db);
             upgradeToVersion11(db);
-        } else {
+            upgradeToVersion12(db);
+        } else if (oldVersion == 10) {
             upgradeToVersion11(db);
+            upgradeToVersion12(db);
+        } else {
+            upgradeToVersion12(db);
         }
     }
 
@@ -760,6 +805,11 @@ public class BreezingDatabaseHelper extends SQLiteOpenHelper {
 
     private void upgradeToVersion11(SQLiteDatabase db) {
         createBalanceHistoryView(db);
+    }
+    
+    private void upgradeToVersion12(SQLiteDatabase db) {
+        createBreezingInfo(db);
+        createRealTime(db);
     }
 
 }

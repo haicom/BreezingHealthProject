@@ -14,6 +14,8 @@ import com.breezing.health.providers.Breezing.Ingestion;
 import com.breezing.health.providers.Breezing.IngestiveRecord;
 import com.breezing.health.providers.Breezing.UnitSettings;
 import com.breezing.health.providers.Breezing.WeightChange;
+import com.breezing.health.providers.Breezing.BreezingInfo;
+import com.breezing.health.providers.Breezing.RealTimePressure;
 import com.breezing.health.providers.BreezingDatabaseHelper.Views;
 import com.breezing.health.util.CalendarUtil;
 import com.breezing.health.util.DateFormatUtil;
@@ -56,6 +58,8 @@ public class BreezingProvider extends  SQLiteContentProvider {
     public  static String TABLE_FOOD_CLASSIFY = "food_classify";
     public  static String TABLE_INGESTIVE_RECORD = "ingestive_record";
     public  static String TABLE_UNIT_SETTINGS = "unit_settings";
+    public  static String TABLE_BREEZING_INFO = "breezing_info";
+    public  static String TABLE_REAL_TIME = "real_time";
 
     private SQLiteOpenHelper mOpenHelper;
 
@@ -105,6 +109,18 @@ public class BreezingProvider extends  SQLiteContentProvider {
                 return IngestiveRecord.CONTENT_TYPE;
             case BREEZING_INGESTIVE_RECORD_ID:
                 return IngestiveRecord.CONTENT_ITEM_TYPE;
+            case BREEZING_UNIT_SETTINGS:
+                return UnitSettings.CONTENT_TYPE;
+            case BREEZING_UNIT_SETTINGS_ID:
+                return UnitSettings.CONTENT_ITEM_TYPE;
+            case BREEZING_BREEZING_INFO:
+                return BreezingInfo.CONTENT_TYPE;
+            case BREEZING_BREEZING_INFO_ID:
+                return BreezingInfo.CONTENT_ITEM_TYPE;
+            case BREEZING_REAL_TIME:
+                return RealTimePressure.CONTENT_TYPE;
+            case BREEZING_REAL_TIME_ID:
+                return RealTimePressure.CONTENT_ITEM_TYPE;
             default:
                 return null;
         }
@@ -272,6 +288,20 @@ public class BreezingProvider extends  SQLiteContentProvider {
                 qb.setTables(TABLE_UNIT_SETTINGS);
                 qb.appendWhere("(_id = " + url.getPathSegments().get(1) + ")");
                 break;
+            case BREEZING_BREEZING_INFO:
+                qb.setTables(TABLE_BREEZING_INFO);
+                break;
+            case BREEZING_BREEZING_INFO_ID:
+                qb.setTables(TABLE_BREEZING_INFO);
+                qb.appendWhere("(_id = " + url.getPathSegments().get(1) + ")");
+                break;
+            case BREEZING_REAL_TIME:
+                qb.setTables(TABLE_REAL_TIME);
+                break;
+            case BREEZING_REAL_TIME_ID:
+                qb.setTables(TABLE_REAL_TIME);
+                qb.appendWhere("(_id = " + url.getPathSegments().get(1) + ")");
+                break;
             default:
                 Log.e(TAG, "query: invalid request: " + url);
                 return null;
@@ -291,6 +321,8 @@ public class BreezingProvider extends  SQLiteContentProvider {
                 finalSortOrder = Breezing.FoodClassify.DEFAULT_SORT_ORDER;
             } else if ( qb.getTables().equals(TABLE_HEAT_INGESTION) ) {
                 finalSortOrder = Breezing.HeatIngestion.DEFAULT_SORT_ORDER;
+            } else if ( qb.getTables().equals(TABLE_REAL_TIME) ) {
+                finalSortOrder = Breezing.RealTimePressure.DEFAULT_SORT_ORDER;
             }
         } else {
             finalSortOrder = sort;
@@ -471,6 +503,12 @@ public class BreezingProvider extends  SQLiteContentProvider {
                 break;
             case BREEZING_UNIT_SETTINGS:
                 rowID = mDb.insert(TABLE_UNIT_SETTINGS, UnitSettings.UNIT_TYPE, initialValues);
+                break;
+            case BREEZING_BREEZING_INFO:
+                rowID = mDb.insert(TABLE_BREEZING_INFO, Breezing.BreezingInfo.MAC, initialValues);
+                break;
+            case BREEZING_REAL_TIME:
+                rowID = mDb.insert(TABLE_REAL_TIME, Breezing.RealTimePressure.PRESSURE, initialValues);
                 break;
             default:
                 Log.e(TAG, "insert: invalid request: " + url);
@@ -680,6 +718,20 @@ public class BreezingProvider extends  SQLiteContentProvider {
                 table = TABLE_UNIT_SETTINGS;
                 extraWhere = "_id=" + url.getPathSegments().get(1);
                 break;
+            case BREEZING_BREEZING_INFO:
+                table = TABLE_BREEZING_INFO;
+                break;
+            case BREEZING_BREEZING_INFO_ID:
+                table = TABLE_BREEZING_INFO;
+                extraWhere = "_id=" + url.getPathSegments().get(1);
+                break;
+            case BREEZING_REAL_TIME:
+                table = TABLE_REAL_TIME;
+                break;
+            case BREEZING_REAL_TIME_ID:
+                table = TABLE_REAL_TIME;
+                extraWhere = "_id=" + url.getPathSegments().get(1);
+                break;
             default:
                 throw new UnsupportedOperationException(
                         "URI " + url + " not supported");
@@ -879,6 +931,36 @@ public class BreezingProvider extends  SQLiteContentProvider {
                 where = DatabaseUtils.concatenateWhere("_id = " + settingsId, where);
                 count = mDb.delete(TABLE_UNIT_SETTINGS, where, whereArgs);
                 break;
+            case BREEZING_BREEZING_INFO:
+                count = mDb.delete(TABLE_BREEZING_INFO, where, whereArgs);
+                break;
+            case BREEZING_BREEZING_INFO_ID:
+                int infoId;
+                try {
+                    infoId = Integer.parseInt(url.getPathSegments().get(1));
+                } catch (Exception e) {
+                    throw new IllegalArgumentException(
+                            "Bad message id: " + url.getPathSegments().get(1));
+                }
+
+                where = DatabaseUtils.concatenateWhere("_id = " + infoId, where);
+                count = mDb.delete(TABLE_BREEZING_INFO, where, whereArgs);
+                break;
+            case BREEZING_REAL_TIME:
+                count = mDb.delete(TABLE_REAL_TIME, where, whereArgs);
+                break;
+            case BREEZING_REAL_TIME_ID:
+                int realId;
+                try {
+                    realId = Integer.parseInt(url.getPathSegments().get(1));
+                } catch (Exception e) {
+                    throw new IllegalArgumentException(
+                            "Bad message id: " + url.getPathSegments().get(1));
+                }
+
+                where = DatabaseUtils.concatenateWhere("_id = " + realId, where);
+                count = mDb.delete(TABLE_REAL_TIME, where, whereArgs);
+                break;
             default:
                 Log.e(TAG, "query: invalid request: " + url);
         }
@@ -932,6 +1014,10 @@ public class BreezingProvider extends  SQLiteContentProvider {
     private static final int BREEZING_INGESTIVE_RECORD_ID = 38;
     private static final int BREEZING_UNIT_SETTINGS = 39;
     private static final int BREEZING_UNIT_SETTINGS_ID = 40;
+    private static final int BREEZING_BREEZING_INFO  = 41;
+    private static final int BREEZING_BREEZING_INFO_ID = 42;
+    private static final int BREEZING_REAL_TIME  = 43;
+    private static final int BREEZING_REAL_TIME_ID = 44;
 
     private static final UriMatcher sURLMatcher =
             new UriMatcher(UriMatcher.NO_MATCH);
@@ -982,8 +1068,17 @@ public class BreezingProvider extends  SQLiteContentProvider {
         
         sURLMatcher.addURI(Breezing.AUTHORITY, "ingestive_record", BREEZING_INGESTIVE_RECORD);
         sURLMatcher.addURI(Breezing.AUTHORITY, "ingestive_record/#", BREEZING_INGESTIVE_RECORD_ID);
+
         sURLMatcher.addURI(Breezing.AUTHORITY, "unit_settings", BREEZING_UNIT_SETTINGS);
         sURLMatcher.addURI(Breezing.AUTHORITY, "unit_settings/#", BREEZING_UNIT_SETTINGS_ID);
+
+        sURLMatcher.addURI(Breezing.AUTHORITY, "breezing_info", BREEZING_BREEZING_INFO);
+        sURLMatcher.addURI(Breezing.AUTHORITY, "breezing_info/#", BREEZING_BREEZING_INFO_ID);
+
+        sURLMatcher.addURI(Breezing.AUTHORITY, "real_time", BREEZING_REAL_TIME);
+        sURLMatcher.addURI(Breezing.AUTHORITY, "real_time/#", BREEZING_REAL_TIME_ID);
+
+
     }
 
 

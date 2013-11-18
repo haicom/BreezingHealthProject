@@ -106,18 +106,20 @@ public class WeightRecordActivity extends ActionBarActivity implements OnClickLi
             mHopeWeightValue = weightInfo.getExpectedWeight();
         } else {
             weightInfo = mWeightInfos.get( mWeightInfos.size() - 1 );
-            if ( weightInfo.getDate() >  mSelectedDate) {
+            Log.d(TAG, "obtainWeightInfo weightInfo.getWeightUnit() = " + weightInfo.getWeightUnit() + " mWeightInfos.size() = " + mWeightInfos.size());
+            if ( weightInfo.getDate() >  mSelectedDate) {                
                 mWeightUnitValue = weightInfo.getWeightUnit();
                 mWeightValue = 0;
                 mEveryWeight = 0;
                 mHopeWeightValue = 0;
             } else {
                 for (WeightInfoEntity weight: mWeightInfos) {
-                    if ( weight.getDate() ==  mSelectedDate ) {
+                    if ( weight.getDate() <=  mSelectedDate ) {
                         mWeightUnitValue = weight.getWeightUnit();
                         mWeightValue = weight.getWeight();
                         mEveryWeight = weight.getEveryWeight();
                         mHopeWeightValue = weight.getExpectedWeight();
+                        break;
                     }
                 }
             }

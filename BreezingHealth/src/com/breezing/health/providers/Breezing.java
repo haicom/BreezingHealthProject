@@ -472,4 +472,58 @@ public class Breezing {
          */
         public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/unit_settings";
     }
+    
+    public static final class BreezingInfo implements BaseColumns {
+        /**
+         * The content:// style URL for this table
+         */
+        public static final Uri CONTENT_URI =
+                Uri.withAppendedPath(AUTHORITY_URI, "breezing_info");
+        public static final String ACCOUNT_ID   = "account_id";
+        
+        public static final String MAC   = "mac";
+        public static final String FREQUENCY   = "frequency";
+        public static final String TIMES = "times";
+        public static final String QRCODE = "qr_code";
+        public static final String FINISH_TIME = "finish_time";
+        /**
+         * The MIME type of {@link #CONTENT_URI} providing a directory of
+         * people.
+         */
+        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/breezing_info";
+
+        /**
+         * The MIME type of a {@link #CONTENT_URI} subdirectory of a single
+         * person.
+         */
+        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/breezing_info";
+    }
+    
+    public static final class RealTimePressure implements BaseColumns {
+        /**
+         * The content:// style URL for this table
+         */
+        public static final Uri CONTENT_URI =
+                Uri.withAppendedPath(AUTHORITY_URI, "real_time");
+
+        public static final String ACCOUNT_ID   = "account_id";
+        public static final String PRESSURE = "pressure";
+        public static final String DATE   = "date";
+
+        /**
+         * The default sort order for this table
+         */
+        public static final String DEFAULT_SORT_ORDER = "date DESC";
+        /**
+         * The MIME type of {@link #CONTENT_URI} providing a directory of
+         * people.
+         */
+        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/real_time";
+
+        /**
+         * The MIME type of a {@link #CONTENT_URI} subdirectory of a single
+         * person.
+         */
+        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/real_time";
+    }
 }
