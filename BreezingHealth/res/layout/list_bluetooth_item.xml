@@ -3,7 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="@dimen/activity_vertical_margin" >
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_small_margin"
+    android:paddingBottom="@dimen/activity_vertical_small_margin" >
 
     <ImageView
         android:id="@+id/detail"
@@ -18,7 +21,7 @@
     <TextView android:layout_width="match_parent"
         android:layout_height="25dp"
         android:gravity="center_vertical"
-        android:textColor="@color/black"
+        android:textColor="@color/red"
         android:textSize="@dimen/normal_textsize"
         android:layout_toLeftOf="@+id/detail"
         android:id="@+id/name" />
@@ -26,7 +29,7 @@
     <TextView android:layout_width="match_parent"
         android:layout_height="25dp"
         android:gravity="center_vertical"
-        android:textColor="@color/black"
+        android:textColor="@color/gray"
         android:textSize="@dimen/normal_textsize"
         android:layout_toLeftOf="@+id/detail"
         android:id="@+id/mac"

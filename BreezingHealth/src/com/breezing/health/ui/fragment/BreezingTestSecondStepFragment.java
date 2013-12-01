@@ -77,7 +77,7 @@ public class BreezingTestSecondStepFragment extends BaseFragment implements OnCl
     public void onClick(View v) {
         if (v == mBegin) {
 //            showBluetoothSettingDialog();
-        	Intent intent = new Intent(IntentAction.ACTIVITY_TEST_BREEZING);
+        	Intent intent = new Intent(IntentAction.ACTIVITY_TESTING);
         	startActivityForResult(intent, REQUEST_BREEZING_TEST);
             return ;
         }
@@ -102,19 +102,6 @@ public class BreezingTestSecondStepFragment extends BaseFragment implements OnCl
     	}
     	super.onActivityResult(requestCode, resultCode, data);
     }
-
-    private void showBluetoothSettingDialog() {
-        BreezingTestBTSettingFragment setting = (BreezingTestBTSettingFragment) getActivity().getSupportFragmentManager().findFragmentByTag("bluetoothSetting");
-        if (setting != null) {
-            getActivity().getSupportFragmentManager().beginTransaction().remove(setting);
-        }
-        getActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null);
-
-        setting = BreezingTestBTSettingFragment.newInstance();
-        setting.show(getActivity().getSupportFragmentManager(), "bluetoothSetting");
-    }
-    
-    
    
     /*** 
      * 查询能量消耗值

@@ -33,7 +33,7 @@ public class TestBreezingActivity extends ActionBarActivity implements OnClickLi
 	}
 
 	private void initView() {
-		setActionBarTitle(R.string.breezing_test);
+		setActionBarTitle(R.string.my_breezing_test);
 		
 		mMetabolism = (EditText) findViewById(R.id.metabolism);
 		mSport = (EditText) findViewById(R.id.sport);
@@ -63,7 +63,7 @@ public class TestBreezingActivity extends ActionBarActivity implements OnClickLi
 		
 		return true;
 	}
-
+	
 	@Override
 	public void onClick(View v) {
 		if (v == mConfirm) {

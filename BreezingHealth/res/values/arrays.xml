@@ -50,5 +50,12 @@
         <item>高强度</item>
         <item>剧烈运动</item>
     </string-array>
+    
+    <string-array name="breezing_test_step">
+        <item>扫描QR码</item>
+        <item>插入气嘴</item>
+        <item>开始Breezing</item>
+        <item>插入正式芯片</item>
+    </string-array>
 
 </resources>

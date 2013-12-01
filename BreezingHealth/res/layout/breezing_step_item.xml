@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/breezing_step_box_selector" >
+    
+    <ImageView android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="centerInside"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/content_description"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_centerVertical="true"
+        android:id="@+id/number"
+        android:duplicateParentState="true" />
+    
+    <TextView android:id="@+id/name"
+        android:textSize="@dimen/normal_textsize"
+        android:textColor="@color/gray"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:layout_marginLeft="32dp"
+        android:layout_toRightOf="@+id/number"
+        android:layout_centerVertical="true"
+        android:duplicateParentState="true" />
+    
+    <ImageView android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/breezing_step_checked"
+        android:scaleType="centerInside"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/content_description"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:id="@+id/checkbox"
+        android:duplicateParentState="true"
+        android:visibility="invisible" />
+
+</RelativeLayout>

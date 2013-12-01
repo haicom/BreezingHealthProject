@@ -69,5 +69,9 @@
         <item name="radius">4dp</item>
         <item name="centered">true</item>
     </style>
+    
+    <style name="NoticeDialogStyle" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground">@color/transparent</item>
+    </style>
 
 </resources>

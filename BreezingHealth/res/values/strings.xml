@@ -278,7 +278,7 @@
     <string name="share_message_content">%1$s年%2$s月%3$s日，%4$s摄入%5$s%6$s，消耗%7$s%8$s</string>
     <string name="share_message_subject">%1$s年%2$s月%3$s日能量平衡情况</string>
     
-    <string name="breezing_test">Breezing测试</string>
+    <string name="my_breezing_test">我的能量代谢</string>
     <string name="hint_digest">消化能耗</string>
     <string name="hint_sport">运动能耗</string>
     <string name="hint_metabolism">新陈代谢</string>
@@ -286,5 +286,38 @@
     <string name="error_input_digest">请输入消化能耗值</string>
     <string name="error_input_sport">请输入运动能耗值</string>
     <string name="error_input_metabolism">请输入新陈代谢值</string>
+    <string name="confirm_please">请确认:</string>
+    <string name="first_breezing_test_notice">%1$s您好！\n您即将开始第一次的能量代谢测试。</string>
+    
+    <string name="do_you_scan_qr">您是否扫描了二维码？</string>
+    <string name="do_you_scan_qr_right_now">是否现在扫描二维码？</string>
+    <string name="btn_yes">是</string>
+    <string name="btn_no">否</string>
+    <string name="scan_qr_step">扫描QR码</string>
+    <string name="insert_gas_mouth_step">插入气嘴</string>
+    <string name="begin_breezing_step">开始Breezing</string>
+    <string name="inser_formal_chip_step">插入正式芯片</string>
+    <string name="connect">连接</string>
+    <string name="paired_bluetooth_device">已配对的设备</string>
+    <string name="enable_bluetooth_device">可用的设备</string>
+    <string name="scan">扫描</string>
+    <string name="stop_connecting">停止连接</string>
+    <string name="on_connecting">正在连接\u2026</string>
+    <string name="please_dont_shake_breezing">请不要晃动Breezing!</string>
+    <string name="stop">停止</string>
+    <string name="on_connecting_and_please_dont_shake_breezing">连接中，请不要晃动Breezing\u2026</string>
+    <string name="bluetooth_connection">蓝牙连接</string>
+    <string name="breezing_initialize">Breezing初始化</string>
+    <string name="blow_and_inhale">放气并开始吸气!</string>
+    <string name="begin_to_blow">开始吹气</string>
+    <string name="blow">吹气</string>
+    <string name="test_over">测试结束</string>
+    <string name="test_result_notice">恭喜%1$s\n\n您已通过正常测试！点击确定查看您的能量代谢知与呼吸熵。如要再次测试，请等待五分钟。</string>
+    <string name="title_of_REE">能量代谢\n(REE)</string>
+    <string name="title_of_RQ">呼吸熵\n(RQ)</string>
+    <string name="energy_params">能量代谢参数</string>
+    <string name="char_of_b">B</string>
+    <string name="you_done_well">您做得非常好！</string>
+    <string name="blow_per_minite">%1$s次/分钟</string>
     
 </resources>

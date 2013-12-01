@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <ProgressBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:indeterminateDrawable="@drawable/image_progress" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/activity_vertical_margin"
+                android:gravity="center_vertical"
+                android:text="@string/on_connecting"
+                android:textColor="@color/black"
+                android:textSize="@dimen/normal_textsize" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/activity_vertical_margin_large"
+            android:gravity="center"
+            android:text="@string/on_connecting_and_please_dont_shake_breezing"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/normal_textsize" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/stop"
+        style="@style/ButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:background="@drawable/btn_red_round_selector"
+        android:singleLine="true"
+        android:text="@string/stop_connecting"
+        android:textColor="@color/white" />
+
+</LinearLayout>

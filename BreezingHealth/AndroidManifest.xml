@@ -264,6 +264,15 @@
             </intent-filter>
         </activity>
         
+        <activity
+            android:name=".ui.activity.TestingActivity"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="action.intent.breezing.health.ACTIVITY_TESTING" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        
         <provider
             android:name=".providers.BreezingProvider"
             android:authorities="breezing"
