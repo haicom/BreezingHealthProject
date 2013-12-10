@@ -25,48 +25,40 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/activity_vertical_small_margin"
-        android:layout_weight="1" >
+        android:layout_weight="1"
+        android:background="@drawable/breezing_chart_bg" >
 
-        <com.breezing.health.widget.linechart.FancyChart
+        <com.breezing.health.widget.linechart.FancyChartNoLine
             android:id="@+id/chart"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/activity_vertical_margin" />
+            android:layout_height="match_parent" />
         
     </LinearLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_vertical_small_margin"
-        android:background="@drawable/breezing_step_box" >
+        android:background="@drawable/breezing_notice_bg" >
 
-        <TextView
-            android:id="@+id/number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:text="@string/char_of_b"
-            android:textSize="35sp"
-            android:textColor="@color/white"
-            android:shadowDy="1"
-            android:shadowDx="1"
-            android:shadowColor="@color/gray"
-            android:textStyle="italic" />
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/char_of_b"
+            android:contentDescription="@string/content_description"
+            android:scaleType="centerInside" />
 
         <TextView
             android:id="@+id/notice"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="32dp"
-            android:layout_toRightOf="@+id/number"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
             android:duplicateParentState="true"
+            android:gravity="center_vertical"
             android:singleLine="true"
             android:textColor="@color/black"
             android:textSize="@dimen/normal_textsize"
             android:text="@string/you_done_well" />
-    </RelativeLayout>
+    </LinearLayout>
 
 </LinearLayout>

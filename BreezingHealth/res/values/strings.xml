@@ -319,5 +319,8 @@
     <string name="char_of_b">B</string>
     <string name="you_done_well">您做得非常好！</string>
     <string name="blow_per_minite">%1$s次/分钟</string>
+    <string name="long_time_no_breezing">您已经超过一周没有测试了，以后别忘记哦。</string>
+    <string name="btn_i_know">我知道了</string>
+    <string name="scan_qr_number">二维码扫描</string>
     
 </resources>

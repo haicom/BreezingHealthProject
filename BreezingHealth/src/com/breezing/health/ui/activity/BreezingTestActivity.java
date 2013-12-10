@@ -1,6 +1,7 @@
 package com.breezing.health.ui.activity;
 
 import android.bluetooth.BluetoothDevice;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -22,10 +23,13 @@ import com.breezing.health.providers.Breezing.EnergyCost;
 import com.breezing.health.tools.IntentAction;
 import com.breezing.health.tools.Tools;
 import com.breezing.health.ui.fragment.BreezingTestResultFragment;
+import com.breezing.health.util.BLog;
 import com.breezing.health.util.BreezingQueryViews;
+import com.breezing.health.util.DateFormatUtil;
 import com.breezing.health.util.ExtraName;
 import com.breezing.health.util.LocalSharedPrefsUtil;
 import com.breezing.health.widget.CustomViewPager;
+import com.breezing.health.widget.NoticeDialog;
 
 public class BreezingTestActivity extends ActionBarActivity {
 
@@ -117,7 +121,7 @@ public class BreezingTestActivity extends ActionBarActivity {
             
             if (isTested) {
                 Float showMetabolism = mMetabolism * mUnifyUnit;
-                Log.d(TAG, "BreezingTestActivity showMetabolism = " + showMetabolism);
+                BLog.d(TAG, "BreezingTestActivity showMetabolism = " + showMetabolism);
                 Tools.refreshVane( showMetabolism.intValue(), mEnergyVane);
                 
                 String year = String.valueOf(mLastTestDate).subSequence(0, ENERGY_COST_YEAR).toString();
@@ -141,6 +145,11 @@ public class BreezingTestActivity extends ActionBarActivity {
                         14,
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 mLastTestNotice.setText(spannable);
+                
+                final int currentDate = DateFormatUtil.simpleDateFormat("yyyyMMdd");
+                if (currentDate - mLastTestDate > 6) {
+                    showBreezingNoticeDialog();
+                }
             }            
         }
         
@@ -172,7 +181,7 @@ public class BreezingTestActivity extends ActionBarActivity {
      */
     private int queryAccountInfo(final int accountId, final String accountPass) {
         int count = 0;
-        Log.d(TAG, " queryAccountInfo accountId = " + accountId + " accountPass = " + accountPass);
+        BLog.d(TAG, " queryAccountInfo accountId = " + accountId + " accountPass = " + accountPass);
         StringBuilder  stringBuilder = new StringBuilder();
         stringBuilder.setLength(0);
         stringBuilder.append(Account.ACCOUNT_ID + " = " + accountId + " AND ");
@@ -207,7 +216,7 @@ public class BreezingTestActivity extends ActionBarActivity {
      */
     private boolean queryEnergyCost(final int accountId) {
         boolean result = false;
-        Log.d(TAG, " queryAccountInfo accountId = " + accountId );
+        BLog.d(TAG, " queryAccountInfo accountId = " + accountId );
         String sortOrder = EnergyCost.ENERGY_COST_DATE + " DESC";
 
         StringBuilder  stringBuilder = new StringBuilder();
@@ -223,6 +232,7 @@ public class BreezingTestActivity extends ActionBarActivity {
                     sortOrder);
 
             if (cursor != null) {
+                BLog.v(TAG, "queryEnergyCost cursor.getCount() =" + cursor.getCount());
                 if ( cursor.getCount() > 0 ) {
                     cursor.moveToPosition(0);
                     mMetabolism = cursor.getFloat(ENERGY_COST_METABOLISM_ENERGY);
@@ -236,7 +246,8 @@ public class BreezingTestActivity extends ActionBarActivity {
             }
         }
 
-        Log.d(TAG, " queryEnergyCost result = " + result);
+        BLog.d(TAG, " queryEnergyCost mLastTestDate = " + mLastTestDate);
+        BLog.d(TAG, " queryEnergyCost result = " + result);
 
         return result;
     }
@@ -288,6 +299,21 @@ public class BreezingTestActivity extends ActionBarActivity {
             }
 
         });
+    }
+    
+    private void showBreezingNoticeDialog() {
+        new NoticeDialog.Builder(this)
+        .setTitle(R.string.notice)
+        .setMessage(getString(R.string.long_time_no_breezing))
+        .setPositiveButton(R.string.btn_i_know, new DialogInterface.OnClickListener() {
+            
+            @Override
+            public void onClick(DialogInterface dialog, int arg1) {
+                dialog.dismiss();
+            }
+        })
+        .create().show();
+        
     }
     
     private static final int ENERGY_COST_YEAR = 4;

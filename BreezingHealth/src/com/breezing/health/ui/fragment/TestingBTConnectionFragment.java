@@ -43,6 +43,11 @@ public class TestingBTConnectionFragment extends BaseFragment implements OnClick
         mHandler = new Handler(getActivity().getMainLooper()) {
             @Override
             public void dispatchMessage(Message msg) {
+ 
+                if(isRemoving()) {
+                    return ;
+                }
+                
                 final int what = msg.what;
                 switch(what) {
                 case CONNCET_SUCCESS:
@@ -64,5 +69,11 @@ public class TestingBTConnectionFragment extends BaseFragment implements OnClick
             return ;
         }
     }
+    
+    @Override
+    public void onDestroy() {
+        mHandler.removeMessages(CONNCET_SUCCESS);
+        super.onDestroy();
+    } 
     
 }

@@ -20,7 +20,7 @@ import com.breezing.health.R;
 import com.breezing.health.adapter.BreezingPagerAdapter;
 import com.breezing.health.ui.activity.TestingActivity;
 import com.breezing.health.widget.CustomViewPager;
-import com.breezing.health.widget.linechart.FancyChart;
+import com.breezing.health.widget.linechart.FancyChartNoLine;
 import com.breezing.health.widget.linechart.data.ChartData;
 
 public class TestingBreezingFragment extends BaseFragment implements OnClickListener {
@@ -72,6 +72,10 @@ public class TestingBreezingFragment extends BaseFragment implements OnClickList
         mHandler = new Handler(getActivity().getMainLooper()) {
             @Override
             public void dispatchMessage(Message msg) {
+                
+                if (isRemoving()) {
+                    return ;
+                }
                 
                 final int what = msg.what;
                 switch (what) {
@@ -127,12 +131,12 @@ public class TestingBreezingFragment extends BaseFragment implements OnClickList
         chartData.addXValue(3, "3");
         chartData.addXValue(4, "4");
         chartData.addXValue(5, "5");
-        chartData.addPoint(1, 100, "", "");
+        chartData.addPoint(1, 70, "", "");
         chartData.addPoint(2, 110, "", "");
         chartData.addPoint(3, 114, "", "");
-        chartData.addPoint(4, 106, "", "");
+        chartData.addPoint(4, 86, "", "");
         chartData.addPoint(5, 108, "", "");
-        FancyChart chart = ((FancyChart) mBlowPage.findViewById(R.id.chart));
+        FancyChartNoLine chart = ((FancyChartNoLine) mBlowPage.findViewById(R.id.chart));
         chart.clearValues();
         chart.addData(chartData);
         chart.invalidate();
@@ -167,6 +171,14 @@ public class TestingBreezingFragment extends BaseFragment implements OnClickList
             }
             return ;
         }
+    }
+    
+    @Override
+    public void onDestroy() {
+        mHandler.removeMessages(INIT_SUCCESS);
+        mHandler.removeMessages(READY_SUCCESS);
+        mHandler.removeMessages(BLOW_SUCCESS);
+        super.onDestroy();
     }
     
 }

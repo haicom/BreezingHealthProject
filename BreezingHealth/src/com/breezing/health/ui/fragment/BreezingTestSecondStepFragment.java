@@ -7,7 +7,6 @@ import android.content.ContentProviderOperation;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -113,7 +112,7 @@ public class BreezingTestSecondStepFragment extends BaseFragment implements OnCl
                 LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
         String sortOrder = EnergyCost.ENERGY_COST_DATE + " DESC";
         int  date = DateFormatUtil.simpleDateFormat("yyyyMMdd");
-        Log.d(TAG, " queryEnergyCost accountId = " + accountId);
+        BLog.d(TAG, " queryEnergyCost accountId = " + accountId);
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.setLength(0);      
         stringBuilder.append(EnergyCost.ACCOUNT_ID + " = ? AND ");
@@ -134,7 +133,7 @@ public class BreezingTestSecondStepFragment extends BaseFragment implements OnCl
                 cursor.close();
             }
         }
-
+        BLog.d(TAG, " queryEnergyCost count = " + count);
         return count;
     }
 
@@ -145,13 +144,16 @@ public class BreezingTestSecondStepFragment extends BaseFragment implements OnCl
         ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
         int accountId = LocalSharedPrefsUtil.
                         getSharedPrefsValueInt(this.getActivity(), LocalSharedPrefsUtil.PREFS_ACCOUNT_ID);
+        
+        final int currentDate = DateFormatUtil.simpleDateFormat("yyyyMMdd");
+        BLog.v("appendEnergyCost currentDate =" + currentDate);
         ops.add(ContentProviderOperation.newInsert(EnergyCost.CONTENT_URI)
                 .withValue(EnergyCost.ACCOUNT_ID, accountId)
                 .withValue(EnergyCost.METABOLISM, mBreezingTestReport.getMetabolism())
                 .withValue(EnergyCost.SPORT, mBreezingTestReport.getSport())
                 .withValue(EnergyCost.DIGEST, mBreezingTestReport.getDigest())
                 .withValue(EnergyCost.TRAIN, 0)
-                .withValue(EnergyCost.ENERGY_COST_DATE, DateFormatUtil.simpleDateFormat("yyyyMMdd") )
+                .withValue(EnergyCost.ENERGY_COST_DATE, currentDate )
                 .build());
         try {
             getActivity().getContentResolver().applyBatch(Breezing.AUTHORITY, ops);
@@ -180,6 +182,7 @@ public class BreezingTestSecondStepFragment extends BaseFragment implements OnCl
         stringBuilder.append(EnergyCost.ACCOUNT_ID + " = ? AND ");
         stringBuilder.append(EnergyCost.DATE + " = ? ");
         
+        final int currentDate = DateFormatUtil.simpleDateFormat("yyyyMMdd");
         ops.add(ContentProviderOperation.newUpdate(EnergyCost.CONTENT_URI)
                 .withSelection(stringBuilder.toString(),  
                         new String[] { 
@@ -189,6 +192,7 @@ public class BreezingTestSecondStepFragment extends BaseFragment implements OnCl
                 .withValue(EnergyCost.SPORT, mBreezingTestReport.getSport())
                 .withValue(EnergyCost.DIGEST, mBreezingTestReport.getDigest())
                 .withValue(EnergyCost.TOTAL_ENERGY, mBreezingTestReport.getTotalEnerge())
+                .withValue(EnergyCost.ENERGY_COST_DATE, currentDate )
                 .build() );      
         try {
             getActivity().getContentResolver().applyBatch(Breezing.AUTHORITY, ops);

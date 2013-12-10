@@ -51,6 +51,7 @@ public class TestingPreparativelyFragment extends BaseFragment implements OnClic
     
     private void showFirstTestNotice() {
         new NoticeDialog.Builder(getActivity())
+        .setTitle(R.string.notice)
         .setCancelable(false)
         .setMessage(getString(R.string.first_breezing_test_notice, "张三"))
         .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
@@ -67,6 +68,7 @@ public class TestingPreparativelyFragment extends BaseFragment implements OnClic
     
     private void showScanQRDialog() {
         new NoticeDialog.Builder(getActivity())
+        .setTitle(R.string.scan_qr_number)
         .setMessage(getString(R.string.do_you_scan_qr))
         .setPositiveButton(R.string.btn_yes, new DialogInterface.OnClickListener() {
             
@@ -89,6 +91,7 @@ public class TestingPreparativelyFragment extends BaseFragment implements OnClic
     
     private void showScanQRNowDialog() {
         new NoticeDialog.Builder(getActivity())
+        .setTitle(R.string.scan_qr_number)
         .setMessage(getString(R.string.do_you_scan_qr_right_now))
         .setPositiveButton(R.string.btn_yes, new DialogInterface.OnClickListener() {
             
