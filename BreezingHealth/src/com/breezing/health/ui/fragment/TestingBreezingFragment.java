@@ -14,12 +14,15 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.breezing.health.R;
 import com.breezing.health.adapter.BreezingPagerAdapter;
 import com.breezing.health.ui.activity.TestingActivity;
 import com.breezing.health.widget.CustomViewPager;
+import com.breezing.health.widget.flake.FlakeView;
 import com.breezing.health.widget.linechart.FancyChartNoLine;
 import com.breezing.health.widget.linechart.data.ChartData;
 
@@ -36,6 +39,7 @@ public class TestingBreezingFragment extends BaseFragment implements OnClickList
     private View mReadyForBlowPage;
     private View mBlowPage;
     private View mResultPage;
+    private FlakeView mFlakeView;
     private BreezingPagerAdapter mPagerAdapter;
     private Handler mHandler;
     private boolean mIsTestOver;
@@ -61,6 +65,10 @@ public class TestingBreezingFragment extends BaseFragment implements OnClickList
         mInitializePage = inflater.inflate(R.layout.page_of_initialize, null);
         mReadyForBlowPage = inflater.inflate(R.layout.page_of_ready_blow, null);
         mBlowPage = inflater.inflate(R.layout.page_of_blow, null);
+        mFlakeView = new FlakeView(getActivity());
+        LinearLayout flakeLayout = (LinearLayout) mBlowPage.findViewById(R.id.flake_layout);
+        flakeLayout.addView(mFlakeView,
+                new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         mResultPage = inflater.inflate(R.layout.page_of_result, null);
         ArrayList<View> views = new ArrayList<View>();
         views.add(mInitializePage);
@@ -179,6 +187,18 @@ public class TestingBreezingFragment extends BaseFragment implements OnClickList
         mHandler.removeMessages(READY_SUCCESS);
         mHandler.removeMessages(BLOW_SUCCESS);
         super.onDestroy();
+    }
+    
+    @Override
+    public void onPause() {
+        super.onPause();
+        mFlakeView.pause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mFlakeView.resume();
     }
     
 }

@@ -14,12 +14,11 @@
         android:textColor="@color/gray"
         android:textSize="@dimen/normal_textsize" />
 
-    <ImageView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:layout_marginTop="@dimen/activity_vertical_small_margin"
-        android:background="@color/green"
-        android:contentDescription="@string/content_description" />
+        android:id="@+id/flake_layout"
+        android:orientation="horizontal" />
 
     <LinearLayout
         android:layout_width="match_parent"
