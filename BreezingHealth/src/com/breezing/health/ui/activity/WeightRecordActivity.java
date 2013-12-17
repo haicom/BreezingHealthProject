@@ -1,3 +1,4 @@
+
 package com.breezing.health.ui.activity;
 
 import java.text.DecimalFormat;
@@ -140,6 +141,8 @@ public class WeightRecordActivity extends ActionBarActivity implements OnClickLi
         addLeftActionItem(new ActionItem(ActionItem.ACTION_BACK));
         addRightActionItem(new ActionItem(ActionItem.ACTION_HISTORY));
         mSeekBar = (SeekBar) findViewById(R.id.seekbar);
+        mSeekBar.setClickable(false);
+        mSeekBar.setEnabled(false);
         mNotice = (TextView) findViewById(R.id.notice);
 
         mDifferentValue = (TextView) findViewById(R.id.different_value);
@@ -312,7 +315,12 @@ public class WeightRecordActivity extends ActionBarActivity implements OnClickLi
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         
         mNotice.setText(spannable);
-        String actualString = weightFormat.format(mActualEvery);
+        
+        //距离目标体重值
+        float differentToHope = Math.abs( mActualHope - mActualEvery);
+        //体重周期改变值
+        float differentToWeight = Math.abs( mActualWeight - mActualEvery);
+        String actualString = weightFormat.format(differentToHope);
         String actualHope =  weightFormat.format(mActualHope);
         final String differentValue = getString(R.string.different_weight_value_notice, 
                 actualString, actualHope, mWeightUnitValue);
@@ -329,8 +337,9 @@ public class WeightRecordActivity extends ActionBarActivity implements OnClickLi
         
         mDifferentValue.setText(diffValueSpan);
         
-        mSeekBar.setMax( (int) Math.abs( mActualWeight - mActualHope) );
-        mSeekBar.setProgress( (int) Math.abs( mActualWeight - mActualEvery) );
+        //之所以乘以10，是将体重的浮点型变为整数，这样放到seekbar里面才能精确的对比。
+        mSeekBar.setMax( (int)((differentToHope + differentToWeight) * 10) );
+        mSeekBar.setProgress( (int)(differentToWeight * 10) );
         
         Log.d(TAG, " refreshWeightInfo mActualEvery = " + mActualEvery + " mActualHope = " + mActualHope + " mActualWeight =" + mActualWeight);
         mWeight.setText( weightFormat.format(mActualEvery) );
